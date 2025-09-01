@@ -1,0 +1,75 @@
+# --- EXISTENTE (Xcode/Flutter iOS) ---
+**/dgph
+*.mode1v3
+*.mode2v3
+*.moved-aside
+*.pbxuser
+*.perspectivev3
+**/*sync/
+.sconsign.dblite
+.tags*
+**/.vagrant/
+**/DerivedData/
+Icon?
+**/Pods/
+**/.symlinks/
+profile
+xcuserdata
+**/.generated/
+Flutter/App.framework
+Flutter/Flutter.framework
+Flutter/Flutter.podspec
+Flutter/Generated.xcconfig
+Flutter/ephemeral/
+Flutter/app.flx
+Flutter/app.zip
+Flutter/flutter_assets/
+Flutter/flutter_export_environment.sh
+ServiceDefinitions.json
+Runner/GeneratedPluginRegistrant.*
+
+# Exceptions
+!default.mode1v3
+!default.mode2v3
+!default.pbxuser
+!default.perspectivev3
+
+# --- EXTRA PARA PROTEGER SECRETS Y RUIDO ---
+# Android keys
+android/key.properties
+android/app/*.keystore
+android/app/*.jks
+
+# Archivos de configuración sensibles
+**/.env*
+lib/**/env*.dart
+lib/**/secrets*.dart
+*.p12
+*.pem
+*.key
+*.p8
+*.mobileprovision
+
+# Firebase (opcional en público)
+**/google-services.json
+**/GoogleService-Info.plist
+
+# IDEs
+.vscode/
+.idea/
+*.iml
+
+# Flutter/Dart
+.dart_tool/
+.packages
+build/
+.pub-cache/
+
+# Logs
+*.log
+
+
+# Env privados de Flutter
+lib/config/env_private.dart
+lib/**/env_private.dart
+lib/**/env*.dart
