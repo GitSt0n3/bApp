@@ -188,13 +188,13 @@ abstract class S {
   /// No description provided for @ubicacionServiciosDeshabilitados.
   ///
   /// In en, this message translates to:
-  /// **'Location services disabled'**
+  /// **'Location services are disabled'**
   String get ubicacionServiciosDeshabilitados;
 
   /// No description provided for @ubicacionNoSePudoObtener.
   ///
   /// In en, this message translates to:
-  /// **'Could not get location:'**
+  /// **'Couldn\'t get your location'**
   String get ubicacionNoSePudoObtener;
 
   /// No description provided for @ubicacionLatLngFmt.
@@ -206,13 +206,13 @@ abstract class S {
   /// No description provided for @urlReservasInvalida.
   ///
   /// In en, this message translates to:
-  /// **'Invalid booking URL'**
+  /// **'The booking URL is not valid'**
   String get urlReservasInvalida;
 
   /// No description provided for @debeDefinirUbicacionBase.
   ///
   /// In en, this message translates to:
-  /// **'To offer home service, define your base location'**
+  /// **'You must set a base location'**
   String get debeDefinirUbicacionBase;
 
   /// No description provided for @perfilActualizado.
@@ -224,7 +224,7 @@ abstract class S {
   /// No description provided for @errorGuardando.
   ///
   /// In en, this message translates to:
-  /// **'Error saving:'**
+  /// **'Error saving'**
   String get errorGuardando;
 
   /// No description provided for @ofrezcoDomicilio.
@@ -250,6 +250,138 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Street, number, neighborhood…'**
   String get direccionLugarHolder;
+
+  /// No description provided for @usarmiubicacionctual.
+  ///
+  /// In en, this message translates to:
+  /// **'Use my current location'**
+  String get usarmiubicacionctual;
+
+  /// No description provided for @selectorMapaPendiente.
+  ///
+  /// In en, this message translates to:
+  /// **'Map selector: pending'**
+  String get selectorMapaPendiente;
+
+  /// No description provided for @elegirEnMapa.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick on map'**
+  String get elegirEnMapa;
+
+  /// No description provided for @cambiarEnMapa.
+  ///
+  /// In en, this message translates to:
+  /// **'Change on map'**
+  String get cambiarEnMapa;
+
+  /// No description provided for @redesSocialesTitulo.
+  ///
+  /// In en, this message translates to:
+  /// **'Social media'**
+  String get redesSocialesTitulo;
+
+  /// No description provided for @instagramLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Instagram'**
+  String get instagramLabel;
+
+  /// No description provided for @instagramHint.
+  ///
+  /// In en, this message translates to:
+  /// **'https://instagram.com/my_username'**
+  String get instagramHint;
+
+  /// No description provided for @whatsappLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp'**
+  String get whatsappLabel;
+
+  /// No description provided for @whatsappHint.
+  ///
+  /// In en, this message translates to:
+  /// **'+5989xxxxxxx'**
+  String get whatsappHint;
+
+  /// No description provided for @facebookLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Facebook'**
+  String get facebookLabel;
+
+  /// No description provided for @facebookHint.
+  ///
+  /// In en, this message translates to:
+  /// **'https://facebook.com/my_page'**
+  String get facebookHint;
+
+  /// No description provided for @tiktokLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'TikTok'**
+  String get tiktokLabel;
+
+  /// No description provided for @tiktokHint.
+  ///
+  /// In en, this message translates to:
+  /// **'https://www.tiktok.com/@my_username'**
+  String get tiktokHint;
+
+  /// No description provided for @appReservasTitulo.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking app'**
+  String get appReservasTitulo;
+
+  /// No description provided for @proveedorLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Provider'**
+  String get proveedorLabel;
+
+  /// No description provided for @proveedorNinguna.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get proveedorNinguna;
+
+  /// No description provided for @proveedorWeiBook.
+  ///
+  /// In en, this message translates to:
+  /// **'WeiBook'**
+  String get proveedorWeiBook;
+
+  /// No description provided for @proveedorOtra.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get proveedorOtra;
+
+  /// No description provided for @urlReservasLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking URL'**
+  String get urlReservasLabel;
+
+  /// No description provided for @urlReservasHintWeiBook.
+  ///
+  /// In en, this message translates to:
+  /// **'https://weibook.uy/your_barber'**
+  String get urlReservasHintWeiBook;
+
+  /// No description provided for @urlReservasHintOtra.
+  ///
+  /// In en, this message translates to:
+  /// **'https://my-bookings.com/user'**
+  String get urlReservasHintOtra;
+
+  /// No description provided for @guardarBtn.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get guardarBtn;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

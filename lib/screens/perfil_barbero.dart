@@ -198,7 +198,7 @@ class _PerfilBarberoDomicilioYRedesState
       final loc = S.of(context)!;
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar( SnackBar(content: Text(loc.perfilActualizado)));
+      ).showSnackBar(SnackBar(content: Text(loc.perfilActualizado)));
     } catch (e) {
       if (!mounted) return;
       final loc = S.of(context)!;
@@ -247,9 +247,9 @@ class _PerfilBarberoDomicilioYRedesState
             const SizedBox(height: 8),
             TextField(
               controller: _addrCtrl,
-              decoration:  InputDecoration(
+              decoration: InputDecoration(
                 labelText: loc.direccionBaseLabel,
-              //  labelText: 'Dirección base (opcional)',
+                //  labelText: 'Dirección base (opcional)',
                 hintText: loc.direccionLugarHolder,
               ),
             ),
@@ -260,20 +260,18 @@ class _PerfilBarberoDomicilioYRedesState
                 ElevatedButton.icon(
                   onPressed: _usarUbicacionActual,
                   icon: const Icon(Icons.my_location),
-                  label: const Text('Usar mi ubicación actual'),
+                  label: Text(loc.usarmiubicacionctual),
                 ),
                 OutlinedButton.icon(
                   onPressed: () {
                     // TODO: abrir picker de mapa (OSM) y setear _lat/_lng/_addrCtrl
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Selector de mapa: pendiente'),
-                      ),
+                      SnackBar(content: Text(loc.selectorMapaPendiente)),
                     );
                   },
                   icon: const Icon(Icons.map),
                   label: Text(
-                    _lat == null ? 'Elegir en mapa' : 'Cambiar en mapa',
+                    _lat == null ? loc.elegirEnMapa: loc.cambiarEnMapa,
                   ),
                 ),
               ],
@@ -289,8 +287,7 @@ class _PerfilBarberoDomicilioYRedesState
           ],
 
           // ===== Redes sociales =====
-          const Text(
-            'Redes sociales',
+           Text(loc.redesSocialesTitulo,
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
@@ -333,8 +330,8 @@ class _PerfilBarberoDomicilioYRedesState
           const Divider(height: 32),
 
           // ===== Reservas =====
-          const Text(
-            'App de reservas',
+           Text(
+            loc.appReservasTitulo,
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
@@ -356,7 +353,7 @@ class _PerfilBarberoDomicilioYRedesState
             controller: _bookingUrlCtrl,
             enabled: _bookingApp != 'none',
             decoration: InputDecoration(
-              labelText: 'URL de reservas',
+              labelText: loc.urlReservasLabel,
               hintText:
                   _bookingApp == 'weibook'
                       ? 'https://weibook.uy/tu_barber'
@@ -376,7 +373,7 @@ class _PerfilBarberoDomicilioYRedesState
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
                     : const Icon(Icons.save),
-            label: const Text('Guardar'),
+            label: Text(loc.guardarBtn),
           ),
         ],
       ),

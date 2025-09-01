@@ -24,7 +24,43 @@
   "ofrezcoDomicilio": "Ofrezco trabajo a domicilio",
   "direccionBaseLabel": "Dirección base (opcional)",
    "radioKm": "Radio (km):",
-   "direccionLugarHolder": "Calle, nro, barrio…"
+   "direccionLugarHolder": "Calle, nro, barrio…",
+   "usarmiubicacionctual": "Usar mi ubicación actual",
+   "selectorMapaPendiente": "Selector de mapa: pendiente",
+
+  "elegirEnMapa": "Elegir en mapa",
+  "cambiarEnMapa": "Cambiar en mapa",
+
+
+  "redesSocialesTitulo": "Redes sociales",
+  "instagramLabel": "Instagram",
+  "instagramHint": "https://instagram.com/mi_usuario",
+  "whatsappLabel": "WhatsApp",
+  "whatsappHint": "+5989xxxxxxx",
+  "facebookLabel": "Facebook",
+  "facebookHint": "https://facebook.com/mi_pagina",
+  "tiktokLabel": "TikTok",
+  "tiktokHint": "https://www.tiktok.com/@mi_usuario",
+
+  "appReservasTitulo": "App de reservas",
+  "proveedorLabel": "Proveedor",
+  "proveedorNinguna": "Ninguna",
+  "proveedorWeiBook": "WeiBook",
+  "proveedorOtra": "Otra",
+
+  "urlReservasLabel": "URL de reservas",
+  "urlReservasHintWeiBook": "https://weibook.uy/tu_barber",
+  "urlReservasHintOtra": "https://mi-reservas.com/usuario",
+
+  "guardarBtn": "Guardar",
+
+  "ubicacionServiciosDeshabilitados": "Los servicios de ubicación están deshabilitados",
+  "ubicacionNoSePudoObtener": "No se pudo obtener la ubicación",
+  "urlReservasInvalida": "La URL de reservas no es válida",
+  "debeDefinirUbicacionBase": "Debés definir una ubicación base",
+  "perfilActualizado": "Perfil actualizado",
+  "errorGuardando": "Error guardando",
+  "errorCargandoPerfil": "Error cargando perfil"
 
   
 }

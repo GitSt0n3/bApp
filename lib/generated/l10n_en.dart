@@ -54,10 +54,10 @@ class SEn extends S {
   String get errorCargandoPerfil => 'Error loading profile';
 
   @override
-  String get ubicacionServiciosDeshabilitados => 'Location services disabled';
+  String get ubicacionServiciosDeshabilitados => 'Location services are disabled';
 
   @override
-  String get ubicacionNoSePudoObtener => 'Could not get location:';
+  String get ubicacionNoSePudoObtener => 'Couldn\'t get your location';
 
   @override
   String ubicacionLatLngFmt(Object lat, Object lng) {
@@ -65,16 +65,16 @@ class SEn extends S {
   }
 
   @override
-  String get urlReservasInvalida => 'Invalid booking URL';
+  String get urlReservasInvalida => 'The booking URL is not valid';
 
   @override
-  String get debeDefinirUbicacionBase => 'To offer home service, define your base location';
+  String get debeDefinirUbicacionBase => 'You must set a base location';
 
   @override
   String get perfilActualizado => 'Profile updated';
 
   @override
-  String get errorGuardando => 'Error saving:';
+  String get errorGuardando => 'Error saving';
 
   @override
   String get ofrezcoDomicilio => 'I offer home service';
@@ -87,4 +87,70 @@ class SEn extends S {
 
   @override
   String get direccionLugarHolder => 'Street, number, neighborhood…';
+
+  @override
+  String get usarmiubicacionctual => 'Use my current location';
+
+  @override
+  String get selectorMapaPendiente => 'Map selector: pending';
+
+  @override
+  String get elegirEnMapa => 'Pick on map';
+
+  @override
+  String get cambiarEnMapa => 'Change on map';
+
+  @override
+  String get redesSocialesTitulo => 'Social media';
+
+  @override
+  String get instagramLabel => 'Instagram';
+
+  @override
+  String get instagramHint => 'https://instagram.com/my_username';
+
+  @override
+  String get whatsappLabel => 'WhatsApp';
+
+  @override
+  String get whatsappHint => '+5989xxxxxxx';
+
+  @override
+  String get facebookLabel => 'Facebook';
+
+  @override
+  String get facebookHint => 'https://facebook.com/my_page';
+
+  @override
+  String get tiktokLabel => 'TikTok';
+
+  @override
+  String get tiktokHint => 'https://www.tiktok.com/@my_username';
+
+  @override
+  String get appReservasTitulo => 'Booking app';
+
+  @override
+  String get proveedorLabel => 'Provider';
+
+  @override
+  String get proveedorNinguna => 'None';
+
+  @override
+  String get proveedorWeiBook => 'WeiBook';
+
+  @override
+  String get proveedorOtra => 'Other';
+
+  @override
+  String get urlReservasLabel => 'Booking URL';
+
+  @override
+  String get urlReservasHintWeiBook => 'https://weibook.uy/your_barber';
+
+  @override
+  String get urlReservasHintOtra => 'https://my-bookings.com/user';
+
+  @override
+  String get guardarBtn => 'Save';
 }

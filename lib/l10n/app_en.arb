@@ -25,5 +25,41 @@
   "ofrezcoDomicilio": "I offer home service",
   "direccionBaseLabel": "Base address (optional)",
   "radioKm": "Radius (km):",
-  "direccionLugarHolder": "Street, number, neighborhood…"
+  "direccionLugarHolder": "Street, number, neighborhood…",
+  "usarmiubicacionctual": "Use my current location",
+  "selectorMapaPendiente": "Map selector: pending",
+
+  "elegirEnMapa": "Pick on map",
+  "cambiarEnMapa": "Change on map",
+
+
+  "redesSocialesTitulo": "Social media",
+  "instagramLabel": "Instagram",
+  "instagramHint": "https://instagram.com/my_username",
+  "whatsappLabel": "WhatsApp",
+  "whatsappHint": "+5989xxxxxxx",
+  "facebookLabel": "Facebook",
+  "facebookHint": "https://facebook.com/my_page",
+  "tiktokLabel": "TikTok",
+  "tiktokHint": "https://www.tiktok.com/@my_username",
+
+  "appReservasTitulo": "Booking app",
+  "proveedorLabel": "Provider",
+  "proveedorNinguna": "None",
+  "proveedorWeiBook": "WeiBook",
+  "proveedorOtra": "Other",
+
+  "urlReservasLabel": "Booking URL",
+  "urlReservasHintWeiBook": "https://weibook.uy/your_barber",
+  "urlReservasHintOtra": "https://my-bookings.com/user",
+
+  "guardarBtn": "Save",
+
+  "ubicacionServiciosDeshabilitados": "Location services are disabled",
+  "ubicacionNoSePudoObtener": "Couldn't get your location",
+  "urlReservasInvalida": "The booking URL is not valid",
+  "debeDefinirUbicacionBase": "You must set a base location",
+  "perfilActualizado": "Profile updated",
+  "errorGuardando": "Error saving",
+  "errorCargandoPerfil": "Error loading profile"
 }
