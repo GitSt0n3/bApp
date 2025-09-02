@@ -246,4 +246,43 @@ class SEn extends S {
 
   @override
   String get seleccionaUbicacion => 'Select location';
+
+  @override
+  String get seleccionaBarberiaODomicilio => 'Select a barbershop or choose \"Home service\".';
+
+  @override
+  String get duracionMinima30 => 'Minimum duration is 30 minutes.';
+
+  @override
+  String get diasEntre1y31 => 'Days must be between 1 and 31.';
+
+  @override
+  String get tramoHorarioInsuficiente => 'The daily time window isn\'t long enough for an appointment.';
+
+  @override
+  String get turnosGeneradosOk => 'Time slots generated 👌';
+
+  @override
+  String get generarTurnosTitulo => 'Generate time slots';
+
+  @override
+  String get barberia => 'Barbershop';
+
+  @override
+  String get horaInicio => 'Start';
+
+  @override
+  String get horaFin => 'End';
+
+  @override
+  String get duracionTurnoMin => 'Slot duration (min)';
+
+  @override
+  String get diasAGenerarLabel => 'Days to generate (1–31)';
+
+  @override
+  String get diasAGenerarHelper => 'Maximum 31 days to match monthly subscription';
+
+  @override
+  String get generar => 'Generate';
 }

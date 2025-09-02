@@ -93,7 +93,21 @@
 "direccion": "Dirección",
 "seleccionaEnMapa": "Seleccioná en el mapa",
 "crear": "Crear",
-"seleccionaUbicacion": "Seleccioná ubicación"
+"seleccionaUbicacion": "Seleccioná ubicación",
+"seleccionaBarberiaODomicilio": "Seleccioná una barbería o marcá \"A domicilio\".",
+"duracionMinima30": "La duración mínima es 30 minutos.",
+"diasEntre1y31": "Los días deben estar entre 1 y 31.",
+"tramoHorarioInsuficiente": "El tramo horario diario no alcanza para un turno.",
+"turnosGeneradosOk": "Turnos generados 👌",
+"generarTurnosTitulo": "Generar turnos",
+"barberia": "Barberia",
+"horaInicio": "Inicio",
+"horaFin": "Fin",
+"duracionTurnoMin": "Duración del turno (min)",
+"diasAGenerarLabel": "Días a generar (1-31)",
+"diasAGenerarHelper": "Máximo 31 días para controlar la suscripción mensual",
+"generar": "Generar"
 
-  
+
+ 
 }

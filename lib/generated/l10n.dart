@@ -568,6 +568,84 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Select location'**
   String get seleccionaUbicacion;
+
+  /// No description provided for @seleccionaBarberiaODomicilio.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a barbershop or choose \"Home service\".'**
+  String get seleccionaBarberiaODomicilio;
+
+  /// No description provided for @duracionMinima30.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum duration is 30 minutes.'**
+  String get duracionMinima30;
+
+  /// No description provided for @diasEntre1y31.
+  ///
+  /// In en, this message translates to:
+  /// **'Days must be between 1 and 31.'**
+  String get diasEntre1y31;
+
+  /// No description provided for @tramoHorarioInsuficiente.
+  ///
+  /// In en, this message translates to:
+  /// **'The daily time window isn\'t long enough for an appointment.'**
+  String get tramoHorarioInsuficiente;
+
+  /// No description provided for @turnosGeneradosOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Time slots generated 👌'**
+  String get turnosGeneradosOk;
+
+  /// No description provided for @generarTurnosTitulo.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate time slots'**
+  String get generarTurnosTitulo;
+
+  /// No description provided for @barberia.
+  ///
+  /// In en, this message translates to:
+  /// **'Barbershop'**
+  String get barberia;
+
+  /// No description provided for @horaInicio.
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get horaInicio;
+
+  /// No description provided for @horaFin.
+  ///
+  /// In en, this message translates to:
+  /// **'End'**
+  String get horaFin;
+
+  /// No description provided for @duracionTurnoMin.
+  ///
+  /// In en, this message translates to:
+  /// **'Slot duration (min)'**
+  String get duracionTurnoMin;
+
+  /// No description provided for @diasAGenerarLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Days to generate (1–31)'**
+  String get diasAGenerarLabel;
+
+  /// No description provided for @diasAGenerarHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum 31 days to match monthly subscription'**
+  String get diasAGenerarHelper;
+
+  /// No description provided for @generar.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate'**
+  String get generar;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

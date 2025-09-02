@@ -92,9 +92,22 @@
   "direccion": "Address",
   "seleccionaEnMapa": "Select on the map",
   "crear": "Create",
-  "seleccionaUbicacion": "Select location"
+  "seleccionaUbicacion": "Select location",
 
 
+  "seleccionaBarberiaODomicilio": "Select a barbershop or choose \"Home service\".",
+  "duracionMinima30": "Minimum duration is 30 minutes.",
+  "diasEntre1y31": "Days must be between 1 and 31.",
+  "tramoHorarioInsuficiente": "The daily time window isn't long enough for an appointment.",
+  "turnosGeneradosOk": "Time slots generated 👌",
+  "generarTurnosTitulo": "Generate time slots",
+  "barberia": "Barbershop",
+  "horaInicio": "Start",
+  "horaFin": "End",
+  "duracionTurnoMin": "Slot duration (min)",
+  "diasAGenerarLabel": "Days to generate (1–31)",
+  "diasAGenerarHelper": "Maximum 31 days to match monthly subscription",
+  "generar": "Generate"
 
 
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:barberiapp/generated/l10n.dart';
 
 class PantallaGenerarTurnos extends StatefulWidget {
   const PantallaGenerarTurnos({super.key});
@@ -14,9 +15,9 @@ class _PantallaGenerarTurnosState extends State<PantallaGenerarTurnos> {
   bool _esDomicilio = false;
   int? _barbershopId; // null si es a domicilio
   TimeOfDay _inicio = const TimeOfDay(hour: 9, minute: 0);
-  TimeOfDay _fin    = const TimeOfDay(hour: 18, minute: 0);
+  TimeOfDay _fin = const TimeOfDay(hour: 18, minute: 0);
   int _duracion = 30; // >= 30
-  int _dias = 14;     // 1..31
+  int _dias = 14; // 1..31
   bool _loading = false;
 
   List<Map<String, dynamic>> _misBarberias = [];
@@ -48,7 +49,9 @@ class _PantallaGenerarTurnosState extends State<PantallaGenerarTurnos> {
           .from('barbershops')
           .select('id,name')
           .order('name');
-      setState(() => _misBarberias = (rows as List).cast<Map<String, dynamic>>());
+      setState(
+        () => _misBarberias = (rows as List).cast<Map<String, dynamic>>(),
+      );
     }
   }
 
@@ -68,28 +71,30 @@ class _PantallaGenerarTurnosState extends State<PantallaGenerarTurnos> {
   Future<void> _generar() async {
     // Validaciones UI
     if (!_esDomicilio && _barbershopId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Selecciona una barbería o marca "A domicilio".')),
-      );
+      final loc = S.of(context)!;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(loc.seleccionaBarberiaODomicilio)));
       return;
     }
     if (_duracion < 30) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('La duración mínima es 30 minutos.')),
-      );
+      final loc = S.of(context)!;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(loc.duracionMinima30)));
       return;
     }
     if (_dias < 1 || _dias > 31) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Los días deben estar entre 1 y 31.')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(S.of(context)!.diasEntre1y31)));
       return;
     }
     final iniMins = _inicio.hour * 60 + _inicio.minute;
     final finMins = _fin.hour * 60 + _fin.minute;
     if (finMins - iniMins < _duracion) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('El tramo horario diario no alcanza para un turno.')),
+        SnackBar(content: Text(S.of(context)!.tramoHorarioInsuficiente)),
       );
       return;
     }
@@ -102,23 +107,27 @@ class _PantallaGenerarTurnosState extends State<PantallaGenerarTurnos> {
         'p_barber': uid,
         'p_shop': _esDomicilio ? null : _barbershopId,
         'p_service': null, // opcional si luego agregamos servicios
-        'p_day_start': _fmt(_inicio),  // 'HH:mm'
+        'p_day_start': _fmt(_inicio), // 'HH:mm'
         'p_day_end': _fmt(_fin),
-        'p_minutes': _duracion,        // >= 30
-        'p_days': _dias,               // <= 31
+        'p_minutes': _duracion, // >= 30
+        'p_days': _dias, // <= 31
       };
 
       await _supa.rpc('generate_slots', params: params);
 
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Turnos generados 👌')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(S.of(context)!.turnosGeneradosOk)));
       Navigator.pop(context, true); // -> para refrescar la lista
     } on PostgrestException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.message)));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.message)));
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error: $e')));
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -127,28 +136,32 @@ class _PantallaGenerarTurnosState extends State<PantallaGenerarTurnos> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Generar turnos')),
+      appBar: AppBar(title: Text(S.of(context)!.generarTurnosTitulo)),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
           SwitchListTile(
-            title: const Text('A domicilio'),
+            title: Text(S.of(context)!.aDomicilio),
             value: _esDomicilio,
-            onChanged: (v) => setState(() {
-              _esDomicilio = v;
-              if (v) _barbershopId = null;
-            }),
+            onChanged:
+                (v) => setState(() {
+                  _esDomicilio = v;
+                  if (v) _barbershopId = null;
+                }),
           ),
           if (!_esDomicilio)
             DropdownButtonFormField<int>(
-              decoration: const InputDecoration(labelText: 'Barbería'),
+              decoration: InputDecoration(labelText: S.of(context)!.barberia),
               value: _barbershopId,
-              items: _misBarberias
-                  .map((s) => DropdownMenuItem(
-                        value: s['id'] as int,
-                        child: Text(s['name'] as String),
-                      ))
-                  .toList(),
+              items:
+                  _misBarberias
+                      .map(
+                        (s) => DropdownMenuItem(
+                          value: s['id'] as int,
+                          child: Text(s['name'] as String),
+                        ),
+                      )
+                      .toList(),
               onChanged: (v) => setState(() => _barbershopId = v),
             ),
           const SizedBox(height: 12),
@@ -157,7 +170,7 @@ class _PantallaGenerarTurnosState extends State<PantallaGenerarTurnos> {
               Expanded(
                 child: ListTile(
                   contentPadding: EdgeInsets.zero,
-                  title: const Text('Inicio'),
+                  title: Text(S.of(context)!.horaInicio),
                   subtitle: Text(_fmt(_inicio)),
                   trailing: const Icon(Icons.schedule),
                   onTap: _pickHoraInicio,
@@ -167,7 +180,7 @@ class _PantallaGenerarTurnosState extends State<PantallaGenerarTurnos> {
               Expanded(
                 child: ListTile(
                   contentPadding: EdgeInsets.zero,
-                  title: const Text('Fin'),
+                  title: Text(S.of(context)!.horaFin),
                   subtitle: Text(_fmt(_fin)),
                   trailing: const Icon(Icons.schedule),
                   onTap: _pickHoraFin,
@@ -177,18 +190,22 @@ class _PantallaGenerarTurnosState extends State<PantallaGenerarTurnos> {
           ),
           const SizedBox(height: 12),
           DropdownButtonFormField<int>(
-            decoration: const InputDecoration(labelText: 'Duración del turno (min)'),
+            decoration: InputDecoration(
+              labelText: S.of(context)!.duracionTurnoMin,
+            ),
             value: _duracion,
-            items: const [30, 45, 60, 90, 120]
-                .map((m) => DropdownMenuItem(value: m, child: Text('$m')))
-                .toList(),
+            items:
+                const [30, 45, 60, 90, 120]
+                    .map((m) => DropdownMenuItem(value: m, child: Text('$m')))
+                    .toList(),
             onChanged: (v) => setState(() => _duracion = v ?? 30),
           ),
           const SizedBox(height: 12),
           TextFormField(
-            decoration: const InputDecoration(
-              labelText: 'Días a generar (1-31)',
-              helperText: 'Máximo 31 días para controlar la suscripción mensual',
+            decoration: InputDecoration(
+              labelText: S.of(context)!.diasAGenerarLabel,//"Días a generar (1-31)",
+              helperText:
+                  S.of(context)!.diasAGenerarHelper, //Máximo 31 días para controlar la suscripción mensual",
             ),
             initialValue: '14',
             keyboardType: TextInputType.number,
@@ -200,10 +217,15 @@ class _PantallaGenerarTurnosState extends State<PantallaGenerarTurnos> {
           const SizedBox(height: 24),
           FilledButton.icon(
             onPressed: _loading ? null : _generar,
-            icon: _loading
-                ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
-                : const Icon(Icons.auto_fix_high),
-            label: const Text('Generar'),
+            icon:
+                _loading
+                    ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                    : const Icon(Icons.auto_fix_high),
+            label: Text(S.of(context)!.generar),
           ),
         ],
       ),

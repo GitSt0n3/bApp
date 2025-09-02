@@ -246,4 +246,43 @@ class SEs extends S {
 
   @override
   String get seleccionaUbicacion => 'Seleccioná ubicación';
+
+  @override
+  String get seleccionaBarberiaODomicilio => 'Seleccioná una barbería o marcá \"A domicilio\".';
+
+  @override
+  String get duracionMinima30 => 'La duración mínima es 30 minutos.';
+
+  @override
+  String get diasEntre1y31 => 'Los días deben estar entre 1 y 31.';
+
+  @override
+  String get tramoHorarioInsuficiente => 'El tramo horario diario no alcanza para un turno.';
+
+  @override
+  String get turnosGeneradosOk => 'Turnos generados 👌';
+
+  @override
+  String get generarTurnosTitulo => 'Generar turnos';
+
+  @override
+  String get barberia => 'Barberia';
+
+  @override
+  String get horaInicio => 'Inicio';
+
+  @override
+  String get horaFin => 'Fin';
+
+  @override
+  String get duracionTurnoMin => 'Duración del turno (min)';
+
+  @override
+  String get diasAGenerarLabel => 'Días a generar (1-31)';
+
+  @override
+  String get diasAGenerarHelper => 'Máximo 31 días para controlar la suscripción mensual';
+
+  @override
+  String get generar => 'Generar';
 }
