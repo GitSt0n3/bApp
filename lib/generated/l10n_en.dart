@@ -57,10 +57,10 @@ class SEn extends S {
   String get errorCargandoBarberia => 'Error loading barbershop';
 
   @override
-  String get ubicacionServiciosDeshabilitados => 'Location services are disabled';
+  String get ubicacionServiciosDeshabilitados => 'Location services disabled';
 
   @override
-  String get ubicacionNoSePudoObtener => 'Couldn\'t get your location';
+  String get ubicacionNoSePudoObtener => 'Could not get location:';
 
   @override
   String ubicacionLatLngFmt(Object lat, Object lng) {
@@ -68,16 +68,16 @@ class SEn extends S {
   }
 
   @override
-  String get urlReservasInvalida => 'The booking URL is not valid';
+  String get urlReservasInvalida => 'Invalid booking URL';
 
   @override
-  String get debeDefinirUbicacionBase => 'You must set a base location';
+  String get debeDefinirUbicacionBase => 'To offer home service, define your base location';
 
   @override
   String get perfilActualizado => 'Profile updated';
 
   @override
-  String get errorGuardando => 'Error saving';
+  String get errorGuardando => 'Error saving:';
 
   @override
   String get ofrezcoDomicilio => 'I offer home service';

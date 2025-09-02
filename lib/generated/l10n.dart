@@ -194,13 +194,13 @@ abstract class S {
   /// No description provided for @ubicacionServiciosDeshabilitados.
   ///
   /// In en, this message translates to:
-  /// **'Location services are disabled'**
+  /// **'Location services disabled'**
   String get ubicacionServiciosDeshabilitados;
 
   /// No description provided for @ubicacionNoSePudoObtener.
   ///
   /// In en, this message translates to:
-  /// **'Couldn\'t get your location'**
+  /// **'Could not get location:'**
   String get ubicacionNoSePudoObtener;
 
   /// No description provided for @ubicacionLatLngFmt.
@@ -212,13 +212,13 @@ abstract class S {
   /// No description provided for @urlReservasInvalida.
   ///
   /// In en, this message translates to:
-  /// **'The booking URL is not valid'**
+  /// **'Invalid booking URL'**
   String get urlReservasInvalida;
 
   /// No description provided for @debeDefinirUbicacionBase.
   ///
   /// In en, this message translates to:
-  /// **'You must set a base location'**
+  /// **'To offer home service, define your base location'**
   String get debeDefinirUbicacionBase;
 
   /// No description provided for @perfilActualizado.
@@ -230,7 +230,7 @@ abstract class S {
   /// No description provided for @errorGuardando.
   ///
   /// In en, this message translates to:
-  /// **'Error saving'**
+  /// **'Error saving:'**
   String get errorGuardando;
 
   /// No description provided for @ofrezcoDomicilio.

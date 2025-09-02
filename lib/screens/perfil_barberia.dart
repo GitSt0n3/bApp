@@ -109,8 +109,8 @@ class _PantallaPerfilBarberiaState extends State<PantallaPerfilBarberia> {
     }
     if (_shop == null) {
       return Scaffold(
-        //body: Center(child: Text(S.of(context)!.barberiaNoEncontrada)),
-          body: Center(child: Text('Barberia no encontrada.')),
+        body: Center(child: Text(S.of(context)!.barberiaNoEncontrada)),
+        //  body: Center(child: Text('Barberia no encontrada.')),
       );
     }
 

@@ -57,13 +57,7 @@
   "urlReservasHintWeiBook": "https://weibook.uy/your_barber",
   "urlReservasHintOtra": "https://my-bookings.com/user",
 
-  "guardarBtn": "Save",
+  "guardarBtn": "Save"
 
-  "ubicacionServiciosDeshabilitados": "Location services are disabled",
-  "ubicacionNoSePudoObtener": "Couldn't get your location",
-  "urlReservasInvalida": "The booking URL is not valid",
-  "debeDefinirUbicacionBase": "You must set a base location",
-  "perfilActualizado": "Profile updated",
-  "errorGuardando": "Error saving",
-  "errorCargandoPerfil": "Error loading profile"
+
 }
