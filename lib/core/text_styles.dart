@@ -29,7 +29,7 @@ class TextStyles {
   );
 
   static final TextStyle subtitleText = GoogleFonts.fruktur(
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: FontWeight.w500,
     color: const Color(0xC5EEE6E6),
   );

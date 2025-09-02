@@ -448,5 +448,5 @@ class SEs extends S {
   }
 
   @override
-  String get barberosSeccionTitulo => 'Bareros';
+  String get barberosSeccionTitulo => 'Barberos';
 }
