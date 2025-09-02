@@ -185,6 +185,12 @@ abstract class S {
   /// **'Error loading profile'**
   String get errorCargandoPerfil;
 
+  /// No description provided for @errorCargandoBarberia.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading barbershop'**
+  String get errorCargandoBarberia;
+
   /// No description provided for @ubicacionServiciosDeshabilitados.
   ///
   /// In en, this message translates to:
@@ -262,6 +268,24 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Map selector: pending'**
   String get selectorMapaPendiente;
+
+  /// No description provided for @barberiaNoEncontrada.
+  ///
+  /// In en, this message translates to:
+  /// **'Barbershop not found'**
+  String get barberiaNoEncontrada;
+
+  /// No description provided for @reservarExterno.
+  ///
+  /// In en, this message translates to:
+  /// **'Book (external)'**
+  String get reservarExterno;
+
+  /// No description provided for @verServicios.
+  ///
+  /// In en, this message translates to:
+  /// **'View Services'**
+  String get verServicios;
 
   /// No description provided for @elegirEnMapa.
   ///

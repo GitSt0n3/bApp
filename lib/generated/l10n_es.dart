@@ -54,6 +54,9 @@ class SEs extends S {
   String get errorCargandoPerfil => 'Error cargando perfil';
 
   @override
+  String get errorCargandoBarberia => 'Error cargando barberia';
+
+  @override
   String get ubicacionServiciosDeshabilitados => 'Los servicios de ubicación están deshabilitados';
 
   @override
@@ -93,6 +96,15 @@ class SEs extends S {
 
   @override
   String get selectorMapaPendiente => 'Selector de mapa: pendiente';
+
+  @override
+  String get barberiaNoEncontrada => 'Barbería no encontrada';
+
+  @override
+  String get reservarExterno => 'Reservar (externo)';
+
+  @override
+  String get verServicios => 'Ver Servicios';
 
   @override
   String get elegirEnMapa => 'Elegir en mapa';

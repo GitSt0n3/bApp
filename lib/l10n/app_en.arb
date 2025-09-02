@@ -15,6 +15,7 @@
   "noHayServiciosDisponibles": "No services available",
   "errorCargandoServicios": "Error loading services:",
   "errorCargandoPerfil": "Error loading profile",
+  "errorCargandoBarberia": "Error loading barbershop",
   "ubicacionServiciosDeshabilitados": "Location services disabled",
   "ubicacionNoSePudoObtener": "Could not get location:",
   "ubicacionLatLngFmt": "Lat {lat}, Lng {lng}",
@@ -28,6 +29,9 @@
   "direccionLugarHolder": "Street, number, neighborhood…",
   "usarmiubicacionctual": "Use my current location",
   "selectorMapaPendiente": "Map selector: pending",
+  "barberiaNoEncontrada": "Barbershop not found",
+  "reservarExterno": "Book (external)",
+  "verServicios": "View Services",
 
   "elegirEnMapa": "Pick on map",
   "cambiarEnMapa": "Change on map",

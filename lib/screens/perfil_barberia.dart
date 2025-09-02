@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import '../generated/l10n.dart';
 
 class PantallaPerfilBarberia extends StatefulWidget {
   final int barbershopId;
@@ -68,13 +69,14 @@ class _PantallaPerfilBarberiaState extends State<PantallaPerfilBarberia> {
       // Para depurar rápido en consola y mostrar algo en UI
       debugPrint('Supabase error: $e\n$st');
       if (!mounted) return;
+      final loc = S.of(context)!;
       setState(() {
         _shop = null;
         _loading = false;
       });
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error cargando la barbería: $e')),
+          SnackBar(content: Text('${loc.errorCargandoBarberia} $e')),
         );
       }
     }
@@ -106,8 +108,8 @@ class _PantallaPerfilBarberiaState extends State<PantallaPerfilBarberia> {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
     if (_shop == null) {
-      return const Scaffold(
-        body: Center(child: Text('Barbería no encontrada')),
+      return Scaffold(
+        body: Center(child: Text(loc.barberiaNoEncontrada)),
       );
     }
 
@@ -195,10 +197,10 @@ class _PantallaPerfilBarberiaState extends State<PantallaPerfilBarberia> {
                     ),
                     label: const Text("WhatsApp"),
                   ),
-              if (ext != null && ext.isNotEmpty)
+              if (ext != null && ext.isNotEmpty)              
                 OutlinedButton.icon(
                   icon: const Icon(Icons.link),
-                  label: const Text('Reservar (externo)'),
+                  label: Text(S.of(context)!.reservarExterno),
                   onPressed: () => _openUrl(ext),
                 ),
             ],
@@ -208,7 +210,7 @@ class _PantallaPerfilBarberiaState extends State<PantallaPerfilBarberia> {
           // CTA: Ver servicios (filtrados por esta barbería)
           FilledButton.icon(
             icon: const Icon(Icons.design_services),
-            label: const Text('Ver Servicios'),
+            label: Text(S.of(context)!.verServicios),
             onPressed: () {
               context.push(
                 '/servicios',

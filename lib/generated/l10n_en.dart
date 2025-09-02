@@ -54,6 +54,9 @@ class SEn extends S {
   String get errorCargandoPerfil => 'Error loading profile';
 
   @override
+  String get errorCargandoBarberia => 'Error loading barbershop';
+
+  @override
   String get ubicacionServiciosDeshabilitados => 'Location services are disabled';
 
   @override
@@ -93,6 +96,15 @@ class SEn extends S {
 
   @override
   String get selectorMapaPendiente => 'Map selector: pending';
+
+  @override
+  String get barberiaNoEncontrada => 'Barbershop not found';
+
+  @override
+  String get reservarExterno => 'Book (external)';
+
+  @override
+  String get verServicios => 'View Services';
 
   @override
   String get elegirEnMapa => 'Pick on map';
