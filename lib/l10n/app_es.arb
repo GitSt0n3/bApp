@@ -177,9 +177,9 @@
 "chooseBarbershop": "Elegí una barbería",
 "allMyBarbershops": "Todas mis barberías",
 "noBarbershopsMember": "No sos miembro de barberías",
-"invalidAmount": "Monto inválido"
+"invalidAmount": "Monto inválido",
 
-
+ "waMensajeOrigenApp": "Hola, vengo de {appName}."
 
 
 

@@ -441,4 +441,9 @@ class SEs extends S {
 
   @override
   String get invalidAmount => 'Monto inválido';
+
+  @override
+  String waMensajeOrigenApp(Object appName) {
+    return 'Hola, vengo de $appName.';
+  }
 }

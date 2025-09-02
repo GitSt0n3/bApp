@@ -441,4 +441,9 @@ class SEn extends S {
 
   @override
   String get invalidAmount => 'Invalid amount';
+
+  @override
+  String waMensajeOrigenApp(Object appName) {
+    return 'Hi, I’m coming from $appName.';
+  }
 }

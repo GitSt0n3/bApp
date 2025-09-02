@@ -171,8 +171,8 @@
   "chooseBarbershop": "Choose a barbershop",
   "allMyBarbershops": "All my barbershops",
   "noBarbershopsMember": "You are not a member of any barbershop",
-  "invalidAmount": "Invalid amount"
+  "invalidAmount": "Invalid amount",
 
-
+  "waMensajeOrigenApp": "Hi, I’m coming from {appName}."
 
 }

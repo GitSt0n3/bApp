@@ -1,12 +1,15 @@
 // pubspec.yaml: url_launcher
 // flutter pub add url_launcher
 
+import 'package:barberiapp/core/button_styles.dart';
+import 'package:barberiapp/core/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import '../generated/l10n.dart';
+
 //test
 class PantallaPerfilBarberia extends StatefulWidget {
   final int barbershopId;
@@ -90,10 +93,8 @@ class _PantallaPerfilBarberiaState extends State<PantallaPerfilBarberia> {
   }
 
   Future<void> _openWhatsApp(String e164) async {
-    final url = _waUrl(
-      e164,
-      msg: 'Hola, vengo de BarberiApp. ¿Tienen turnos esta semana?',
-    );
+    final loc = S.of(context)!;
+    final url = _waUrl(e164, msg: loc.waMensajeOrigenApp('BarberiApp'));
     await _openUrl(url);
   }
 
@@ -104,12 +105,15 @@ class _PantallaPerfilBarberiaState extends State<PantallaPerfilBarberia> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+    final loc = S.of(context)!;
     if (_loading) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
     if (_shop == null) {
       return Scaffold(
-        body: Center(child: Text(S.of(context)!.barberiaNoEncontrada)),
+        body: Center(child: Text(loc.barberiaNoEncontrada)),
         //  body: Center(child: Text('Barberia no encontrada.')),
       );
     }
@@ -123,7 +127,7 @@ class _PantallaPerfilBarberiaState extends State<PantallaPerfilBarberia> {
     final wa = _shop!['owner_whatsapp'] as String?;
 
     return Scaffold(
-      appBar: AppBar(title: Text(name)),
+      appBar: AppBar(title: Text(name, style: TextStyles.tittleText,),),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -135,29 +139,20 @@ class _PantallaPerfilBarberiaState extends State<PantallaPerfilBarberia> {
                 width: 72,
                 height: 72,
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade900,
+                  color: cs.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: const Icon(
-                  Icons.store,
-                  size: 42,
-                  color: Colors.redAccent,
-                ),
+                child: Icon(Icons.store, size: 42, color: cs.primary),
               ),
               const SizedBox(width: 16),
-              Expanded(
-                child: Text(
-                  name,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-              ),
+              Expanded(child: Text(name, style: TextStyles.listTitle)),
             ],
           ),
           if (address != null) ...[
             const SizedBox(height: 8),
             Row(
               children: [
-                const Icon(Icons.location_on, size: 18),
+                Icon(Icons.location_on, size: 18, color: cs.secondary),
                 const SizedBox(width: 6),
                 Expanded(child: Text(address)),
               ],
@@ -210,8 +205,9 @@ class _PantallaPerfilBarberiaState extends State<PantallaPerfilBarberia> {
           const SizedBox(height: 24),
           // CTA: Ver servicios (filtrados por esta barbería)
           FilledButton.icon(
+            style: ButtonStyles.redButton,
             icon: const Icon(Icons.design_services),
-            label: Text(S.of(context)!.verServicios),
+            label: Text(loc.verServicios),
             onPressed: () {
               context.push(
                 '/servicios',
@@ -228,5 +224,60 @@ class _PantallaPerfilBarberiaState extends State<PantallaPerfilBarberia> {
         ],
       ),
     );
+  }
+}
+
+class _SocialButton extends StatelessWidget {
+  final VoidCallback onTap;
+  final String label;
+  final IconData? icon;
+  final Widget? iconWidget;
+  final bool filled;
+
+  const _SocialButton._({
+    required this.onTap,
+    required this.label,
+    this.icon,
+    this.iconWidget,
+    required this.filled,
+  });
+
+  factory _SocialButton.outlined({
+    required VoidCallback onTap,
+    required String label,
+    required IconData icon,
+  }) {
+    return _SocialButton._(
+      onTap: onTap,
+      label: label,
+      icon: icon,
+      filled: false,
+    );
+  }
+
+  factory _SocialButton.filled({
+    required VoidCallback onTap,
+    required String label,
+    IconData? icon,
+    Widget? iconWidget,
+  }) {
+    return _SocialButton._(
+      onTap: onTap,
+      label: label,
+      icon: icon,
+      iconWidget: iconWidget,
+      filled: true,
+    );
+  }
+  @override
+  Widget build(BuildContext context) {
+    final child = iconWidget ?? Icon(icon);
+    return filled
+        ? FilledButton.icon(onPressed: onTap, icon: child, label: Text(label))
+        : OutlinedButton.icon(
+          onPressed: onTap,
+          icon: child,
+          label: Text(label),
+        );
   }
 }

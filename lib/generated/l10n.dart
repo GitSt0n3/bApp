@@ -958,6 +958,12 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Invalid amount'**
   String get invalidAmount;
+
+  /// No description provided for @waMensajeOrigenApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Hi, I’m coming from {appName}.'**
+  String waMensajeOrigenApp(Object appName);
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {
