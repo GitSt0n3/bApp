@@ -10,21 +10,27 @@ class TextStyles {
   static final TextStyle tittleText = GoogleFonts.fruktur(
     color: AppColors.tittleText,
     fontSize: 26,
-    fontWeight: FontWeight.w700
+    fontWeight: FontWeight.w700,
   );
   static final TextStyle buttonText = GoogleFonts.fruktur(
     fontSize: 16,
     fontWeight: FontWeight.w600,
     color: AppColors.buttonText,
   );
-    static final TextStyle defaultText = GoogleFonts.fruktur(
+  static final TextStyle defaultText = GoogleFonts.fruktur(
     fontSize: 16,
     fontWeight: FontWeight.w100,
     color: AppColors.buttonText,
   );
-      static final TextStyle defaultTex_2 = GoogleFonts.fruktur(
+  static final TextStyle defaultTex_2 = GoogleFonts.fruktur(
     fontSize: 16,
     fontWeight: FontWeight.w200,
+    color: const Color(0xC5EEE6E6),
+  );
+
+  static final TextStyle subtitleText = GoogleFonts.fruktur(
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
     color: const Color(0xC5EEE6E6),
   );
   // --- NUEVOS (reutilizables en toda la app) ---

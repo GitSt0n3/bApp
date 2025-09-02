@@ -1,6 +1,7 @@
 // pubspec.yaml: url_launcher
 // flutter pub add url_launcher
 
+import 'package:barberiapp/core/app_colors.dart';
 import 'package:barberiapp/core/button_styles.dart';
 import 'package:barberiapp/core/text_styles.dart';
 import 'package:flutter/material.dart';
@@ -127,7 +128,7 @@ class _PantallaPerfilBarberiaState extends State<PantallaPerfilBarberia> {
     final wa = _shop!['owner_whatsapp'] as String?;
 
     return Scaffold(
-      appBar: AppBar(title: Text(name, style: TextStyles.tittleText,),),
+      appBar: AppBar(title: Text(name, style: TextStyles.tittleText)),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -145,16 +146,16 @@ class _PantallaPerfilBarberiaState extends State<PantallaPerfilBarberia> {
                 child: Icon(Icons.store, size: 42, color: cs.primary),
               ),
               const SizedBox(width: 16),
-              Expanded(child: Text(name, style: TextStyles.listTitle)),
+              Expanded(child: Text(name, style: TextStyles.subtitleText)),
             ],
           ),
           if (address != null) ...[
             const SizedBox(height: 8),
             Row(
               children: [
-                Icon(Icons.location_on, size: 18, color: cs.secondary),
+                Icon(Icons.location_on, size: 18, color: AppColors.accent),
                 const SizedBox(width: 6),
-                Expanded(child: Text(address)),
+                Expanded(child: Text(address, style: TextStyles.listSubtitle)),
               ],
             ),
           ],
@@ -218,7 +219,7 @@ class _PantallaPerfilBarberiaState extends State<PantallaPerfilBarberia> {
 
           const SizedBox(height: 16),
           // Sección Barberos (placeholder MVP)
-          const Text('Barberos', style: TextStyle(fontWeight: FontWeight.bold)),
+          Text(loc.barberosSeccionTitulo, style: TextStyles.listTitle),
           const SizedBox(height: 8),
           const Text('Próximamente: listado de staff con link a su perfil.'),
         ],

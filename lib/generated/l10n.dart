@@ -964,6 +964,12 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Hi, I’m coming from {appName}.'**
   String waMensajeOrigenApp(Object appName);
+
+  /// No description provided for @barberosSeccionTitulo.
+  ///
+  /// In en, this message translates to:
+  /// **'Barbers'**
+  String get barberosSeccionTitulo;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

@@ -446,4 +446,7 @@ class SEs extends S {
   String waMensajeOrigenApp(Object appName) {
     return 'Hola, vengo de $appName.';
   }
+
+  @override
+  String get barberosSeccionTitulo => 'Bareros';
 }

@@ -179,7 +179,8 @@
 "noBarbershopsMember": "No sos miembro de barberías",
 "invalidAmount": "Monto inválido",
 
- "waMensajeOrigenApp": "Hola, vengo de {appName}."
+ "waMensajeOrigenApp": "Hola, vengo de {appName}.",
+ "barberosSeccionTitulo": "Barberos"
 
 
 
