@@ -3,6 +3,7 @@
 
 import 'package:barberiapp/core/app_colors.dart';
 import 'package:barberiapp/core/button_styles.dart';
+import 'package:barberiapp/core/social_button.dart';
 import 'package:barberiapp/core/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -167,10 +168,10 @@ class _PantallaPerfilBarberiaState extends State<PantallaPerfilBarberia> {
             runSpacing: 10,
             children: [
               if (ig != null && ig.isNotEmpty)
-                OutlinedButton.icon(
-                  icon: const Icon(Icons.camera_alt),
-                  label: const Text('Instagram'),
-                  onPressed: () => _openUrl(ig),
+                SocialButton(
+                  icon: FontAwesomeIcons.instagram,
+                  url: ig!,
+                  color: Colors.pinkAccent,
                 ),
               if (fb != null && fb.isNotEmpty)
                 OutlinedButton.icon(
