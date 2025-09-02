@@ -32,6 +32,7 @@
   "barberiaNoEncontrada": "Barbershop not found",
   "reservarExterno": "Book (external)",
   "verServicios": "View Services",
+  "verPerfil": "View Profile",
 
   "elegirEnMapa": "Pick on map",
   "cambiarEnMapa": "Change on map",
@@ -117,5 +118,8 @@
   "configurarMiBarberiaTitulo": "Set up my barbershop",
   "sinBarberiasVinculadas": "You don't have any linked barbershops yet",
   "crearMiBarberia": "Create my barbershop",
-  "solicitarVinculoProximamente": "Request link (coming soon)"
+  "solicitarVinculoProximamente": "Request link (coming soon)",
+
+  "noPudimosCargarBarberias": "Couldn't load barbershops",
+  "verEnMapa": "View on map"
 }

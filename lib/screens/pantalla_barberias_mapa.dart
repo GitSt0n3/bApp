@@ -75,7 +75,7 @@ class _BubblePopup extends StatelessWidget {
               FilledButton.icon(
                 onPressed: onVerPerfil,
                 icon: const Icon(Icons.info),
-                label: const Text('Ver perfil'),
+                label: Text(S.of(context)!.verPerfil),
               ),
             ],
           ),

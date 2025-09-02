@@ -287,6 +287,12 @@ abstract class S {
   /// **'View Services'**
   String get verServicios;
 
+  /// No description provided for @verPerfil.
+  ///
+  /// In en, this message translates to:
+  /// **'View Profile'**
+  String get verPerfil;
+
   /// No description provided for @elegirEnMapa.
   ///
   /// In en, this message translates to:
@@ -700,6 +706,18 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Request link (coming soon)'**
   String get solicitarVinculoProximamente;
+
+  /// No description provided for @noPudimosCargarBarberias.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load barbershops'**
+  String get noPudimosCargarBarberias;
+
+  /// No description provided for @verEnMapa.
+  ///
+  /// In en, this message translates to:
+  /// **'View on map'**
+  String get verEnMapa;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

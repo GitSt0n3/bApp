@@ -107,6 +107,9 @@ class SEs extends S {
   String get verServicios => 'Ver Servicios';
 
   @override
+  String get verPerfil => 'Ver Perfil';
+
+  @override
   String get elegirEnMapa => 'Elegir en mapa';
 
   @override
@@ -312,4 +315,10 @@ class SEs extends S {
 
   @override
   String get solicitarVinculoProximamente => 'Solicitar vínculo (próximamente)';
+
+  @override
+  String get noPudimosCargarBarberias => 'No pudimos cargar las barberías';
+
+  @override
+  String get verEnMapa => 'Ver en mapa';
 }

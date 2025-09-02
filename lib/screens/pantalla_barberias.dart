@@ -79,8 +79,9 @@ class _PantallaBarberiasState extends State<PantallaBarberias> {
     } catch (e) {
       // Manejo simple de error para no romper la UI
       if (mounted) {
+        final loc = S.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('No pudimos cargar las barberías: $e')),
+          SnackBar(content: Text('${loc.noPudimosCargarBarberias}: $e')),
         );
       }
       return [];
@@ -153,7 +154,7 @@ class _PantallaBarberiasState extends State<PantallaBarberias> {
               const SizedBox(height: 12),
               FilledButton.icon(
                 icon: const Icon(Icons.info),
-                label: const Text('Ver perfil'),
+                label: Text(S.of(context)!.verPerfil),
                 onPressed: () {
                   Navigator.of(context).pop();
                   // bar.id es String en tu modelo; la ruta usa :id (int). Hacemos parse seguro.
@@ -169,7 +170,7 @@ class _PantallaBarberiasState extends State<PantallaBarberias> {
               const SizedBox(height: 8),
               OutlinedButton.icon(
                 icon: const Icon(Icons.map),
-                label: const Text('Ver en mapa'),
+                label: Text(S.of(context)!.verEnMapa),
                 onPressed: () {
                   // Si tenés pantalla de mapa, podés pasar la barbería por extra o query
                   // context.push('/mapa', extra: {'focusLat': bar.lat, 'focusLng': bar.lng});
