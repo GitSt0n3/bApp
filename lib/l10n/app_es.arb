@@ -86,8 +86,14 @@
 "contrasenaNoCoincide": "No coincide",
 "ofrezcoDomicilioToggle": "Ofrezco servicio a domicilio",
 "toggleDomicilioHint": "Podrás activarlo/desactivarlo luego",
-"crearCuenta": "Crear cuenta"
+"crearCuenta": "Crear cuenta",
 
+"crearBarberia": "Crear Barberia",
+"nombre": "Nombre",
+"direccion": "Dirección",
+"seleccionaEnMapa": "Seleccioná en el mapa",
+"crear": "Crear",
+"seleccionaUbicacion": "Seleccioná ubicación"
 
   
 }

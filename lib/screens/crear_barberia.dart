@@ -3,7 +3,7 @@ import 'package:latlong2/latlong.dart';
 
 import '../widgets/map_picker.dart';
 import '../services/barbershops_service.dart';
-
+import 'package:barberiapp/generated/l10n.dart';
 
 class CrearBarberiaScreen extends StatefulWidget {
   const CrearBarberiaScreen({super.key});
@@ -39,7 +39,8 @@ class _CrearBarberiaScreenState extends State<CrearBarberiaScreen> {
   Future<void> _submit() async {
     if (!_form.currentState!.validate()) return;
     if (_picked == null) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Seleccioná ubicación')));
+      final loc = S.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(loc.seleccionaUbicacion)));
       return;
     }
     setState(() => _loading = true);
@@ -59,8 +60,9 @@ class _CrearBarberiaScreenState extends State<CrearBarberiaScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = S.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: const Text('Crear barbería')),
+      appBar: AppBar(title: Text(loc.crearBarberia)),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Form(
@@ -69,25 +71,25 @@ class _CrearBarberiaScreenState extends State<CrearBarberiaScreen> {
             children: [
               TextFormField(
                 controller: _nombre,
-                decoration: const InputDecoration(labelText: 'Nombre'),
-                validator: (v) => (v == null || v.isEmpty) ? 'Requerido' : null,
+                decoration:  InputDecoration(labelText: loc.nombre),
+                validator: (v) => (v == null || v.isEmpty) ? loc.requerido : null,
               ),
               const SizedBox(height: 8),
               TextFormField(
                 controller: _direccion,
                 readOnly: true,
                 decoration: InputDecoration(
-                  labelText: 'Dirección',
+                  labelText: loc.direccion,
                   suffixIcon: IconButton(icon: const Icon(Icons.map), onPressed: _pickOnMap),
                 ),
-                validator: (v) => (v == null || v.isEmpty) ? 'Seleccioná en el mapa' : null,
+                validator: (v) => (v == null || v.isEmpty) ? loc.seleccionaEnMapa : null,
               ),
               const Spacer(),
               SizedBox(
                 width: double.infinity,
                 child: FilledButton(
                   onPressed: _loading ? null : _submit,
-                  child: _loading ? const CircularProgressIndicator() : const Text('Crear'),
+                  child: _loading ? const CircularProgressIndicator() : Text(loc.crear),
                 ),
               ),
             ],

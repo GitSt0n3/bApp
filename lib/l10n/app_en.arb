@@ -85,7 +85,15 @@
   "contrasenaNoCoincide": "Doesn't match",
   "ofrezcoDomicilioToggle": "I offer home service",
   "toggleDomicilioHint": "You can enable/disable it later",
-  "crearCuenta": "Create account"
+  "crearCuenta": "Create account",
+
+  "crearBarberia": "Create barbershop",
+  "nombre": "Name",
+  "direccion": "Address",
+  "seleccionaEnMapa": "Select on the map",
+  "crear": "Create",
+  "seleccionaUbicacion": "Select location"
+
 
 
 

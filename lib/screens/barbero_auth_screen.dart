@@ -7,6 +7,7 @@ import '../widgets/map_picker.dart';
 import '../services/auth_Service.dart';
 import 'package:barberiapp/generated/l10n.dart';
 
+
 class BarberAuthScreen extends StatelessWidget {
   const BarberAuthScreen({super.key});
 

@@ -532,6 +532,42 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Create account'**
   String get crearCuenta;
+
+  /// No description provided for @crearBarberia.
+  ///
+  /// In en, this message translates to:
+  /// **'Create barbershop'**
+  String get crearBarberia;
+
+  /// No description provided for @nombre.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get nombre;
+
+  /// No description provided for @direccion.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get direccion;
+
+  /// No description provided for @seleccionaEnMapa.
+  ///
+  /// In en, this message translates to:
+  /// **'Select on the map'**
+  String get seleccionaEnMapa;
+
+  /// No description provided for @crear.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get crear;
+
+  /// No description provided for @seleccionaUbicacion.
+  ///
+  /// In en, this message translates to:
+  /// **'Select location'**
+  String get seleccionaUbicacion;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

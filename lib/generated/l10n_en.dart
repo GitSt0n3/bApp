@@ -228,4 +228,22 @@ class SEn extends S {
 
   @override
   String get crearCuenta => 'Create account';
+
+  @override
+  String get crearBarberia => 'Create barbershop';
+
+  @override
+  String get nombre => 'Name';
+
+  @override
+  String get direccion => 'Address';
+
+  @override
+  String get seleccionaEnMapa => 'Select on the map';
+
+  @override
+  String get crear => 'Create';
+
+  @override
+  String get seleccionaUbicacion => 'Select location';
 }

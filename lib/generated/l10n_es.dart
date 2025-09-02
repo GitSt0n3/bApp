@@ -228,4 +228,22 @@ class SEs extends S {
 
   @override
   String get crearCuenta => 'Crear cuenta';
+
+  @override
+  String get crearBarberia => 'Crear Barberia';
+
+  @override
+  String get nombre => 'Nombre';
+
+  @override
+  String get direccion => 'Dirección';
+
+  @override
+  String get seleccionaEnMapa => 'Seleccioná en el mapa';
+
+  @override
+  String get crear => 'Crear';
+
+  @override
+  String get seleccionaUbicacion => 'Seleccioná ubicación';
 }
