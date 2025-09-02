@@ -285,4 +285,19 @@ class SEs extends S {
 
   @override
   String get generar => 'Generar';
+
+  @override
+  String get panelBarberoTitulo => 'Panel barbero';
+
+  @override
+  String get misBarberias => 'Mis barberías';
+
+  @override
+  String get configurarMiBarberia => 'Configurar mi barbería';
+
+  @override
+  String get turnos => 'Turnos';
+
+  @override
+  String get miPerfil => 'Mi perfil';
 }

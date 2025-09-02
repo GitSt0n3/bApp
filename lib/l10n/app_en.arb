@@ -1,4 +1,4 @@
-{
+  {
   "@@locale": "en",
   "appTitle": "BarberiApp",
   "bienvenida": "Welcome to BarberiApp",
@@ -107,7 +107,12 @@
   "duracionTurnoMin": "Slot duration (min)",
   "diasAGenerarLabel": "Days to generate (1–31)",
   "diasAGenerarHelper": "Maximum 31 days to match monthly subscription",
-  "generar": "Generate"
-
+  "generar": "Generate",
+  "panelBarberoTitulo": "Barber panel",
+  "misBarberias": "My barbershops",
+  "configurarMiBarberia": "Set up my barbershop",
+  "turnos": "Appointments",
+  "miPerfil": "My profile",
+  "cerrarSesion": "Sign out"
 
 }

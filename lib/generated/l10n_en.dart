@@ -285,4 +285,19 @@ class SEn extends S {
 
   @override
   String get generar => 'Generate';
+
+  @override
+  String get panelBarberoTitulo => 'Barber panel';
+
+  @override
+  String get misBarberias => 'My barbershops';
+
+  @override
+  String get configurarMiBarberia => 'Set up my barbershop';
+
+  @override
+  String get turnos => 'Appointments';
+
+  @override
+  String get miPerfil => 'My profile';
 }

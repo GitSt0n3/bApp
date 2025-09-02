@@ -646,6 +646,36 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Generate'**
   String get generar;
+
+  /// No description provided for @panelBarberoTitulo.
+  ///
+  /// In en, this message translates to:
+  /// **'Barber panel'**
+  String get panelBarberoTitulo;
+
+  /// No description provided for @misBarberias.
+  ///
+  /// In en, this message translates to:
+  /// **'My barbershops'**
+  String get misBarberias;
+
+  /// No description provided for @configurarMiBarberia.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up my barbershop'**
+  String get configurarMiBarberia;
+
+  /// No description provided for @turnos.
+  ///
+  /// In en, this message translates to:
+  /// **'Appointments'**
+  String get turnos;
+
+  /// No description provided for @miPerfil.
+  ///
+  /// In en, this message translates to:
+  /// **'My profile'**
+  String get miPerfil;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {
