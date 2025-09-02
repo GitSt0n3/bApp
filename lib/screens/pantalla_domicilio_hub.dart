@@ -9,7 +9,7 @@ class PantallaDomicilioHub extends StatelessWidget {
   const PantallaDomicilioHub({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {    
     final loc = S.of(context)!;
     return Scaffold(
       appBar: AppBar(title: Text(loc.aDomicilio, style: TextStyles.tittleText)),

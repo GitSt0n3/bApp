@@ -287,6 +287,48 @@ abstract class S {
   /// **'View Services'**
   String get verServicios;
 
+  /// No description provided for @newService.
+  ///
+  /// In en, this message translates to:
+  /// **'New service'**
+  String get newService;
+
+  /// No description provided for @serviceHintExample.
+  ///
+  /// In en, this message translates to:
+  /// **'Ej: Corte clásico'**
+  String get serviceHintExample;
+
+  /// No description provided for @enterName.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a name'**
+  String get enterName;
+
+  /// No description provided for @durationMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration (min)'**
+  String get durationMinutes;
+
+  /// No description provided for @priceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Price (UYU)'**
+  String get priceLabel;
+
+  /// No description provided for @enterPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a price'**
+  String get enterPrice;
+
+  /// No description provided for @invalidPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid price'**
+  String get invalidPrice;
+
   /// No description provided for @verPerfil.
   ///
   /// In en, this message translates to:
@@ -766,6 +808,156 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Barbers serving your area'**
   String get homeBarberosDomicilioSubtitle;
+
+  /// No description provided for @servicioGuardado.
+  ///
+  /// In en, this message translates to:
+  /// **'Service saved'**
+  String get servicioGuardado;
+
+  /// No description provided for @noSePudoGuardar.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t save'**
+  String get noSePudoGuardar;
+
+  /// No description provided for @errorDesconocido.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown error'**
+  String get errorDesconocido;
+
+  /// No description provided for @eliminarServicioTitulo.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete service'**
+  String get eliminarServicioTitulo;
+
+  /// No description provided for @eliminarServicioPregunta.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this service?'**
+  String get eliminarServicioPregunta;
+
+  /// No description provided for @cancelar.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancelar;
+
+  /// No description provided for @eliminar.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get eliminar;
+
+  /// No description provided for @activos.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get activos;
+
+  /// No description provided for @activo.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get activo;
+
+  /// No description provided for @inactiveChip.
+  ///
+  /// In en, this message translates to:
+  /// **'Inactive'**
+  String get inactiveChip;
+
+  /// No description provided for @edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get edit;
+
+  /// No description provided for @duplicate.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate'**
+  String get duplicate;
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @vinculacion.
+  ///
+  /// In en, this message translates to:
+  /// **'Linking'**
+  String get vinculacion;
+
+  /// No description provided for @servicioEliminado.
+  ///
+  /// In en, this message translates to:
+  /// **'Service deleted'**
+  String get servicioEliminado;
+
+  /// No description provided for @noSePuedeBorrarTieneCitas.
+  ///
+  /// In en, this message translates to:
+  /// **'Can\'t delete because it has associated appointments. Disable the service to hide it.'**
+  String get noSePuedeBorrarTieneCitas;
+
+  /// No description provided for @noSePudoBorrarPermisoRestriccion.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t delete (permission or constraint)'**
+  String get noSePudoBorrarPermisoRestriccion;
+
+  /// No description provided for @noSePudoBorrar.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t delete'**
+  String get noSePudoBorrar;
+
+  /// No description provided for @integrarGenerarTurnosHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Hook up navigation to \"Generate time slots\"'**
+  String get integrarGenerarTurnosHint;
+
+  /// No description provided for @minutesShort.
+  ///
+  /// In en, this message translates to:
+  /// **'min'**
+  String get minutesShort;
+
+  /// No description provided for @surchargePlus.
+  ///
+  /// In en, this message translates to:
+  /// **'+ Surcharge'**
+  String get surchargePlus;
+
+  /// No description provided for @chooseBarbershop.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a barbershop'**
+  String get chooseBarbershop;
+
+  /// No description provided for @allMyBarbershops.
+  ///
+  /// In en, this message translates to:
+  /// **'All my barbershops'**
+  String get allMyBarbershops;
+
+  /// No description provided for @noBarbershopsMember.
+  ///
+  /// In en, this message translates to:
+  /// **'You are not a member of any barbershop'**
+  String get noBarbershopsMember;
+
+  /// No description provided for @invalidAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid amount'**
+  String get invalidAmount;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

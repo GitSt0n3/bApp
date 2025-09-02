@@ -107,6 +107,27 @@ class SEs extends S {
   String get verServicios => 'Ver Servicios';
 
   @override
+  String get newService => 'Nuevo servicio';
+
+  @override
+  String get serviceHintExample => 'Ej: Corte clásico';
+
+  @override
+  String get enterName => 'Ingresá un nombre';
+
+  @override
+  String get durationMinutes => 'Duración (min)';
+
+  @override
+  String get priceLabel => 'Precio (UYU)';
+
+  @override
+  String get enterPrice => 'Ingresá un precio';
+
+  @override
+  String get invalidPrice => 'Precio inválido';
+
+  @override
   String get verPerfil => 'Ver Perfil';
 
   @override
@@ -345,4 +366,79 @@ class SEs extends S {
 
   @override
   String get homeBarberosDomicilioSubtitle => 'Barberos que atienden en tu zona';
+
+  @override
+  String get servicioGuardado => 'Servicio guardado';
+
+  @override
+  String get noSePudoGuardar => 'No se pudo guardar';
+
+  @override
+  String get errorDesconocido => 'Error desconocido';
+
+  @override
+  String get eliminarServicioTitulo => 'Eliminar servicio';
+
+  @override
+  String get eliminarServicioPregunta => '¿Seguro que querés eliminar este servicio?';
+
+  @override
+  String get cancelar => 'Cancelar';
+
+  @override
+  String get eliminar => 'Eliminar';
+
+  @override
+  String get activos => 'Activos';
+
+  @override
+  String get activo => 'Activo';
+
+  @override
+  String get inactiveChip => 'Inactivo';
+
+  @override
+  String get edit => 'Editar';
+
+  @override
+  String get duplicate => 'Duplicar';
+
+  @override
+  String get delete => 'Borrar';
+
+  @override
+  String get vinculacion => 'Vinculación';
+
+  @override
+  String get servicioEliminado => 'Servicio eliminado';
+
+  @override
+  String get noSePuedeBorrarTieneCitas => 'No se puede borrar porque tiene citas asociadas. Desactivá el servicio para ocultarlo.';
+
+  @override
+  String get noSePudoBorrarPermisoRestriccion => 'No se pudo borrar (permiso o restricción)';
+
+  @override
+  String get noSePudoBorrar => 'No se pudo borrar';
+
+  @override
+  String get integrarGenerarTurnosHint => 'Integrar navegación a \"Generar turnos\"';
+
+  @override
+  String get minutesShort => 'min';
+
+  @override
+  String get surchargePlus => '+ Recargo';
+
+  @override
+  String get chooseBarbershop => 'Elegí una barbería';
+
+  @override
+  String get allMyBarbershops => 'Todas mis barberías';
+
+  @override
+  String get noBarbershopsMember => 'No sos miembro de barberías';
+
+  @override
+  String get invalidAmount => 'Monto inválido';
 }

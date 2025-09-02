@@ -8,7 +8,13 @@
 "irADomicilio": "Barberos a domicilio",
 "soyBarbero": "Soy Barbero",
 "soporte": "Soporte",
+
 "servicios": "Servicios",
+"newService": "Nuevo servicio",
+"serviceHintExample": "Ej: Corte clásico",
+
+"enterName": "Ingresá un nombre",
+
 "buscarServicio": "Buscar servicio o barberia...",
 "aDomicilio": "A domicilio",
 "enBarberia": "A Barberia",
@@ -120,6 +126,7 @@
 "crearMiBarberia": "Crear mi barbería",
 "solicitarVinculoProximamente": "Solicitar vínculo (próximamente)",
 
+
 "noPudimosCargarBarberias": "No pudimos cargar las barberías",
 "verEnMapa": "Ver en mapa",
 
@@ -127,10 +134,53 @@
 "sinBarberosDomicilioCerca": "No hay barberos a domicilio cerca.",
 "distanciaLabel": "Distancia:",
 "recargoDomicilioLabel": "Recargo a domicilio:",
+
 "homeServiciosDomicilioTitle": "Servicios a domicilio",
 "homeServiciosDomicilioSubtitle": "Cortes, afeitado, combos — cerca de tu ubicación",
 "homeBarberosDomicilioTitle": "Barberos a domicilio",
-"homeBarberosDomicilioSubtitle": "Barberos que atienden en tu zona"
+"homeBarberosDomicilioSubtitle": "Barberos que atienden en tu zona",
+
+"priceLabel": "Precio (UYU)",
+"enterPrice": "Ingresá un precio",
+"invalidPrice": "Precio inválido",
+
+"durationMinutes": "Duración (min)",
+"servicioGuardado": "Servicio guardado",
+"noSePudoGuardar": "No se pudo guardar",
+"errorDesconocido": "Error desconocido",
+"eliminarServicioTitulo": "Eliminar servicio",
+"eliminarServicioPregunta": "¿Seguro que querés eliminar este servicio?",
+
+
+"cancelar": "Cancelar",
+"eliminar": "Eliminar",
+"edit": "Editar",
+"activos": "Activos",
+"activo" : "Activo",
+"inactiveChip": "Inactivo",
+"duplicate": "Duplicar",
+"delete": "Borrar",
+"vinculacion" : "Vinculación",
+
+"servicioEliminado": "Servicio eliminado",
+"noSePuedeBorrarTieneCitas": "No se puede borrar porque tiene citas asociadas. Desactivá el servicio para ocultarlo.",
+"noSePudoBorrarPermisoRestriccion": "No se pudo borrar (permiso o restricción)",
+"noSePudoBorrar": "No se pudo borrar",
+"integrarGenerarTurnosHint": "Integrar navegación a \"Generar turnos\"",
+
+
+
+"minutesShort": "min",
+"surchargePlus": "+ Recargo",
+
+
+"chooseBarbershop": "Elegí una barbería",
+"allMyBarbershops": "Todas mis barberías",
+"noBarbershopsMember": "No sos miembro de barberías",
+"invalidAmount": "Monto inválido"
+
+
+
 
 
 }

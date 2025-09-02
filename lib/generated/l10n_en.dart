@@ -107,6 +107,27 @@ class SEn extends S {
   String get verServicios => 'View Services';
 
   @override
+  String get newService => 'New service';
+
+  @override
+  String get serviceHintExample => 'Ej: Corte clásico';
+
+  @override
+  String get enterName => 'Enter a name';
+
+  @override
+  String get durationMinutes => 'Duration (min)';
+
+  @override
+  String get priceLabel => 'Price (UYU)';
+
+  @override
+  String get enterPrice => 'Enter a price';
+
+  @override
+  String get invalidPrice => 'Invalid price';
+
+  @override
   String get verPerfil => 'View Profile';
 
   @override
@@ -345,4 +366,79 @@ class SEn extends S {
 
   @override
   String get homeBarberosDomicilioSubtitle => 'Barbers serving your area';
+
+  @override
+  String get servicioGuardado => 'Service saved';
+
+  @override
+  String get noSePudoGuardar => 'Couldn\'t save';
+
+  @override
+  String get errorDesconocido => 'Unknown error';
+
+  @override
+  String get eliminarServicioTitulo => 'Delete service';
+
+  @override
+  String get eliminarServicioPregunta => 'Are you sure you want to delete this service?';
+
+  @override
+  String get cancelar => 'Cancel';
+
+  @override
+  String get eliminar => 'Delete';
+
+  @override
+  String get activos => 'Active';
+
+  @override
+  String get activo => 'Active';
+
+  @override
+  String get inactiveChip => 'Inactive';
+
+  @override
+  String get edit => 'Edit';
+
+  @override
+  String get duplicate => 'Duplicate';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get vinculacion => 'Linking';
+
+  @override
+  String get servicioEliminado => 'Service deleted';
+
+  @override
+  String get noSePuedeBorrarTieneCitas => 'Can\'t delete because it has associated appointments. Disable the service to hide it.';
+
+  @override
+  String get noSePudoBorrarPermisoRestriccion => 'Couldn\'t delete (permission or constraint)';
+
+  @override
+  String get noSePudoBorrar => 'Couldn\'t delete';
+
+  @override
+  String get integrarGenerarTurnosHint => 'Hook up navigation to \"Generate time slots\"';
+
+  @override
+  String get minutesShort => 'min';
+
+  @override
+  String get surchargePlus => '+ Surcharge';
+
+  @override
+  String get chooseBarbershop => 'Choose a barbershop';
+
+  @override
+  String get allMyBarbershops => 'All my barbershops';
+
+  @override
+  String get noBarbershopsMember => 'You are not a member of any barbershop';
+
+  @override
+  String get invalidAmount => 'Invalid amount';
 }

@@ -31,7 +31,17 @@
   "selectorMapaPendiente": "Map selector: pending",
   "barberiaNoEncontrada": "Barbershop not found",
   "reservarExterno": "Book (external)",
+
   "verServicios": "View Services",
+  "newService": "New service",
+  "serviceHintExample": "Ej: Corte clásico",
+  "enterName": "Enter a name",
+  "durationMinutes": "Duration (min)",
+
+  "priceLabel": "Price (UYU)",
+  "enterPrice": "Enter a price",
+  "invalidPrice": "Invalid price",
+
   "verPerfil": "View Profile",
 
   "elegirEnMapa": "Pick on map",
@@ -131,7 +141,38 @@
   "homeServiciosDomicilioTitle": "Home services",
   "homeServiciosDomicilioSubtitle": "Haircuts, shaving, combos — near your location",
   "homeBarberosDomicilioTitle": "Home barbers",
-  "homeBarberosDomicilioSubtitle": "Barbers serving your area"
+  "homeBarberosDomicilioSubtitle": "Barbers serving your area",
+  "servicioGuardado": "Service saved",
+  "noSePudoGuardar": "Couldn't save",
+  "errorDesconocido": "Unknown error",
+  "eliminarServicioTitulo": "Delete service",
+  "eliminarServicioPregunta": "Are you sure you want to delete this service?",
+
+  "cancelar": "Cancel",
+  "eliminar": "Delete",
+  "activos": "Active",
+  "activo" : "Active",
+  "inactiveChip": "Inactive",
+  "edit": "Edit",
+  "duplicate": "Duplicate",
+  "delete": "Delete",
+  "vinculacion" : "Linking",
+  "servicioEliminado": "Service deleted",
+  "noSePuedeBorrarTieneCitas": "Can't delete because it has associated appointments. Disable the service to hide it.",
+  "noSePudoBorrarPermisoRestriccion": "Couldn't delete (permission or constraint)",
+  "noSePudoBorrar": "Couldn't delete",
+  "integrarGenerarTurnosHint": "Hook up navigation to \"Generate time slots\"",
+  
+
+  
+  "minutesShort": "min",
+  "surchargePlus": "+ Surcharge",
+
+  "chooseBarbershop": "Choose a barbershop",
+  "allMyBarbershops": "All my barbershops",
+  "noBarbershopsMember": "You are not a member of any barbershop",
+  "invalidAmount": "Invalid amount"
+
 
 
 }
