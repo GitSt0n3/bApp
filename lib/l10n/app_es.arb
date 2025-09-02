@@ -1,4 +1,5 @@
 {
+  "@@locale": "es",
   "appTitle": "BarberiApp",
   "bienvenida": "Bienvenido a BarberiApps",
   "irAMapa": "Mapa Barberías",
@@ -50,7 +51,6 @@
   "appReservasTitulo": "App de reservas",
   "proveedorLabel": "Proveedor",
   "proveedorNinguna": "Ninguna",
-  "proveedorWeiBook": "WeiBook",
   "proveedorOtra": "Otra",
 
   "urlReservasLabel": "URL de reservas",

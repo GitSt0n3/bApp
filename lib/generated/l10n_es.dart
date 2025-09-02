@@ -149,9 +149,6 @@ class SEs extends S {
   String get proveedorNinguna => 'Ninguna';
 
   @override
-  String get proveedorWeiBook => 'WeiBook';
-
-  @override
   String get proveedorOtra => 'Otra';
 
   @override

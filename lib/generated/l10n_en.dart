@@ -149,9 +149,6 @@ class SEn extends S {
   String get proveedorNinguna => 'None';
 
   @override
-  String get proveedorWeiBook => 'WeiBook';
-
-  @override
   String get proveedorOtra => 'Other';
 
   @override

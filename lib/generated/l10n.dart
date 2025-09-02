@@ -371,12 +371,6 @@ abstract class S {
   /// **'None'**
   String get proveedorNinguna;
 
-  /// No description provided for @proveedorWeiBook.
-  ///
-  /// In en, this message translates to:
-  /// **'WeiBook'**
-  String get proveedorWeiBook;
-
   /// No description provided for @proveedorOtra.
   ///
   /// In en, this message translates to:
