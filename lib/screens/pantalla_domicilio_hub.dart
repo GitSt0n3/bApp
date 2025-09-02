@@ -3,22 +3,24 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:barberiapp/core/app_colors.dart';
 import 'package:barberiapp/core/text_styles.dart';
+import '../generated/l10n.dart';
 
 class PantallaDomicilioHub extends StatelessWidget {
   const PantallaDomicilioHub({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final loc = S.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: Text('A domicilio', style: TextStyles.tittleText)),
+      appBar: AppBar(title: Text(loc.aDomicilio, style: TextStyles.tittleText)),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             _HomeTile(
               icon: Icons.home_repair_service,
-              title: 'Servicios a domicilio',
-              subtitle: 'Cortes, afeitado, combos — cerca de tu ubicación',
+              title: loc.homeServiciosDomicilioTitle,//'Servicios a domicilio',
+              subtitle: loc.homeServiciosDomicilioSubtitle,//'Cortes, afeitado, combos — cerca de tu ubicación',
               onTap: () {
                 // Abrimos Servicios con el filtro de domicilio ya activo
                 context.push('/servicios_domicilio');
@@ -27,8 +29,8 @@ class PantallaDomicilioHub extends StatelessWidget {
             const SizedBox(height: 16),
             _HomeTile(
               icon: Icons.person_pin_circle,
-              title: 'Barberos a domicilio',
-              subtitle: 'Profesionales que atienden en tu zona',
+              title: loc.homeBarberosDomicilioTitle,//'Barberos a domicilio',
+              subtitle: loc.homeBarberosDomicilioSubtitle,//'Barberos que atienden en tu zona',
               onTap: () {
                 context.push('/barberos_domicilio');
               },

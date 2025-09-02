@@ -718,6 +718,54 @@ abstract class S {
   /// In en, this message translates to:
   /// **'View on map'**
   String get verEnMapa;
+
+  /// No description provided for @errorCargandoBarberosDomicilio.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading home barbers'**
+  String get errorCargandoBarberosDomicilio;
+
+  /// No description provided for @sinBarberosDomicilioCerca.
+  ///
+  /// In en, this message translates to:
+  /// **'No hay barberos a domicilio cerca.'**
+  String get sinBarberosDomicilioCerca;
+
+  /// No description provided for @distanciaLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Distance:'**
+  String get distanciaLabel;
+
+  /// No description provided for @recargoDomicilioLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Home service surcharge:'**
+  String get recargoDomicilioLabel;
+
+  /// No description provided for @homeServiciosDomicilioTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Home services'**
+  String get homeServiciosDomicilioTitle;
+
+  /// No description provided for @homeServiciosDomicilioSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Haircuts, shaving, combos — near your location'**
+  String get homeServiciosDomicilioSubtitle;
+
+  /// No description provided for @homeBarberosDomicilioTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Home barbers'**
+  String get homeBarberosDomicilioTitle;
+
+  /// No description provided for @homeBarberosDomicilioSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Barbers serving your area'**
+  String get homeBarberosDomicilioSubtitle;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

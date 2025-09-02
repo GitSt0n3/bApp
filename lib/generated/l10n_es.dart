@@ -321,4 +321,28 @@ class SEs extends S {
 
   @override
   String get verEnMapa => 'Ver en mapa';
+
+  @override
+  String get errorCargandoBarberosDomicilio => 'Error cargando barberos a domicilio';
+
+  @override
+  String get sinBarberosDomicilioCerca => 'No hay barberos a domicilio cerca.';
+
+  @override
+  String get distanciaLabel => 'Distancia:';
+
+  @override
+  String get recargoDomicilioLabel => 'Recargo a domicilio:';
+
+  @override
+  String get homeServiciosDomicilioTitle => 'Servicios a domicilio';
+
+  @override
+  String get homeServiciosDomicilioSubtitle => 'Cortes, afeitado, combos — cerca de tu ubicación';
+
+  @override
+  String get homeBarberosDomicilioTitle => 'Barberos a domicilio';
+
+  @override
+  String get homeBarberosDomicilioSubtitle => 'Barberos que atienden en tu zona';
 }

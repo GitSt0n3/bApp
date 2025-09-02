@@ -121,5 +121,16 @@
 "solicitarVinculoProximamente": "Solicitar vínculo (próximamente)",
 
 "noPudimosCargarBarberias": "No pudimos cargar las barberías",
-"verEnMapa": "Ver en mapa"
+"verEnMapa": "Ver en mapa",
+
+"errorCargandoBarberosDomicilio": "Error cargando barberos a domicilio",
+"sinBarberosDomicilioCerca": "No hay barberos a domicilio cerca.",
+"distanciaLabel": "Distancia:",
+"recargoDomicilioLabel": "Recargo a domicilio:",
+"homeServiciosDomicilioTitle": "Servicios a domicilio",
+"homeServiciosDomicilioSubtitle": "Cortes, afeitado, combos — cerca de tu ubicación",
+"homeBarberosDomicilioTitle": "Barberos a domicilio",
+"homeBarberosDomicilioSubtitle": "Barberos que atienden en tu zona"
+
+
 }

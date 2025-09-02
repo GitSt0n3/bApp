@@ -321,4 +321,28 @@ class SEn extends S {
 
   @override
   String get verEnMapa => 'View on map';
+
+  @override
+  String get errorCargandoBarberosDomicilio => 'Error loading home barbers';
+
+  @override
+  String get sinBarberosDomicilioCerca => 'No hay barberos a domicilio cerca.';
+
+  @override
+  String get distanciaLabel => 'Distance:';
+
+  @override
+  String get recargoDomicilioLabel => 'Home service surcharge:';
+
+  @override
+  String get homeServiciosDomicilioTitle => 'Home services';
+
+  @override
+  String get homeServiciosDomicilioSubtitle => 'Haircuts, shaving, combos — near your location';
+
+  @override
+  String get homeBarberosDomicilioTitle => 'Home barbers';
+
+  @override
+  String get homeBarberosDomicilioSubtitle => 'Barbers serving your area';
 }

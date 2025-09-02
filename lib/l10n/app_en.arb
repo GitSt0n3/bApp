@@ -121,5 +121,17 @@
   "solicitarVinculoProximamente": "Request link (coming soon)",
 
   "noPudimosCargarBarberias": "Couldn't load barbershops",
-  "verEnMapa": "View on map"
+  "verEnMapa": "View on map",
+
+  "errorCargandoBarberosDomicilio": "Error loading home barbers",
+  "sinBarberosDomicilioCerca": "No hay barberos a domicilio cerca.",
+  "distanciaLabel": "Distance:",
+  "recargoDomicilioLabel": "Home service surcharge:",
+
+  "homeServiciosDomicilioTitle": "Home services",
+  "homeServiciosDomicilioSubtitle": "Haircuts, shaving, combos — near your location",
+  "homeBarberosDomicilioTitle": "Home barbers",
+  "homeBarberosDomicilioSubtitle": "Barbers serving your area"
+
+
 }

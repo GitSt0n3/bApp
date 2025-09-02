@@ -7,8 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
-// Ajusta estos imports a tu proyecto
+import '../generated/l10n.dart';
 import 'package:barberiapp/core/app_colors.dart';
 import 'package:barberiapp/core/text_styles.dart';
 
@@ -94,7 +93,7 @@ class _PantallaBarberosDomicilioState extends State<PantallaBarberosDomicilio> {
       final rowsProfiles = await _supa
           .from('profiles')
           .select('id, full_name')
-          .inFilter('barber_id', barberIds)  
+          .inFilter('barber_id', barberIds)
           .eq('active', true);
 
       final nameById = <String, String>{};
@@ -107,7 +106,10 @@ class _PantallaBarberosDomicilioState extends State<PantallaBarberosDomicilio> {
       final rowsShops = await _supa
           .from('barbershops')
           .select('owner_barber_id, lat, lng')
-          .inFilter('owner_barber_id', barberIds);   // ← antes: .in_('owner_barber_id', barberIds)
+          .inFilter(
+            'owner_barber_id',
+            barberIds,
+          ); // ← antes: .in_('owner_barber_id', barberIds)
 
       final coordsByOwner = <String, (double, double)>{};
       for (final s in (rowsShops as List)) {
@@ -123,7 +125,7 @@ class _PantallaBarberosDomicilioState extends State<PantallaBarberosDomicilio> {
       final rowsServices = await _supa
           .from('services')
           .select('barber_id, home_service_surcharge, active')
-          .inFilter('barber_id', barberIds) 
+          .inFilter('barber_id', barberIds)
           .eq('active', true);
 
       final minSurchargeByBarber = <String, num>{};
@@ -187,8 +189,9 @@ class _PantallaBarberosDomicilioState extends State<PantallaBarberosDomicilio> {
       });
     } catch (e) {
       if (!mounted) return;
+      final loc = S.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error cargando barberos a domicilio: $e')),
+        SnackBar(content: Text('${loc.errorCargandoBarberosDomicilio}: $e')),
       );
       setState(() => _loading = false);
     }
@@ -196,11 +199,15 @@ class _PantallaBarberosDomicilioState extends State<PantallaBarberosDomicilio> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = S.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.appBarbkgs,
       appBar: AppBar(
         backgroundColor: AppColors.appBarbkgs,
-        title: Text('Barberos a domicilio', style: TextStyles.tittleText),
+        title: Text(
+          loc.irADomicilio,
+          style: TextStyles.tittleText,
+        ), // Barberos a Domicilio
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.of(context).maybePop(),
@@ -212,7 +219,9 @@ class _PantallaBarberosDomicilioState extends State<PantallaBarberosDomicilio> {
               : _items.isEmpty
               ? Center(
                 child: Text(
-                  'No hay barberos a domicilio cerca.',
+                  S
+                      .of(context)!
+                      .sinBarberosDomicilioCerca, //'No hay barberos a domicilio cerca.',
                   style: TextStyles.emptyState,
                 ),
               )
@@ -266,6 +275,7 @@ class _BarberoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = S.of(context)!;
     return Material(
       color: AppColors.appBarbkgs,
       child: InkWell(
@@ -300,14 +310,14 @@ class _BarberoCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: TextStyles.defaultTex_2,
                     ),
-                    const SizedBox(height: 4),
+                    SizedBox(height: 4),
                     Text(
-                      'Distancia: $distancia',
+                      '${loc.distanciaLabel} $distancia',
                       style: TextStyles.defaultTex_2,
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      'Recargo a domicilio: $recargo',
+                      '${loc.recargoDomicilioLabel} $recargo',
                       style: TextStyles.defaultTex_2,
                     ),
                   ],
