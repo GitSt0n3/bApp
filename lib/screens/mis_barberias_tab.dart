@@ -3,6 +3,7 @@ import 'package:barberiapp/core/text_styles.dart';
 import '../services/barbershops_service.dart';      // servicio Supabase
 import 'crear_barberia.dart';               // la pantalla de crear
 import 'gestion_staff_screen.dart';
+import 'package:barberiapp/generated/l10n.dart';
 
 
 // Cuando tengas hecha la gestión de staff, descomentá este import:
@@ -25,12 +26,12 @@ class _MisBarberiasTabState extends State<MisBarberiasTab> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Configurar mi barbería')),
+      appBar: AppBar(title: Text(S.of(context)!.configurarMiBarberiaTitulo),),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => Navigator.of(context).push(
           MaterialPageRoute(builder: (_) => const CrearBarberiaScreen()),
         ).then((_) => setState(() => _future = BarbershopsService.misBarberias())),
-        label: const Text('Crear barbería'),
+        label: Text(S.of(context)!.crearBarberia),
         icon: const Icon(Icons.add_business),
       ),
       body: FutureBuilder(
@@ -84,22 +85,23 @@ class _MisBarberiasTabState extends State<MisBarberiasTab> {
   }
 
   Widget _estadoVacio(BuildContext context) {
+    final loc = S.of(context)!;
     return Center(
       child: Column(mainAxisSize: MainAxisSize.min, children: [
-        const Text('Aún no tenés barberías vinculadas'),
+        Text(loc.sinBarberiasVinculadas),
         const SizedBox(height: 12),
         FilledButton(
           onPressed: () => Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => const CrearBarberiaScreen()),
           ).then((_) => setState(() => _future = BarbershopsService.misBarberias())),
-          child: const Text('Crear mi barbería'),
+          child: Text(loc.crearMiBarberia),
         ),
         const SizedBox(height: 8),
         OutlinedButton(
           onPressed: () {
             // (V2) solicitar vínculo a una existente
           },
-          child: const Text('Solicitar vínculo (próximamente)'),
+          child: Text(loc.solicitarVinculoProximamente),
         ),
       ]),
     );

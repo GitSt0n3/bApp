@@ -300,4 +300,16 @@ class SEn extends S {
 
   @override
   String get miPerfil => 'My profile';
+
+  @override
+  String get configurarMiBarberiaTitulo => 'Set up my barbershop';
+
+  @override
+  String get sinBarberiasVinculadas => 'You don\'t have any linked barbershops yet';
+
+  @override
+  String get crearMiBarberia => 'Create my barbershop';
+
+  @override
+  String get solicitarVinculoProximamente => 'Request link (coming soon)';
 }

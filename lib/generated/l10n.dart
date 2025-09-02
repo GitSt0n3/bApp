@@ -676,6 +676,30 @@ abstract class S {
   /// In en, this message translates to:
   /// **'My profile'**
   String get miPerfil;
+
+  /// No description provided for @configurarMiBarberiaTitulo.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up my barbershop'**
+  String get configurarMiBarberiaTitulo;
+
+  /// No description provided for @sinBarberiasVinculadas.
+  ///
+  /// In en, this message translates to:
+  /// **'You don\'t have any linked barbershops yet'**
+  String get sinBarberiasVinculadas;
+
+  /// No description provided for @crearMiBarberia.
+  ///
+  /// In en, this message translates to:
+  /// **'Create my barbershop'**
+  String get crearMiBarberia;
+
+  /// No description provided for @solicitarVinculoProximamente.
+  ///
+  /// In en, this message translates to:
+  /// **'Request link (coming soon)'**
+  String get solicitarVinculoProximamente;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

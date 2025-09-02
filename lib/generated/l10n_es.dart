@@ -300,4 +300,16 @@ class SEs extends S {
 
   @override
   String get miPerfil => 'Mi perfil';
+
+  @override
+  String get configurarMiBarberiaTitulo => 'Configurar mi barbería';
+
+  @override
+  String get sinBarberiasVinculadas => 'Aún no tenés barberías vinculadas';
+
+  @override
+  String get crearMiBarberia => 'Crear mi barbería';
+
+  @override
+  String get solicitarVinculoProximamente => 'Solicitar vínculo (próximamente)';
 }

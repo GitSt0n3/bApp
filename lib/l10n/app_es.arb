@@ -112,5 +112,10 @@
 "configurarMiBarberia": "Configurar mi barbería",
 "turnos": "Turnos",
 "miPerfil": "Mi perfil",
-"cerrarSesion": "Cerrar sesión" 
+"cerrarSesion": "Cerrar sesión",
+
+"configurarMiBarberiaTitulo": "Configurar mi barbería",
+"sinBarberiasVinculadas": "Aún no tenés barberías vinculadas",
+"crearMiBarberia": "Crear mi barbería",
+"solicitarVinculoProximamente": "Solicitar vínculo (próximamente)"
 }

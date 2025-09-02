@@ -113,6 +113,9 @@
   "configurarMiBarberia": "Set up my barbershop",
   "turnos": "Appointments",
   "miPerfil": "My profile",
-  "cerrarSesion": "Sign out"
-
+  "cerrarSesion": "Sign out",
+  "configurarMiBarberiaTitulo": "Set up my barbershop",
+  "sinBarberiasVinculadas": "You don't have any linked barbershops yet",
+  "crearMiBarberia": "Create my barbershop",
+  "solicitarVinculoProximamente": "Request link (coming soon)"
 }
