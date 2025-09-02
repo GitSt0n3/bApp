@@ -159,7 +159,6 @@ class _PantallaTurnosClienteState extends State<PantallaTurnosCliente> {
       ),
       builder: (ctx) {
         final bottom = MediaQuery.of(ctx).viewInsets.bottom;
-        
 
         return DraggableScrollableSheet(
           expand: false,
@@ -251,13 +250,11 @@ class _PantallaTurnosClienteState extends State<PantallaTurnosCliente> {
 
   Future<void> _reservar(_PropuestaTurno p) async {
     try {
-      // Si no hay usuario logueado, pedimos datos y usamos RPC guest
       _ContactoGuest? contacto;
       final user = _supa.auth.currentUser;
-      if (user == null) {
-        contacto = await _pedirContacto();
-        if (contacto == null) return; // canceló
-      }
+
+      contacto = await _pedirContacto();
+      if (contacto == null) return; // canceló
 
       final params = {
         'p_barber': p.barberId,

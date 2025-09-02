@@ -109,7 +109,8 @@ class _PantallaPerfilBarberiaState extends State<PantallaPerfilBarberia> {
     }
     if (_shop == null) {
       return Scaffold(
-        body: Center(child: Text(loc.barberiaNoEncontrada)),
+        //body: Center(child: Text(S.of(context)!.barberiaNoEncontrada)),
+          body: Center(child: Text('Barberia no encontrada.')),
       );
     }
 
@@ -197,10 +198,11 @@ class _PantallaPerfilBarberiaState extends State<PantallaPerfilBarberia> {
                     ),
                     label: const Text("WhatsApp"),
                   ),
-              if (ext != null && ext.isNotEmpty)              
+              if (ext != null && ext.isNotEmpty)
                 OutlinedButton.icon(
                   icon: const Icon(Icons.link),
-                  label: Text(S.of(context)!.reservarExterno),
+                 // label: Text(S.of(context)!.reservarExterno),
+                  label: Text('Reservar (externo)'),
                   onPressed: () => _openUrl(ext),
                 ),
             ],
@@ -210,7 +212,8 @@ class _PantallaPerfilBarberiaState extends State<PantallaPerfilBarberia> {
           // CTA: Ver servicios (filtrados por esta barbería)
           FilledButton.icon(
             icon: const Icon(Icons.design_services),
-            label: Text(S.of(context)!.verServicios),
+            //label: Text(S.of(context)!.verServicios),
+            label: Text('Ver Servicios'),
             onPressed: () {
               context.push(
                 '/servicios',

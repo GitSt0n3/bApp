@@ -57,15 +57,8 @@
   "urlReservasHintWeiBook": "https://weibook.uy/tu_barber",
   "urlReservasHintOtra": "https://mi-reservas.com/usuario",
 
-  "guardarBtn": "Guardar",
+  "guardarBtn": "Guardar"
 
-  "ubicacionServiciosDeshabilitados": "Los servicios de ubicación están deshabilitados",
-  "ubicacionNoSePudoObtener": "No se pudo obtener la ubicación",
-  "urlReservasInvalida": "La URL de reservas no es válida",
-  "debeDefinirUbicacionBase": "Debés definir una ubicación base",
-  "perfilActualizado": "Perfil actualizado",
-  "errorGuardando": "Error guardando",
-  "errorCargandoPerfil": "Error cargando perfil"
 
   
 }

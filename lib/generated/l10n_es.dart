@@ -51,16 +51,16 @@ class SEs extends S {
   String get errorCargandoServicios => 'Error cargando servicios:';
 
   @override
-  String get errorCargandoPerfil => 'Error cargando perfil';
+  String get errorCargandoPerfil => 'Error cargando Perfil';
 
   @override
   String get errorCargandoBarberia => 'Error cargando barberia';
 
   @override
-  String get ubicacionServiciosDeshabilitados => 'Los servicios de ubicación están deshabilitados';
+  String get ubicacionServiciosDeshabilitados => 'Servicios de ubicación deshabilitados';
 
   @override
-  String get ubicacionNoSePudoObtener => 'No se pudo obtener la ubicación';
+  String get ubicacionNoSePudoObtener => 'No se pudo obtener ubicación:';
 
   @override
   String ubicacionLatLngFmt(Object lat, Object lng) {
@@ -68,16 +68,16 @@ class SEs extends S {
   }
 
   @override
-  String get urlReservasInvalida => 'La URL de reservas no es válida';
+  String get urlReservasInvalida => 'URL de reservas inválida';
 
   @override
-  String get debeDefinirUbicacionBase => 'Debés definir una ubicación base';
+  String get debeDefinirUbicacionBase => 'Para ofrecer a domicilio, define tu ubicación base';
 
   @override
   String get perfilActualizado => 'Perfil actualizado';
 
   @override
-  String get errorGuardando => 'Error guardando';
+  String get errorGuardando => 'Error guardando:';
 
   @override
   String get ofrezcoDomicilio => 'Ofrezco trabajo a domicilio';
