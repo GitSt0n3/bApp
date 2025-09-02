@@ -7,7 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import '../generated/l10n.dart';
-
+//test
 class PantallaPerfilBarberia extends StatefulWidget {
   final int barbershopId;
   const PantallaPerfilBarberia({super.key, required this.barbershopId});
