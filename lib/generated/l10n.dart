@@ -400,6 +400,138 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Save'**
   String get guardarBtn;
+
+  /// No description provided for @barberoAuthTitulo.
+  ///
+  /// In en, this message translates to:
+  /// **'Barber access'**
+  String get barberoAuthTitulo;
+
+  /// No description provided for @iniciarSesion.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in'**
+  String get iniciarSesion;
+
+  /// No description provided for @continuarConGoogle.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Google'**
+  String get continuarConGoogle;
+
+  /// No description provided for @continuarConApple.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Apple'**
+  String get continuarConApple;
+
+  /// No description provided for @cerrarSesion.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out'**
+  String get cerrarSesion;
+
+  /// No description provided for @ingresoExitoso.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed in successfully'**
+  String get ingresoExitoso;
+
+  /// No description provided for @errorAutenticando.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign-in error'**
+  String get errorAutenticando;
+
+  /// No description provided for @registrarme.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign up'**
+  String get registrarme;
+
+  /// No description provided for @emailInvalido.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid email'**
+  String get emailInvalido;
+
+  /// No description provided for @contrasenaLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get contrasenaLabel;
+
+  /// No description provided for @contrasenaMin6.
+  ///
+  /// In en, this message translates to:
+  /// **'At least 6 characters'**
+  String get contrasenaMin6;
+
+  /// No description provided for @entrar.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in'**
+  String get entrar;
+
+  /// No description provided for @nombreApellidoLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Full name'**
+  String get nombreApellidoLabel;
+
+  /// No description provided for @requerido.
+  ///
+  /// In en, this message translates to:
+  /// **'Required'**
+  String get requerido;
+
+  /// No description provided for @telefonoLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get telefonoLabel;
+
+  /// No description provided for @telefonoInvalido.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid phone number'**
+  String get telefonoInvalido;
+
+  /// No description provided for @emailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get emailLabel;
+
+  /// No description provided for @repetirContrasenaLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeat password'**
+  String get repetirContrasenaLabel;
+
+  /// No description provided for @contrasenaNoCoincide.
+  ///
+  /// In en, this message translates to:
+  /// **'Doesn\'t match'**
+  String get contrasenaNoCoincide;
+
+  /// No description provided for @ofrezcoDomicilioToggle.
+  ///
+  /// In en, this message translates to:
+  /// **'I offer home service'**
+  String get ofrezcoDomicilioToggle;
+
+  /// No description provided for @toggleDomicilioHint.
+  ///
+  /// In en, this message translates to:
+  /// **'You can enable/disable it later'**
+  String get toggleDomicilioHint;
+
+  /// No description provided for @crearCuenta.
+  ///
+  /// In en, this message translates to:
+  /// **'Create account'**
+  String get crearCuenta;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

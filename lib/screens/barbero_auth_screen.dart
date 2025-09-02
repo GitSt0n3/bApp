@@ -5,22 +5,24 @@ import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import '../widgets/map_picker.dart';
 import '../services/auth_Service.dart';
+import 'package:barberiapp/generated/l10n.dart';
 
 class BarberAuthScreen extends StatelessWidget {
   const BarberAuthScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final loc = S.of(context)!;
     return DefaultTabController(
       length: 2,
       child: Scaffold(
         backgroundColor: AppColors.appBarbkgs,
         appBar: AppBar(
-          title: Text('Acceso barberos', style: TextStyles.tittleText),
+          title: Text(loc.barberoAuthTitulo, style: TextStyles.tittleText),
           backgroundColor: AppColors.appBarbkgs,
           bottom: TabBar(
             labelStyle: TextStyles.defaultText,
-            tabs: [Tab(text: 'Iniciar sesión'), Tab(text: 'Registrarme')],
+            tabs: [Tab(text: loc.iniciarSesion), Tab(text: loc.registrarme)],
           ),
         ),
         body: const TabBarView(children: [_LoginForm(), _RegisterForm()]),
@@ -62,6 +64,7 @@ class _LoginFormState extends State<_LoginForm> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = S.of(context)!;
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Form(
@@ -77,22 +80,22 @@ class _LoginFormState extends State<_LoginForm> {
               ),
               validator:
                   (v) =>
-                      (v == null || !v.contains('@')) ? 'Email inválido' : null,
+                      (v == null || !v.contains('@'))
+                          ? loc.emailInvalido
+                          : null,
             ),
             const SizedBox(height: 6),
             TextFormField(
               controller: _password,
               style: const TextStyle(color: Colors.white),
               obscureText: true,
-              decoration: const InputDecoration(
-                labelText: 'Contraseña',
+              decoration: InputDecoration(
+                labelText: loc.contrasenaLabel,
                 labelStyle: TextStyle(color: Colors.white70),
               ),
               validator:
                   (v) =>
-                      (v == null || v.length < 6)
-                          ? 'Mínimo 6 caracteres'
-                          : null,
+                      (v == null || v.length < 6) ? loc.contrasenaMin6 : null,
             ),
             const SizedBox(height: 50),
             SizedBox(
@@ -103,7 +106,7 @@ class _LoginFormState extends State<_LoginForm> {
                 child:
                     _loading
                         ? const CircularProgressIndicator()
-                        : Text('Entrar'),
+                        : Text(loc.entrar),
               ),
             ),
           ],
@@ -185,6 +188,7 @@ class _RegisterFormState extends State<_RegisterForm> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = S.of(context)!;
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Form(
@@ -194,24 +198,24 @@ class _RegisterFormState extends State<_RegisterForm> {
             TextFormField(
               controller: _nombre,
               style: const TextStyle(color: Colors.white),
-              decoration: const InputDecoration(
-                labelText: 'Nombre y apellido',
+              decoration: InputDecoration(
+                labelText: loc.nombreApellidoLabel,
                 labelStyle: TextStyle(color: Colors.white70),
               ),
-              validator: (v) => (v == null || v.isEmpty) ? 'Requerido' : null,
+              validator: (v) => (v == null || v.isEmpty) ? loc.requerido : null,
             ),
             const SizedBox(height: 6),
             TextFormField(
               controller: _telefono,
               keyboardType: TextInputType.phone,
-              style: const TextStyle(color: Colors.white),
-              decoration: const InputDecoration(
-                labelText: 'Teléfono',
+              style: TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                labelText: loc.telefonoLabel,
                 labelStyle: TextStyle(color: Colors.white70),
               ),
               validator:
                   (v) =>
-                      (v == null || v.length < 7) ? 'Teléfono inválido' : null,
+                      (v == null || v.length < 7) ? loc.telefonoInvalido : null,
             ),
             const SizedBox(height: 6),
             TextFormField(
@@ -224,21 +228,21 @@ class _RegisterFormState extends State<_RegisterForm> {
               ),
               validator:
                   (v) =>
-                      (v == null || !v.contains('@')) ? 'Email inválido' : null,
+                      (v == null || !v.contains('@')) ? loc.emailInvalido : null,
             ),
             const SizedBox(height: 6),
             TextFormField(
               controller: _password,
               obscureText: true,
               style: const TextStyle(color: Colors.white),
-              decoration: const InputDecoration(
-                labelText: 'Contraseña',
+              decoration: InputDecoration(
+                labelText: loc.contrasenaLabel,
                 labelStyle: TextStyle(color: Colors.white70),
               ),
               validator:
                   (v) =>
                       (v == null || v.length < 6)
-                          ? 'Mínimo 6 caracteres'
+                          ? loc.contrasenaMin6
                           : null,
             ),
             const SizedBox(height: 6),
@@ -246,22 +250,22 @@ class _RegisterFormState extends State<_RegisterForm> {
               controller: _repassword,
               obscureText: true,
               style: const TextStyle(color: Colors.white),
-              decoration: const InputDecoration(
-                labelText: 'Repetir contraseña',
+              decoration: InputDecoration(
+                labelText: loc.repetirContrasenaLabel,
                 labelStyle: TextStyle(color: Colors.white70),
               ),
-              validator: (v) => (v != _password.text) ? 'No coincide' : null,
+              validator: (v) => (v != _password.text) ? loc.contrasenaNoCoincide: null,
             ),
             const SizedBox(height: 6),
             SwitchListTile(
               value: _domicilio,
               onChanged: (v) => setState(() => _domicilio = v),
               title: Text(
-                'Ofrezco servicio a domicilio',
+                loc.ofrezcoDomicilio,
                 style: TextStyles.defaultTex_2,
               ),
-              subtitle: const Text(
-                'Podrás activarlo/desactivarlo luego',
+              subtitle: Text(
+                loc.toggleDomicilioHint,
                 style: TextStyle(color: Colors.white70),
               ),
             ),
@@ -274,7 +278,7 @@ class _RegisterFormState extends State<_RegisterForm> {
                 child:
                     _loading
                         ? const CircularProgressIndicator()
-                        : const Text('Crear cuenta'),
+                        : Text(loc.crearCuenta),
               ),
             ),
           ],

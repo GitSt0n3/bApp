@@ -56,7 +56,37 @@
   "urlReservasHintWeiBook": "https://weibook.uy/your_barber",
   "urlReservasHintOtra": "https://my-bookings.com/user",
 
-  "guardarBtn": "Save"
+  "guardarBtn": "Save",
+
+  "barberoAuthTitulo": "Barber access",
+  "iniciarSesion": "Sign in",
+  "continuarConGoogle": "Continue with Google",
+  "continuarConApple": "Continue with Apple",
+  "cerrarSesion": "Sign out",
+  "ingresoExitoso": "Signed in successfully",
+  "errorAutenticando": "Sign-in error",
+  "registrarme": "Sign up",
+
+
+  "emailInvalido": "Invalid email",
+  "contrasenaLabel": "Password",
+  "contrasenaMin6": "At least 6 characters",
+  "entrar": "Sign in",
+
+  "nombreApellidoLabel": "Full name",
+  "requerido": "Required",
+  "telefonoLabel": "Phone",
+  "telefonoInvalido": "Invalid phone number",
+  "emailLabel": "Email",
+
+
+
+  "repetirContrasenaLabel": "Repeat password",
+  "contrasenaNoCoincide": "Doesn't match",
+  "ofrezcoDomicilioToggle": "I offer home service",
+  "toggleDomicilioHint": "You can enable/disable it later",
+  "crearCuenta": "Create account"
+
 
 
 }

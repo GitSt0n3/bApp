@@ -162,4 +162,70 @@ class SEn extends S {
 
   @override
   String get guardarBtn => 'Save';
+
+  @override
+  String get barberoAuthTitulo => 'Barber access';
+
+  @override
+  String get iniciarSesion => 'Sign in';
+
+  @override
+  String get continuarConGoogle => 'Continue with Google';
+
+  @override
+  String get continuarConApple => 'Continue with Apple';
+
+  @override
+  String get cerrarSesion => 'Sign out';
+
+  @override
+  String get ingresoExitoso => 'Signed in successfully';
+
+  @override
+  String get errorAutenticando => 'Sign-in error';
+
+  @override
+  String get registrarme => 'Sign up';
+
+  @override
+  String get emailInvalido => 'Invalid email';
+
+  @override
+  String get contrasenaLabel => 'Password';
+
+  @override
+  String get contrasenaMin6 => 'At least 6 characters';
+
+  @override
+  String get entrar => 'Sign in';
+
+  @override
+  String get nombreApellidoLabel => 'Full name';
+
+  @override
+  String get requerido => 'Required';
+
+  @override
+  String get telefonoLabel => 'Phone';
+
+  @override
+  String get telefonoInvalido => 'Invalid phone number';
+
+  @override
+  String get emailLabel => 'Email';
+
+  @override
+  String get repetirContrasenaLabel => 'Repeat password';
+
+  @override
+  String get contrasenaNoCoincide => 'Doesn\'t match';
+
+  @override
+  String get ofrezcoDomicilioToggle => 'I offer home service';
+
+  @override
+  String get toggleDomicilioHint => 'You can enable/disable it later';
+
+  @override
+  String get crearCuenta => 'Create account';
 }

@@ -162,4 +162,70 @@ class SEs extends S {
 
   @override
   String get guardarBtn => 'Guardar';
+
+  @override
+  String get barberoAuthTitulo => 'Acceso para barbero';
+
+  @override
+  String get iniciarSesion => 'Iniciar sesión';
+
+  @override
+  String get continuarConGoogle => 'Continuar con Google';
+
+  @override
+  String get continuarConApple => 'Continuar con Apple';
+
+  @override
+  String get cerrarSesion => 'Cerrar sesión';
+
+  @override
+  String get ingresoExitoso => 'Ingreso exitoso';
+
+  @override
+  String get errorAutenticando => 'Error autenticando';
+
+  @override
+  String get registrarme => 'Registrarme';
+
+  @override
+  String get emailInvalido => 'Email inválido';
+
+  @override
+  String get contrasenaLabel => 'Contraseña';
+
+  @override
+  String get contrasenaMin6 => 'Mínimo 6 caracteres';
+
+  @override
+  String get entrar => 'Entrar';
+
+  @override
+  String get nombreApellidoLabel => 'Nombre y apellido';
+
+  @override
+  String get requerido => 'Requerido';
+
+  @override
+  String get telefonoLabel => 'Teléfono';
+
+  @override
+  String get telefonoInvalido => 'Teléfono inválido';
+
+  @override
+  String get emailLabel => 'Email';
+
+  @override
+  String get repetirContrasenaLabel => 'Repetir contraseña';
+
+  @override
+  String get contrasenaNoCoincide => 'No coincide';
+
+  @override
+  String get ofrezcoDomicilioToggle => 'Ofrezco servicio a domicilio';
+
+  @override
+  String get toggleDomicilioHint => 'Podrás activarlo/desactivarlo luego';
+
+  @override
+  String get crearCuenta => 'Crear cuenta';
 }

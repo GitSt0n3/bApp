@@ -201,8 +201,7 @@ class _PantallaPerfilBarberiaState extends State<PantallaPerfilBarberia> {
               if (ext != null && ext.isNotEmpty)
                 OutlinedButton.icon(
                   icon: const Icon(Icons.link),
-                 // label: Text(S.of(context)!.reservarExterno),
-                  label: Text('Reservar (externo)'),
+                  label: Text(S.of(context)!.reservarExterno),
                   onPressed: () => _openUrl(ext),
                 ),
             ],
@@ -212,8 +211,7 @@ class _PantallaPerfilBarberiaState extends State<PantallaPerfilBarberia> {
           // CTA: Ver servicios (filtrados por esta barbería)
           FilledButton.icon(
             icon: const Icon(Icons.design_services),
-            //label: Text(S.of(context)!.verServicios),
-            label: Text('Ver Servicios'),
+            label: Text(S.of(context)!.verServicios),
             onPressed: () {
               context.push(
                 '/servicios',
