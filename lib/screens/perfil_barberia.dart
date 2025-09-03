@@ -169,9 +169,8 @@ class _PantallaPerfilBarberiaState extends State<PantallaPerfilBarberia> {
             children: [
               if (ig != null && ig.isNotEmpty)
                 SocialButton(
-                  icon: FontAwesomeIcons.instagram,
-                  url: ig!,
-                  color: Colors.pinkAccent,
+                  assetPath: 'assets/icons/social/instagram.png',
+                  url: ig,
                 ),
               if (fb != null && fb.isNotEmpty)
                 OutlinedButton.icon(

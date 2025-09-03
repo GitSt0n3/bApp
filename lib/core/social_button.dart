@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SocialButton extends StatelessWidget {
-  final IconData icon;
+  final String assetPath; // ruta del SVG en assets
   final String url;
-  final Color color;
 
   const SocialButton({
     super.key,
-    required this.icon,
+    required this.assetPath,
     required this.url,
-    required this.color,
   });
 
   Future<void> _launch() async {
@@ -24,7 +22,11 @@ class SocialButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      icon: FaIcon(icon, color: color, size: 28),
+      icon: SvgPicture.asset(
+        assetPath,
+        width: 32,
+        height: 32,
+      ),
       onPressed: _launch,
       tooltip: url,
     );
