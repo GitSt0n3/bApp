@@ -191,6 +191,36 @@ abstract class S {
   /// **'Error loading barbershop'**
   String get errorCargandoBarberia;
 
+  /// No description provided for @errorCargandoTurnos.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading slots'**
+  String get errorCargandoTurnos;
+
+  /// No description provided for @errorGuardando.
+  ///
+  /// In en, this message translates to:
+  /// **'Error saving:'**
+  String get errorGuardando;
+
+  /// No description provided for @errorAutenticando.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign-in error'**
+  String get errorAutenticando;
+
+  /// No description provided for @errorCargandoBarberosDomicilio.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading home barbers'**
+  String get errorCargandoBarberosDomicilio;
+
+  /// No description provided for @errorDesconocido.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown error'**
+  String get errorDesconocido;
+
   /// No description provided for @ubicacionServiciosDeshabilitados.
   ///
   /// In en, this message translates to:
@@ -226,12 +256,6 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Profile updated'**
   String get perfilActualizado;
-
-  /// No description provided for @errorGuardando.
-  ///
-  /// In en, this message translates to:
-  /// **'Error saving:'**
-  String get errorGuardando;
 
   /// No description provided for @ofrezcoDomicilio.
   ///
@@ -484,12 +508,6 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Signed in successfully'**
   String get ingresoExitoso;
-
-  /// No description provided for @errorAutenticando.
-  ///
-  /// In en, this message translates to:
-  /// **'Sign-in error'**
-  String get errorAutenticando;
 
   /// No description provided for @registrarme.
   ///
@@ -761,12 +779,6 @@ abstract class S {
   /// **'View on map'**
   String get verEnMapa;
 
-  /// No description provided for @errorCargandoBarberosDomicilio.
-  ///
-  /// In en, this message translates to:
-  /// **'Error loading home barbers'**
-  String get errorCargandoBarberosDomicilio;
-
   /// No description provided for @sinBarberosDomicilioCerca.
   ///
   /// In en, this message translates to:
@@ -820,12 +832,6 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Couldn\'t save'**
   String get noSePudoGuardar;
-
-  /// No description provided for @errorDesconocido.
-  ///
-  /// In en, this message translates to:
-  /// **'Unknown error'**
-  String get errorDesconocido;
 
   /// No description provided for @eliminarServicioTitulo.
   ///

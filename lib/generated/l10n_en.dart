@@ -57,6 +57,21 @@ class SEn extends S {
   String get errorCargandoBarberia => 'Error loading barbershop';
 
   @override
+  String get errorCargandoTurnos => 'Error loading slots';
+
+  @override
+  String get errorGuardando => 'Error saving:';
+
+  @override
+  String get errorAutenticando => 'Sign-in error';
+
+  @override
+  String get errorCargandoBarberosDomicilio => 'Error loading home barbers';
+
+  @override
+  String get errorDesconocido => 'Unknown error';
+
+  @override
   String get ubicacionServiciosDeshabilitados => 'Location services disabled';
 
   @override
@@ -75,9 +90,6 @@ class SEn extends S {
 
   @override
   String get perfilActualizado => 'Profile updated';
-
-  @override
-  String get errorGuardando => 'Error saving:';
 
   @override
   String get ofrezcoDomicilio => 'I offer home service';
@@ -204,9 +216,6 @@ class SEn extends S {
 
   @override
   String get ingresoExitoso => 'Signed in successfully';
-
-  @override
-  String get errorAutenticando => 'Sign-in error';
 
   @override
   String get registrarme => 'Sign up';
@@ -344,9 +353,6 @@ class SEn extends S {
   String get verEnMapa => 'View on map';
 
   @override
-  String get errorCargandoBarberosDomicilio => 'Error loading home barbers';
-
-  @override
   String get sinBarberosDomicilioCerca => 'No hay barberos a domicilio cerca.';
 
   @override
@@ -372,9 +378,6 @@ class SEn extends S {
 
   @override
   String get noSePudoGuardar => 'Couldn\'t save';
-
-  @override
-  String get errorDesconocido => 'Unknown error';
 
   @override
   String get eliminarServicioTitulo => 'Delete service';

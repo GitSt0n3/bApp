@@ -17,7 +17,7 @@
   "errorCargandoServicios": "Error loading services:",
   "errorCargandoPerfil": "Error loading profile",
   "errorCargandoBarberia": "Error loading barbershop",
-  "errorCargandoTurnos": ""Error loading slots"
+  "errorCargandoTurnos": "Error loading slots",
   "errorGuardando": "Error saving:",
   "errorAutenticando": "Sign-in error",
   "errorCargandoBarberosDomicilio": "Error loading home barbers",

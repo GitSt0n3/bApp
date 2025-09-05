@@ -57,6 +57,21 @@ class SEs extends S {
   String get errorCargandoBarberia => 'Error cargando barberia';
 
   @override
+  String get errorCargandoTurnos => 'Error cargando Turnos';
+
+  @override
+  String get errorGuardando => 'Error guardando:';
+
+  @override
+  String get errorAutenticando => 'Error autenticando';
+
+  @override
+  String get errorCargandoBarberosDomicilio => 'Error cargando barberos a domicilio';
+
+  @override
+  String get errorDesconocido => 'Error desconocido';
+
+  @override
   String get ubicacionServiciosDeshabilitados => 'Servicios de ubicación deshabilitados';
 
   @override
@@ -75,9 +90,6 @@ class SEs extends S {
 
   @override
   String get perfilActualizado => 'Perfil actualizado';
-
-  @override
-  String get errorGuardando => 'Error guardando:';
 
   @override
   String get ofrezcoDomicilio => 'Ofrezco trabajo a domicilio';
@@ -204,9 +216,6 @@ class SEs extends S {
 
   @override
   String get ingresoExitoso => 'Ingreso exitoso';
-
-  @override
-  String get errorAutenticando => 'Error autenticando';
 
   @override
   String get registrarme => 'Registrarme';
@@ -344,9 +353,6 @@ class SEs extends S {
   String get verEnMapa => 'Ver en mapa';
 
   @override
-  String get errorCargandoBarberosDomicilio => 'Error cargando barberos a domicilio';
-
-  @override
   String get sinBarberosDomicilioCerca => 'No hay barberos a domicilio cerca.';
 
   @override
@@ -372,9 +378,6 @@ class SEs extends S {
 
   @override
   String get noSePudoGuardar => 'No se pudo guardar';
-
-  @override
-  String get errorDesconocido => 'Error desconocido';
 
   @override
   String get eliminarServicioTitulo => 'Eliminar servicio';

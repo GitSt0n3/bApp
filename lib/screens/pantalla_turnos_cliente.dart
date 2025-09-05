@@ -1,3 +1,4 @@
+import 'package:barberiapp/core/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -91,7 +92,7 @@ class _PantallaTurnosClienteState extends State<PantallaTurnosCliente> {
         final loc = S.of(context)!;
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('Error cargando turnos: $e')));
+        ).showSnackBar(SnackBar(content: Text(loc.errorCargandoTurnos, style: TextStyles.emptyState,))); // Error cargando turnos:
       }
     } finally {
       if (mounted) setState(() => _loading = false);
