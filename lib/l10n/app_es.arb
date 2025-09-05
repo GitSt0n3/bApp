@@ -18,17 +18,24 @@
 "buscarServicio": "Buscar servicio o barberia...",
 "aDomicilio": "A domicilio",
 "enBarberia": "A Barberia",
+
 "noHayServiciosDisponibles": "No servicios disponibles",
 "errorCargandoServicios":"Error cargando servicios:",
 "errorCargandoPerfil":"Error cargando Perfil",
 "errorCargandoBarberia": "Error cargando barberia",
+"errorCargandoBarberosDomicilio": "Error cargando barberos a domicilio",
+"errorCargandoTurnos": "Error cargando Turnos",
+"errorGuardando": "Error guardando:",
+"errorAutenticando": "Error autenticando",
+"errorDesconocido": "Error desconocido",
+
 "ubicacionServiciosDeshabilitados": "Servicios de ubicación deshabilitados",
 "ubicacionNoSePudoObtener": "No se pudo obtener ubicación:",
 "ubicacionLatLngFmt": "Lat {lat}, Lng {lng}",
 "urlReservasInvalida": "URL de reservas inválida",
 "debeDefinirUbicacionBase": "Para ofrecer a domicilio, define tu ubicación base",
 "perfilActualizado": "Perfil actualizado",
-"errorGuardando": "Error guardando:",
+
 "ofrezcoDomicilio": "Ofrezco trabajo a domicilio",
 "direccionBaseLabel": "Dirección base (opcional)",
 "radioKm": "Radio (km):",
@@ -72,7 +79,7 @@
 "continuarConApple": "Continuar con Apple",
 "cerrarSesion": "Cerrar sesión",
 "ingresoExitoso": "Ingreso exitoso",
-"errorAutenticando": "Error autenticando",
+
 "registrarme": "Registrarme",
 
 
@@ -130,7 +137,7 @@
 "noPudimosCargarBarberias": "No pudimos cargar las barberías",
 "verEnMapa": "Ver en mapa",
 
-"errorCargandoBarberosDomicilio": "Error cargando barberos a domicilio",
+
 "sinBarberosDomicilioCerca": "No hay barberos a domicilio cerca.",
 "distanciaLabel": "Distancia:",
 "recargoDomicilioLabel": "Recargo a domicilio:",
@@ -147,7 +154,7 @@
 "durationMinutes": "Duración (min)",
 "servicioGuardado": "Servicio guardado",
 "noSePudoGuardar": "No se pudo guardar",
-"errorDesconocido": "Error desconocido",
+
 "eliminarServicioTitulo": "Eliminar servicio",
 "eliminarServicioPregunta": "¿Seguro que querés eliminar este servicio?",
 

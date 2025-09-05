@@ -13,16 +13,23 @@
   "aDomicilio": "Home service",
   "enBarberia": "At barbershop",
   "noHayServiciosDisponibles": "No services available",
+
   "errorCargandoServicios": "Error loading services:",
   "errorCargandoPerfil": "Error loading profile",
   "errorCargandoBarberia": "Error loading barbershop",
+  "errorCargandoTurnos": ""Error loading slots"
+  "errorGuardando": "Error saving:",
+  "errorAutenticando": "Sign-in error",
+  "errorCargandoBarberosDomicilio": "Error loading home barbers",
+  "errorDesconocido": "Unknown error",
+
   "ubicacionServiciosDeshabilitados": "Location services disabled",
   "ubicacionNoSePudoObtener": "Could not get location:",
   "ubicacionLatLngFmt": "Lat {lat}, Lng {lng}",
   "urlReservasInvalida": "Invalid booking URL",
   "debeDefinirUbicacionBase": "To offer home service, define your base location",
   "perfilActualizado": "Profile updated",
-  "errorGuardando": "Error saving:",
+  
   "ofrezcoDomicilio": "I offer home service",
   "direccionBaseLabel": "Base address (optional)",
   "radioKm": "Radius (km):",
@@ -75,7 +82,7 @@
   "continuarConApple": "Continue with Apple",
   "cerrarSesion": "Sign out",
   "ingresoExitoso": "Signed in successfully",
-  "errorAutenticando": "Sign-in error",
+  
   "registrarme": "Sign up",
 
 
@@ -133,7 +140,7 @@
   "noPudimosCargarBarberias": "Couldn't load barbershops",
   "verEnMapa": "View on map",
 
-  "errorCargandoBarberosDomicilio": "Error loading home barbers",
+  
   "sinBarberosDomicilioCerca": "No hay barberos a domicilio cerca.",
   "distanciaLabel": "Distance:",
   "recargoDomicilioLabel": "Home service surcharge:",
@@ -144,7 +151,7 @@
   "homeBarberosDomicilioSubtitle": "Barbers serving your area",
   "servicioGuardado": "Service saved",
   "noSePudoGuardar": "Couldn't save",
-  "errorDesconocido": "Unknown error",
+  
   "eliminarServicioTitulo": "Delete service",
   "eliminarServicioPregunta": "Are you sure you want to delete this service?",
 

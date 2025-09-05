@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SocialButton extends StatelessWidget {
-  final String assetPath; // ruta del SVG en assets
+  final String assetPath;
   final String url;
 
   const SocialButton({
@@ -19,16 +19,18 @@ class SocialButton extends StatelessWidget {
     }
   }
 
+  bool get _isSvg => assetPath.toLowerCase().endsWith('.svg');
+
   @override
   Widget build(BuildContext context) {
+    final double size = 32;
     return IconButton(
-      icon: SvgPicture.asset(
-        assetPath,
-        width: 32,
-        height: 32,
-      ),
       onPressed: _launch,
       tooltip: url,
+      icon: _isSvg
+          ? SvgPicture.asset(assetPath, width: size, height: size)
+          : Image.asset(assetPath, width: size, height: size, fit: BoxFit.contain),
     );
   }
 }
+

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../generated/l10n.dart';
+
 
 class PantallaTurnosCliente extends StatefulWidget {
   final int serviceId;
@@ -86,6 +88,7 @@ class _PantallaTurnosClienteState extends State<PantallaTurnosCliente> {
       setState(() => _propuestas.addAll(propuestas));
     } catch (e) {
       if (mounted) {
+        final loc = S.of(context)!;
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text('Error cargando turnos: $e')));
