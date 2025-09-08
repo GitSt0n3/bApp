@@ -76,6 +76,10 @@ class _PantallaBarberosDomicilioState extends State<PantallaBarberosDomicilio> {
           .select('profile_id, home_service, radius_km')
           .eq('home_service', true);
 
+          // Debug de query
+      //print('rowsBarbers: $rowsBarbers');
+        //
+
       if (rowsBarbers is! List || rowsBarbers.isEmpty) {
         setState(() {
           _items.clear();
@@ -93,8 +97,10 @@ class _PantallaBarberosDomicilioState extends State<PantallaBarberosDomicilio> {
       final rowsProfiles = await _supa
           .from('profiles')
           .select('id, full_name')
-          .inFilter('barber_id', barberIds)
-          .eq('active', true);
+          .inFilter('id', barberIds);
+          
+
+      print('rowsProfiles: $rowsProfiles'); 
 
       final nameById = <String, String>{};
       for (final p in (rowsProfiles as List)) {
@@ -191,7 +197,12 @@ class _PantallaBarberosDomicilioState extends State<PantallaBarberosDomicilio> {
       if (!mounted) return;
       final loc = S.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${loc.errorCargandoBarberosDomicilio}: $e')),
+        SnackBar(
+          content: Text(
+            '${loc.errorCargandoBarberosDomicilio}: $e',
+            style: TextStyles.emptyState,
+          ),
+        ),
       );
       setState(() => _loading = false);
     }
