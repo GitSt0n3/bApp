@@ -46,6 +46,11 @@ class PantallaBarberosDomicilio extends StatefulWidget {
 class _PantallaBarberosDomicilioState extends State<PantallaBarberosDomicilio> {
   bool _loading = true;
   Position? _userPos;
+  double? _maxKm =
+      20; // radio de búsqueda del cliente (km). Podés exponerlo con un Slider/Popup.
+  bool _usandoPostGIS =
+      true; // feature-flag simple para poder comparar con tu flujo actual
+
   final List<BarberoHomeItem> _items = [];
   final _fmtKm = NumberFormat('#,##0.0', 'es');
   final _fmtMoney = NumberFormat.currency(locale: 'es', symbol: '\$ ');
@@ -54,6 +59,56 @@ class _PantallaBarberosDomicilioState extends State<PantallaBarberosDomicilio> {
   void initState() {
     super.initState();
     _init();
+  }
+
+  // === NUEVO: carga desde PostGIS vía RPC
+  Future<void> _loadBarbersNearPostGIS() async {
+    if (_userPos == null) {
+      // ya dijiste que tenés ubicación; si igual faltara, evitamos crashear
+      // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Ubicación no disponible')));
+      return;
+    }
+
+    setState(() => _loading = true);
+    try {
+      final res = await _supa.rpc(
+        'home_barbers_near',
+        params: {
+          '_lat': _userPos!.latitude,
+          '_lng': _userPos!.longitude,
+          '_max_km': _maxKm, // o null si no querés límite del cliente
+        },
+      );
+
+      final rows = (res as List).cast<Map<String, dynamic>>();
+
+      // Mapeo simple a tu _items (ajustá a tu modelo concreto si no es Map)
+      final nuevos = <Map<String, dynamic>>[
+        for (final r in rows)
+          {
+            'profile_id': r['profile_id'],
+            'distance_km': (r['distance_km'] as num?)?.toDouble(),
+            'radius_km': (r['radius_km'] as num?)?.toDouble(),
+            'shop_id': r['shop_id'],
+            'shop_name': r['shop_name'],
+            // si luego fusionás con profiles para nombre/foto, agregalo aquí
+          },
+      ];
+
+      setState(() {
+        _items
+          ..clear()
+          ..addAll(nuevos);
+      });
+    } catch (e) {
+      // Fallback a tu flujo actual si la RPC aún no está creada
+      // final loc = S.of(context);
+      // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('No se pudo cargar con PostGIS, usando cálculo local...')));
+      _usandoPostGIS = false;
+      await _loadBarbersComoAntes(); // <-- ver Paso 2
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
   }
 
   Future<void> _init() async {
@@ -76,9 +131,9 @@ class _PantallaBarberosDomicilioState extends State<PantallaBarberosDomicilio> {
           .select('profile_id, home_service, radius_km')
           .eq('home_service', true);
 
-          // Debug de query
+      // Debug de query
       //print('rowsBarbers: $rowsBarbers');
-        //
+      //
 
       if (rowsBarbers is! List || rowsBarbers.isEmpty) {
         setState(() {
@@ -98,9 +153,8 @@ class _PantallaBarberosDomicilioState extends State<PantallaBarberosDomicilio> {
           .from('profiles')
           .select('id, full_name')
           .inFilter('id', barberIds);
-          
 
-      print('rowsProfiles: $rowsProfiles'); 
+      print('rowsProfiles: $rowsProfiles');
 
       final nameById = <String, String>{};
       for (final p in (rowsProfiles as List)) {
