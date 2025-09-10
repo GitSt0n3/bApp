@@ -61,56 +61,6 @@ class _PantallaBarberosDomicilioState extends State<PantallaBarberosDomicilio> {
     _init();
   }
 
-  // === NUEVO: carga desde PostGIS vía RPC
-  Future<void> _loadBarbersNearPostGIS() async {
-    if (_userPos == null) {
-      // ya dijiste que tenés ubicación; si igual faltara, evitamos crashear
-      // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Ubicación no disponible')));
-      return;
-    }
-
-    setState(() => _loading = true);
-    try {
-      final res = await _supa.rpc(
-        'home_barbers_near',
-        params: {
-          '_lat': _userPos!.latitude,
-          '_lng': _userPos!.longitude,
-          '_max_km': _maxKm, // o null si no querés límite del cliente
-        },
-      );
-
-      final rows = (res as List).cast<Map<String, dynamic>>();
-
-      // Mapeo simple a tu _items (ajustá a tu modelo concreto si no es Map)
-      final nuevos = <Map<String, dynamic>>[
-        for (final r in rows)
-          {
-            'profile_id': r['profile_id'],
-            'distance_km': (r['distance_km'] as num?)?.toDouble(),
-            'radius_km': (r['radius_km'] as num?)?.toDouble(),
-            'shop_id': r['shop_id'],
-            'shop_name': r['shop_name'],
-            // si luego fusionás con profiles para nombre/foto, agregalo aquí
-          },
-      ];
-
-      setState(() {
-        _items
-          ..clear()
-          ..addAll(nuevos);
-      });
-    } catch (e) {
-      // Fallback a tu flujo actual si la RPC aún no está creada
-      // final loc = S.of(context);
-      // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('No se pudo cargar con PostGIS, usando cálculo local...')));
-      _usandoPostGIS = false;
-      await _loadBarbersComoAntes(); // <-- ver Paso 2
-    } finally {
-      if (mounted) setState(() => _loading = false);
-    }
-  }
-
   Future<void> _init() async {
     try {
       // 1) Ubicación del cliente (opcional)
@@ -123,19 +73,23 @@ class _PantallaBarberosDomicilioState extends State<PantallaBarberosDomicilio> {
         _userPos = await Geolocator.getCurrentPosition();
       }
 
-      // 2) Traer barberos con domicilio habilitado + nombre del profile
-      //    y, si existe, una barbería de la que sea owner (para estimar distancia)
-      //    Nota: PostgREST no hace join libre por owner_barber_id; lo resolvemos con 2 queries.
-      final rowsBarbers = await _supa
-          .from('barbers')
-          .select('profile_id, home_service, radius_km')
-          .eq('home_service', true);
+      // === NUEVO (PostGIS) =====================================================
+      // 2) Traer barberos cercanos a domicilio desde la RPC (filtra y ordena por BD)
+      //    Requiere que ya tengas creada la función public.home_barbers_near(lat,lng,max_km)
+      //    _maxKm: podés fijarlo (p.ej. 20.0) o hacerlo configurable más adelante.
+      final maxKm = 20.0;
+      final rpcRes = await _supa.rpc(
+        'home_barbers_near',
+        params: {
+          '_lat': _userPos?.latitude,
+          '_lng': _userPos?.longitude,
+          '_max_km': maxKm,
+        },
+      );
 
-      // Debug de query
-      //print('rowsBarbers: $rowsBarbers');
-      //
+      final nearby = (rpcRes as List).cast<Map<String, dynamic>>();
 
-      if (rowsBarbers is! List || rowsBarbers.isEmpty) {
+      if (nearby.isEmpty) {
         setState(() {
           _items.clear();
           _loading = false;
@@ -145,8 +99,22 @@ class _PantallaBarberosDomicilioState extends State<PantallaBarberosDomicilio> {
 
       // Mapear IDs
       final barberIds = <String>[
-        for (final r in rowsBarbers) (r['profile_id']).toString(),
+        for (final r in nearby) (r['profile_id']).toString(),
       ];
+      final distanceById = <String, double>{
+        for (final r in nearby)
+          (r['profile_id']).toString():
+              (r['distance_km'] as num?)?.toDouble() ?? double.nan,
+      };
+      final radiusById = <String, int>{
+        for (final r in nearby)
+          (r['profile_id']).toString():
+              ((r['radius_km'] as num?)?.toInt() ?? 0),
+      };
+      final shopNameById = <String, String?>{
+        for (final r in nearby)
+          (r['profile_id']).toString(): r['shop_name'] as String?,
+      };
 
       // 3) Traer perfiles (nombres)
       final rowsProfiles = await _supa
@@ -154,34 +122,12 @@ class _PantallaBarberosDomicilioState extends State<PantallaBarberosDomicilio> {
           .select('id, full_name')
           .inFilter('id', barberIds);
 
-      print('rowsProfiles: $rowsProfiles');
-
       final nameById = <String, String>{};
       for (final p in (rowsProfiles as List)) {
         nameById[(p['id']).toString()] = (p['full_name'] ?? '').toString();
       }
 
-      // 4) Traer UNA barbería (si la tiene) donde es owner para tener lat/lng
-      //    (si no tiene, distancia quedará “—” hasta que guardemos barbero.lat/lng)
-      final rowsShops = await _supa
-          .from('barbershops')
-          .select('owner_barber_id, lat, lng')
-          .inFilter(
-            'owner_barber_id',
-            barberIds,
-          ); // ← antes: .in_('owner_barber_id', barberIds)
-
-      final coordsByOwner = <String, (double, double)>{};
-      for (final s in (rowsShops as List)) {
-        final owner = (s['owner_barber_id'])?.toString();
-        final lat = (s['lat'] as num?)?.toDouble();
-        final lng = (s['lng'] as num?)?.toDouble();
-        if (owner != null && lat != null && lng != null) {
-          coordsByOwner[owner] = (lat, lng);
-        }
-      }
-
-      // 5) Surcharge: traemos todos los services de estos barberos y calculamos MIN
+      // 4) Traer services activos de esos barberos y calcular surcharge mínimo
       final rowsServices = await _supa
           .from('services')
           .select('barber_id, home_service_surcharge, active')
@@ -193,53 +139,48 @@ class _PantallaBarberosDomicilioState extends State<PantallaBarberosDomicilio> {
         final id = (s['barber_id']).toString();
         final sur = s['home_service_surcharge'] as num?;
         if (sur == null) continue;
-        if (!minSurchargeByBarber.containsKey(id)) {
-          minSurchargeByBarber[id] = sur;
-        } else {
-          minSurchargeByBarber[id] = math.min(minSurchargeByBarber[id]!, sur);
-        }
+        final prev = minSurchargeByBarber[id];
+        minSurchargeByBarber[id] =
+            (prev == null) ? sur : (sur < prev ? sur : prev);
       }
 
-      // 6) Armar items y calcular distancia si tenemos coords
+      // 5) Armar items en el **mismo** modelo que ya usás
+      //    NOTA: ya no pedimos lat/lng de barbershops ni calculamos distancia en cliente.
       final items = <BarberoHomeItem>[];
-      for (final r in rowsBarbers) {
-        final id = (r['profile_id']).toString();
+      for (final id in barberIds) {
         final name = nameById[id] ?? 'Barbero';
-        final home = (r['home_service'] as bool?) ?? false;
-        final radius = (r['radius_km'] as int?) ?? 0;
-        final coords = coordsByOwner[id];
+        final radius = radiusById[id] ?? 0;
+        final distanciaKm = distanceById[id]; // viene ya ordenada desde la BD
+        final surchargeMin = minSurchargeByBarber[id];
 
         final it = BarberoHomeItem(
           barberId: id,
           fullName: name,
-          homeService: home,
+          homeService: true, // la RPC solo devuelve home_service = true
           radiusKm: radius,
-          shopLat: coords?.$1,
-          shopLng: coords?.$2,
-          minHomeSurcharge: minSurchargeByBarber[id],
-        );
-
-        // Distancia (si hay ubicación cliente + coords de referencia)
-        if (_userPos != null && it.shopLat != null && it.shopLng != null) {
-          final dMeters = Geolocator.distanceBetween(
-            _userPos!.latitude,
-            _userPos!.longitude,
-            it.shopLat!,
-            it.shopLng!,
-          );
-          it.distanciaKm = dMeters / 1000.0;
-        }
+          shopLat: null, // ya no lo necesitamos para calcular distancia
+          shopLng: null,
+          minHomeSurcharge: surchargeMin,
+        )..distanciaKm = distanciaKm;
 
         items.add(it);
       }
 
-      // 7) Filtro por radio si tengo distancia + radio > 0
+      // 6) (Opcional) Por si querés filtrar otra vez por radio (la RPC ya lo hizo):
+      //    Dejalo por si más adelante querés cambiar las reglas de business en cliente.
       final filtered =
           items.where((b) {
-            if (b.distanciaKm == null) return true; // sin coords → mostramos
-            if (b.radiusKm <= 0) return true; // sin radio → mostramos
+            if (b.distanciaKm == null || b.distanciaKm!.isNaN) return true;
+            if (b.radiusKm <= 0) return true;
             return b.distanciaKm! <= b.radiusKm + 1e-9;
           }).toList();
+
+      // 7) Ya viene ordenado por la BD; igual, si querés asegurar:
+      filtered.sort((a, b) {
+        final da = a.distanciaKm ?? double.infinity;
+        final db = b.distanciaKm ?? double.infinity;
+        return da.compareTo(db);
+      });
 
       setState(() {
         _items
@@ -247,6 +188,7 @@ class _PantallaBarberosDomicilioState extends State<PantallaBarberosDomicilio> {
           ..addAll(filtered);
         _loading = false;
       });
+      // === FIN NUEVO (PostGIS) ==================================================
     } catch (e) {
       if (!mounted) return;
       final loc = S.of(context)!;
