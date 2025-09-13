@@ -108,7 +108,6 @@ final _router = GoRouter(
       },
     ),
 
-  
     // GoRoute(path: '/gestion', builder: (_, __) => const GestionScreen()),
     // GoRoute(path: '/gestion', builder: (_, __) => const GestionScreen()),
     GoRoute(
@@ -127,6 +126,8 @@ final _router = GoRouter(
       path: '/turnos_barbero',
       builder: (context, state) => const PantallaTurnosBarbero(),
     ),
+
+    GoRoute(path: '/hub_barbero', builder: (_, __) => const HubBarbero()),
     GoRoute(
       path: '/servicios',
       builder: (context, state) {
