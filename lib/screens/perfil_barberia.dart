@@ -172,31 +172,27 @@ class _PantallaPerfilBarberiaState extends State<PantallaPerfilBarberia> {
             children: [
               if (ig != null && ig.isNotEmpty)
                 SocialButton(
-                  assetPath: 'assets/icons/social/Instagram.svg',
+                  assetPath: 'assets/icons/social/Instagram.png',
                   url: ig,
                 ),
               if (fb != null && fb.isNotEmpty)
-                OutlinedButton.icon(
-                  icon: const Icon(Icons.facebook),
-                  label: const Text('Facebook'),
-                  onPressed: () => _openUrl(fb),
+                SocialButton(
+                  assetPath: 'assets/icons/social/facebook.png',
+                  url: fb,
+                  size: 24, // 24–28px queda prolijo
                 ),
               if (tk != null && tk.isNotEmpty)
-                OutlinedButton.icon(
-                  icon: const Icon(Icons.music_note),
-                  label: const Text('TikTok'),
-                  onPressed: () => _openUrl(tk),
+                SocialButton(
+                  assetPath: 'assets/icons/social/tiktok.png',
+                  url: tk,
+                  size: 24,
                 ),
               if (wa != null && wa.isNotEmpty)
-                if (wa != null && wa.isNotEmpty)
-                  ElevatedButton.icon(
-                    onPressed: () => _openWhatsApp(wa),
-                    icon: const FaIcon(
-                      FontAwesomeIcons.whatsapp,
-                      color: Colors.green,
-                    ),
-                    label: const Text("WhatsApp"),
-                  ),
+                SocialButton(
+                  assetPath: 'assets/icons/social/whatsapp.png',
+                  url: wa,
+                  size: 24,
+                ),
             ],
           ),
 

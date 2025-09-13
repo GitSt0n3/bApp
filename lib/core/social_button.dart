@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class SocialButton extends StatelessWidget {
   final String assetPath;
@@ -26,32 +25,33 @@ class SocialButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Widget icon =
-        _isSvg
-            ? SvgPicture.asset(
-              assetPath,
-              width: size,
-              height: size,
-              // Si el SVG no carga, mostramos un ícono de error visible:
-              placeholderBuilder:
-                  (_) => SizedBox(
-                    width: size,
-                    height: size,
-                    child: const Center(
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    ),
-                  ),
-              // Si falla (p.ej. path incorrecto), evitamos que quede "invisible"
-              clipBehavior: Clip.hardEdge,
-            )
-            : Image.asset(
-              assetPath,
-              width: size,
-              height: size,
-              fit: BoxFit.contain,
-              errorBuilder: (_, __, ___) => const Icon(Icons.broken_image),
-            );
+    final Widget icon = _isSvg
+        ? SvgPicture.asset(
+            assetPath,
+            width: size,
+            height: size,
+            placeholderBuilder: (_) => SizedBox(
+              width: 32,
+              height: 32,
+              child: const Center(
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+            ),
+            clipBehavior: Clip.hardEdge,
+          )
+        : Image.asset(
+            assetPath,
+            width: size,
+            height: size,
+            fit: BoxFit.contain,
+            filterQuality: FilterQuality.high, // 🔑 mejora nitidez PNG
+            errorBuilder: (_, __, ___) => const Icon(Icons.broken_image),
+          );
 
-    return IconButton(onPressed: _launch, tooltip: url, icon: icon);
+    return IconButton(
+      onPressed: _launch,
+      tooltip: url,
+      icon: icon,
+    );
   }
 }

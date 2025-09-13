@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '../generated/l10n.dart'; // Ajustá el import según tu estructura de S
 import 'package:barberiapp/core/button_styles.dart';
 import 'package:barberiapp/core/text_styles.dart';
+import 'package:barberiapp/core/social_button.dart';
 
 class PerfilBarberoPublic extends StatefulWidget {
   final String barberId;
@@ -30,6 +31,104 @@ class _PerfilBarberoPublicState extends State<PerfilBarberoPublic> {
   List<dynamic> _services = []; // services activos
 
   final _money = NumberFormat.currency(locale: 'es', symbol: '\$ ');
+  // --- Helpers sociales (dentro del State) -------------------------------
+
+  // Toma el primer campo no vacío (por si en BD usás nombres alternativos)
+  String? _firstNonEmpty(Map<String, dynamic> m, List<String> keys) {
+    for (final k in keys) {
+      final v = (m[k] ?? '').toString().trim();
+      if (v.isNotEmpty) return v;
+    }
+    return null;
+  }
+
+  // Normaliza URL si viene sin http/https
+  String? _normalizeUrl(String? raw) {
+    if (raw == null) return null;
+    final v = raw.trim();
+    if (v.isEmpty) return null;
+    if (v.startsWith('http://') || v.startsWith('https://')) return v;
+    return 'https://$v';
+  }
+
+  // 🔹 Acá “va el string de WhatsApp”:
+  // Le pasás lo que venga de BD en `whatsapp` (número o URL).
+  // Si es número → arma https://wa.me/<numero>; si ya es URL → la usa tal cual.
+  String? _whatsAppLink(String? raw) {
+    if (raw == null) return null;
+    final v = raw.trim();
+    if (v.isEmpty) return null;
+
+    if (v.startsWith('http://') || v.startsWith('https://')) return v;
+
+    final digits = v.replaceAll(RegExp(r'[^\d+]'), '');
+    if (digits.isEmpty) return null;
+
+    final normalized = digits.startsWith('+') ? digits.substring(1) : digits;
+    return 'https://wa.me/$normalized';
+  }
+
+  // Construye la fila de íconos según lo que haya en _barber
+  Widget _buildSocialRow(Map<String, dynamic> data) {
+    final ig = _normalizeUrl(
+      _firstNonEmpty(data, ['instagram', 'instagram_url', 'ig']),
+    );
+    final fb = _normalizeUrl(
+      _firstNonEmpty(data, ['facebook', 'facebook_url', 'fb']),
+    );
+    final tk = _normalizeUrl(
+      _firstNonEmpty(data, ['tiktok', 'tiktok_url', 'tt', 'tk']),
+    );
+    final wa = _whatsAppLink(
+      _firstNonEmpty(data, ['whatsapp', 'whatsapp_phone', 'wa']),
+    );
+
+    final children = <Widget>[];
+    if (ig != null) {
+      children.add(
+        SocialButton(
+          assetPath: 'assets/icons/social/instagram.png',
+          url: ig,
+          size: 24,
+        ),
+      );
+    }
+    if (fb != null) {
+      children.add(
+        SocialButton(
+          assetPath: 'assets/icons/social/facebook.png',
+          url: fb,
+          size: 24,
+        ),
+      );
+    }
+    if (tk != null) {
+      children.add(
+        SocialButton(
+          assetPath: 'assets/icons/social/tiktok.png',
+          url: tk,
+          size: 24,
+        ),
+      );
+    }
+    if (wa != null) {
+      children.add(
+        SocialButton(
+          assetPath: 'assets/icons/social/whatsapp.png',
+          url: wa,
+          size: 24,
+        ),
+      );
+    }
+
+    if (children.isEmpty) return const SizedBox.shrink();
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 12),
+      child: Wrap(spacing: 12, runSpacing: 8, children: children),
+    );
+  }
+  // ----------------------------------------------------------------------
 
   @override
   void initState() {
@@ -137,6 +236,7 @@ class _PerfilBarberoPublicState extends State<PerfilBarberoPublic> {
                         loc.homeSurchargeFrom(_money.format(minSurcharge)),
                         style: TextStyles.bodyText,
                       ),
+                    if (_barber != null) _buildSocialRow(_barber!),
                   ],
                 ),
               ),

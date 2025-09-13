@@ -92,7 +92,6 @@ flutter:
   generate: true                  # ← convierte generate en mapa
   uses-material-design: true
   assets:
-    - assets/icons/social/Instagram.svg
     - assets/icons/
     - assets/icons/social/
 
