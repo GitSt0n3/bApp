@@ -211,5 +211,6 @@
   "fieldCelularError": "Enter your phone",
   "fieldEmailOptional": "Email (optional)",
   "snackReservaConfirmada": "Booking confirmed!",
-  "snackReservaError": "Could not book: {error}"
+  "snackReservaError": "Could not book: {error}",
+  "oContinuarCon": "o continuar con"
 }

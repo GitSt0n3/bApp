@@ -546,4 +546,7 @@ class SEs extends S {
   String snackReservaError(Object error) {
     return 'No se pudo reservar: $error';
   }
+
+  @override
+  String get oContinuarCon => 'o continuar con';
 }

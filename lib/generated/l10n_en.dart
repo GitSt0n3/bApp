@@ -546,4 +546,7 @@ class SEn extends S {
   String snackReservaError(Object error) {
     return 'Could not book: $error';
   }
+
+  @override
+  String get oContinuarCon => 'o continuar con';
 }

@@ -215,5 +215,6 @@
   "fieldCelularError": "Ingresá tu celular",
   "fieldEmailOptional": "Email (opcional)",
   "snackReservaConfirmada": "¡Reserva confirmada!",
-  "snackReservaError": "No se pudo reservar: {error}"
+  "snackReservaError": "No se pudo reservar: {error}",
+  "oContinuarCon": "o continuar con"
 }

@@ -1132,6 +1132,12 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Could not book: {error}'**
   String snackReservaError(Object error);
+
+  /// No description provided for @oContinuarCon.
+  ///
+  /// In en, this message translates to:
+  /// **'o continuar con'**
+  String get oContinuarCon;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

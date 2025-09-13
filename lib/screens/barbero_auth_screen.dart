@@ -1,40 +1,26 @@
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
 import 'package:barberiapp/core/app_colors.dart';
 import 'package:barberiapp/core/button_styles.dart';
 import 'package:barberiapp/core/text_styles.dart';
-import 'package:flutter/material.dart';
+
 import 'package:latlong2/latlong.dart';
 import '../widgets/map_picker.dart';
 import '../services/auth_Service.dart';
 import 'package:barberiapp/generated/l10n.dart';
 
-const kOAuthRedirectUri =
-    'com.barberiapp://login-callback/'; // <- igual al que pusiste en Supabase
+const kOAuthRedirectUri = 'com.barberiapp://login-callback/';
 
-class BarberAuthScreen extends StatelessWidget {
+class BarberAuthScreen extends StatefulWidget {
   const BarberAuthScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final loc = S.of(context)!;
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        backgroundColor: AppColors.appBarbkgs,
-        appBar: AppBar(
-          title: Text(loc.barberoAuthTitulo, style: TextStyles.tittleText),
-          backgroundColor: AppColors.appBarbkgs,
-          bottom: TabBar(
-            labelStyle: TextStyles.defaultText,
-            tabs: [Tab(text: loc.iniciarSesion), Tab(text: loc.registrarme)],
-          ),
-        ),
-        body: const TabBarView(children: [_LoginForm(), _RegisterForm()]),
-      ),
-    );
-  }
+  State<BarberAuthScreen> createState() => _BarberAuthScreenState();
 }
 
-class _BarberoAuthScreenState extends State<BarberoAuthScreen> {
+class _BarberAuthScreenState extends State<BarberAuthScreen> {
   final supabase = Supabase.instance.client;
   bool _googleLoading = false;
   StreamSubscription<AuthState>? _authSub;
@@ -42,12 +28,10 @@ class _BarberoAuthScreenState extends State<BarberoAuthScreen> {
   @override
   void initState() {
     super.initState();
-    // cuando vuelve del navegador por deep link, Supabase dispara este evento
     _authSub = supabase.auth.onAuthStateChange.listen((data) {
       if (data.event == AuthChangeEvent.signedIn && mounted) {
-        // TODO: redirige a tu hub/pantalla principal de barbero
-        // context.go('/hub_barbero');
-        Navigator.of(context).pop(); // temporal: cerrar la pantalla de login
+        // TODO: navega a tu hub de barbero (go_router, etc.)
+        Navigator.of(context).pop();
       }
     });
   }
@@ -58,27 +42,25 @@ class _BarberoAuthScreenState extends State<BarberoAuthScreen> {
     super.dispose();
   }
 
-  Future<void> _loginWithGoogle() async {
+   Future<void> _loginWithGoogle() async {
     if (_googleLoading) return;
     setState(() => _googleLoading = true);
     try {
       await supabase.auth.signInWithOAuth(
         OAuthProvider.google,
         redirectTo: kOAuthRedirectUri,
-        // scopes no son obligatorios, pero estos son comunes
         scopes: 'openid email profile',
         queryParams: {
-          'access_type': 'offline', // refresh_token
-          'prompt': 'select_account', // selector de cuenta
+          'access_type': 'offline',
+          'prompt': 'select_account',
         },
       );
-      // No navegamos aquí: el flujo vuelve por deep link y dispara onAuthStateChange
     } catch (e) {
       if (!mounted) return;
       final loc = S.of(context)!;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('${loc.errorGenerico}: $e')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('${loc.errorAutenticando}: $e')),
+      );
     } finally {
       if (mounted) setState(() => _googleLoading = false);
     }
@@ -104,7 +86,7 @@ class _BarberoAuthScreenState extends State<BarberoAuthScreen> {
                 Expanded(child: Divider(color: cs.outlineVariant)),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: Text(loc.oContinuarCon, style: TextStyles.hintText),
+                  child: Text(loc.oContinuarCon, style: TextStyles.bodyText),
                 ),
                 Expanded(child: Divider(color: cs.outlineVariant)),
               ],
@@ -125,7 +107,7 @@ class _BarberoAuthScreenState extends State<BarberoAuthScreen> {
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
                         : Image.asset(
-                          'assets/icons/brands/google.png',
+                          'assets/icons/social/google.png',
                           width: 20,
                           height: 20,
                         ),
