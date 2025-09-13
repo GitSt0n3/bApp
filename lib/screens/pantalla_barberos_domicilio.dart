@@ -5,6 +5,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../generated/l10n.dart';
@@ -212,9 +213,9 @@ class _PantallaBarberosDomicilioState extends State<PantallaBarberosDomicilio> {
       appBar: AppBar(
         backgroundColor: AppColors.appBarbkgs,
         title: Text(
-          loc.irADomicilio,
+          loc.irADomicilio, // Barberos a Domicilio - Titulo -
           style: TextStyles.tittleText,
-        ), // Barberos a Domicilio
+        ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.of(context).maybePop(),
@@ -257,8 +258,14 @@ class _PantallaBarberosDomicilioState extends State<PantallaBarberosDomicilio> {
                     distancia: distanciaStr,
                     recargo: recargoStr,
                     onTap: () {
-                      // TODO: navegar al perfil del barbero o a sus servicios a domicilio
-                      // context.push('/barbero/${it.barberId}');
+                      context.pushNamed(
+                        'barbero',
+                        pathParameters: {'id': it.barberId},
+                        extra: {
+                          'distanceKm': it.distanciaKm,
+                          'minSurcharge': it.minHomeSurcharge,
+                        },
+                      );
                     },
                   );
                 },

@@ -187,8 +187,21 @@
 "invalidAmount": "Monto inválido",
 
  "waMensajeOrigenApp": "Hola, vengo de {appName}.",
- "barberosSeccionTitulo": "Barberos"
+ "barberosSeccionTitulo": "Barberos",
 
-
+  "barberPublicTitle": "Perfil del barbero",
+  "unknownBarber": "Barbero",
+  "distanceKm": "A {km} km",
+  "coverRadiusKm": "Cubre hasta {km} km",
+  "homeSurchargeFrom": "Recargo domicilio desde {amount}",
+  "instagram": "Instagram",
+  "servicesTitle": "Servicios",
+  "noServicesYet": "Este barbero aún no tiene servicios publicados.",
+  "durationMin": "{min} min",
+  "homeSurchargeShort": "+ {amount} dom.",
+  "reserveInWeiBook": "Reservar en WeiBook",
+  "viewServicesCta": "Ver servicios",
+  "reserveHomeCta": "Reservar a domicilio",
+  "errLoadingProfile": "Error cargando perfil: {msg}"
 
 }

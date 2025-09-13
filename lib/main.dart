@@ -21,19 +21,15 @@ import 'screens/servicios_screen.dart';
 import 'screens/pantalla_servicio_barber.dart';
 import 'screens/perfil_barberia.dart';
 import 'screens/perfil_barbero.dart';
+import 'screens/perfil_barbero_public.dart';
 import 'package:barberiapp/config/env_private.dart'; // ajusta el path si cambia
-
 
 // const supabaseUrl = String.fromEnvironment('SUPABASE_URL');
 // const supabaseAnonKey = String.fromEnvironment('SUPABASE_ANON_KEY');
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Supabase.initialize(
-    url: supabaseUrl,
-    anonKey:
-       supabaseAnonKey,
-  );
+  await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
   runApp(const MyApp());
 }
 
@@ -98,6 +94,15 @@ final _router = GoRouter(
           appBar: AppBar(title: const Text('Mi perfil')),
           body: PerfilBarberoDomicilioYRedes(barberProfileId: barberId),
         );
+      },
+    ),
+    // Declaración
+    GoRoute(
+      name: 'barbero',
+      path: '/barbero/:id',
+      builder: (context, state) {
+        final barberId = state.pathParameters['id']!;
+        return PerfilBarberoPublic(barberId: barberId);
       },
     ),
 

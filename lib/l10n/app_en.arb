@@ -181,6 +181,23 @@
   "invalidAmount": "Invalid amount",
 
   "waMensajeOrigenApp": "Hi, I’m coming from {appName}.",
-  "barberosSeccionTitulo": "Barbers"
+  "barberosSeccionTitulo": "Barbers",
+
+
+  
+  "barberPublicTitle": "Barber profile",
+  "unknownBarber": "Barber",
+  "distanceKm": "{km} km away",
+  "coverRadiusKm": "Covers up to {km} km",
+  "homeSurchargeFrom": "Home visit surcharge from {amount}",
+  "instagram": "Instagram",
+  "servicesTitle": "Services",
+  "noServicesYet": "This barber has no services yet.",
+  "durationMin": "{min} min",
+  "homeSurchargeShort": "+ {amount} home",
+  "reserveInWeiBook": "Book on WeiBook",
+  "viewServicesCta": "View services",
+  "reserveHomeCta": "Book home visit",
+  "errLoadingProfile": "Error loading profile: {msg}"
 
 }

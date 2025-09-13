@@ -452,4 +452,58 @@ class SEn extends S {
 
   @override
   String get barberosSeccionTitulo => 'Barbers';
+
+  @override
+  String get barberPublicTitle => 'Barber profile';
+
+  @override
+  String get unknownBarber => 'Barber';
+
+  @override
+  String distanceKm(Object km) {
+    return '$km km away';
+  }
+
+  @override
+  String coverRadiusKm(Object km) {
+    return 'Covers up to $km km';
+  }
+
+  @override
+  String homeSurchargeFrom(Object amount) {
+    return 'Home visit surcharge from $amount';
+  }
+
+  @override
+  String get instagram => 'Instagram';
+
+  @override
+  String get servicesTitle => 'Services';
+
+  @override
+  String get noServicesYet => 'This barber has no services yet.';
+
+  @override
+  String durationMin(Object min) {
+    return '$min min';
+  }
+
+  @override
+  String homeSurchargeShort(Object amount) {
+    return '+ $amount home';
+  }
+
+  @override
+  String get reserveInWeiBook => 'Book on WeiBook';
+
+  @override
+  String get viewServicesCta => 'View services';
+
+  @override
+  String get reserveHomeCta => 'Book home visit';
+
+  @override
+  String errLoadingProfile(Object msg) {
+    return 'Error loading profile: $msg';
+  }
 }

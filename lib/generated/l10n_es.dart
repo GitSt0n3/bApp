@@ -452,4 +452,58 @@ class SEs extends S {
 
   @override
   String get barberosSeccionTitulo => 'Barberos';
+
+  @override
+  String get barberPublicTitle => 'Perfil del barbero';
+
+  @override
+  String get unknownBarber => 'Barbero';
+
+  @override
+  String distanceKm(Object km) {
+    return 'A $km km';
+  }
+
+  @override
+  String coverRadiusKm(Object km) {
+    return 'Cubre hasta $km km';
+  }
+
+  @override
+  String homeSurchargeFrom(Object amount) {
+    return 'Recargo domicilio desde $amount';
+  }
+
+  @override
+  String get instagram => 'Instagram';
+
+  @override
+  String get servicesTitle => 'Servicios';
+
+  @override
+  String get noServicesYet => 'Este barbero aún no tiene servicios publicados.';
+
+  @override
+  String durationMin(Object min) {
+    return '$min min';
+  }
+
+  @override
+  String homeSurchargeShort(Object amount) {
+    return '+ $amount dom.';
+  }
+
+  @override
+  String get reserveInWeiBook => 'Reservar en WeiBook';
+
+  @override
+  String get viewServicesCta => 'Ver servicios';
+
+  @override
+  String get reserveHomeCta => 'Reservar a domicilio';
+
+  @override
+  String errLoadingProfile(Object msg) {
+    return 'Error cargando perfil: $msg';
+  }
 }

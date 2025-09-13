@@ -976,6 +976,90 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Barbers'**
   String get barberosSeccionTitulo;
+
+  /// No description provided for @barberPublicTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Barber profile'**
+  String get barberPublicTitle;
+
+  /// No description provided for @unknownBarber.
+  ///
+  /// In en, this message translates to:
+  /// **'Barber'**
+  String get unknownBarber;
+
+  /// No description provided for @distanceKm.
+  ///
+  /// In en, this message translates to:
+  /// **'{km} km away'**
+  String distanceKm(Object km);
+
+  /// No description provided for @coverRadiusKm.
+  ///
+  /// In en, this message translates to:
+  /// **'Covers up to {km} km'**
+  String coverRadiusKm(Object km);
+
+  /// No description provided for @homeSurchargeFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Home visit surcharge from {amount}'**
+  String homeSurchargeFrom(Object amount);
+
+  /// No description provided for @instagram.
+  ///
+  /// In en, this message translates to:
+  /// **'Instagram'**
+  String get instagram;
+
+  /// No description provided for @servicesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Services'**
+  String get servicesTitle;
+
+  /// No description provided for @noServicesYet.
+  ///
+  /// In en, this message translates to:
+  /// **'This barber has no services yet.'**
+  String get noServicesYet;
+
+  /// No description provided for @durationMin.
+  ///
+  /// In en, this message translates to:
+  /// **'{min} min'**
+  String durationMin(Object min);
+
+  /// No description provided for @homeSurchargeShort.
+  ///
+  /// In en, this message translates to:
+  /// **'+ {amount} home'**
+  String homeSurchargeShort(Object amount);
+
+  /// No description provided for @reserveInWeiBook.
+  ///
+  /// In en, this message translates to:
+  /// **'Book on WeiBook'**
+  String get reserveInWeiBook;
+
+  /// No description provided for @viewServicesCta.
+  ///
+  /// In en, this message translates to:
+  /// **'View services'**
+  String get viewServicesCta;
+
+  /// No description provided for @reserveHomeCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Book home visit'**
+  String get reserveHomeCta;
+
+  /// No description provided for @errLoadingProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading profile: {msg}'**
+  String errLoadingProfile(Object msg);
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {
