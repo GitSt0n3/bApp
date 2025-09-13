@@ -205,6 +205,7 @@ class _PantallaTurnosClienteState extends State<PantallaTurnosCliente> {
                       controller: nameCtrl,
                       decoration: InputDecoration(
                         labelText: loc.nombreApellidoLabel,
+                        labelStyle: TextStyles.bodyText,
                       ),
                       validator:
                           (v) =>
@@ -215,7 +216,10 @@ class _PantallaTurnosClienteState extends State<PantallaTurnosCliente> {
                     const SizedBox(height: 8),
                     TextFormField(
                       controller: phoneCtrl,
-                      decoration: InputDecoration(labelText: loc.fieldCelular),
+                      decoration: InputDecoration(
+                        labelText: loc.fieldCelular,
+                        labelStyle: TextStyles.bodyText,
+                      ),
                       keyboardType: TextInputType.phone,
                       validator:
                           (v) =>
@@ -228,6 +232,7 @@ class _PantallaTurnosClienteState extends State<PantallaTurnosCliente> {
                       controller: emailCtrl,
                       decoration: InputDecoration(
                         labelText: loc.fieldEmailOptional,
+                        labelStyle: TextStyles.bodyText
                       ),
                       keyboardType: TextInputType.emailAddress,
                     ),
@@ -235,13 +240,18 @@ class _PantallaTurnosClienteState extends State<PantallaTurnosCliente> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        TextButton(
+                        FilledButton.tonal(
+                          style:
+                              ButtonStyles.greyButton, // 👈 secundario (gris)
                           onPressed: () => Navigator.pop(ctx),
-                          child: Text(loc.cancelar),
+                          child: Text(
+                            loc.cancelar,
+                            style: TextStyles.listTitle,
+                          ),
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: 12),
                         FilledButton(
-                          // si tenés ButtonStyles, podés usar: style: ButtonStyles.filledPrimary,
+                          style: ButtonStyles.redButton, // 👈 primario (rojo)
                           onPressed: () {
                             if (formKey.currentState!.validate()) {
                               Navigator.pop(
@@ -254,7 +264,10 @@ class _PantallaTurnosClienteState extends State<PantallaTurnosCliente> {
                               );
                             }
                           },
-                          child: Text(loc.actionConfirmar),
+                          child: Text(
+                            loc.actionConfirmar,
+                            style: TextStyles.defaultTex_2,
+                          ),
                         ),
                       ],
                     ),
@@ -337,26 +350,58 @@ class _PantallaTurnosClienteState extends State<PantallaTurnosCliente> {
                   final d1 = _fmtDay.format(p.startsAt.toLocal());
                   final h1 = _fmtHour.format(p.startsAt.toLocal());
                   final h2 = _fmtHour.format(p.endsAt.toLocal());
-                  final lugar =
-                      p.barbershopId == null
+                  final Widget lugar =
+                      (p.barbershopId == null)
                           ? Text(
-                            loc.aDomicilio, style: TextStyles.defaultText,)
-                          : loc.lugarBarberiaConNombre(
-                            p.barbershopName ?? '#${p.barbershopId}',
+                            loc.aDomicilio, // o loc.aDomicilio si así se llama tu key
+                            style: TextStyles.bodyText,
+                          )
+                          : Text(
+                            loc.lugarBarberiaConNombre(
+                              p.barbershopName ?? '#${p.barbershopId}',
+                            ),
+                            style: TextStyles.subtitleText,
                           );
 
                   return Card(
                     margin: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-                    child: ListTile(
-                      title: Text(
-                        '$d1  $h1 - $h2',
-                        style: TextStyles.subtitleText,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 10,
                       ),
-                      subtitle: Text(lugar),
-                      trailing: FilledButton(
-                        // si usás ButtonStyles: style: ButtonStyles.filledPrimary,
-                        onPressed: () => _reservar(p),
-                        child: Text(loc.btnReservar),
+                      child: Row(
+                        children: [
+                          // Columna de textos
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '$d1  $h1 - $h2',
+                                  style: TextStyles.subtitleText,
+                                ),
+                                const SizedBox(height: 4),
+                                lugar, // tu Widget estilizado (A domicilio / En barbería)
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          SizedBox(
+                            width: 120, // 👈 limita el ancho
+                            child: FilledButton(
+                              style:
+                                  ButtonStyles
+                                      .redButton, // 👈 tu estilo primario
+                              onPressed: () => _reservar(p),
+                              child: Text(
+                                loc.btnReservar,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyles.defaultTex_2,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   );
