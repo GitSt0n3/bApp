@@ -1,4 +1,5 @@
 import 'package:barberiapp/core/app_colors.dart';
+import 'package:barberiapp/core/button_styles.dart';
 import 'package:barberiapp/core/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -57,22 +58,17 @@ class _BubblePopup extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                title,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 16,
-                ),
-              ),
+              Text(title, style: TextStyles.tittleText),
               if (address != null && address!.isNotEmpty) ...[
                 const SizedBox(height: 4),
                 Text(
                   address!,
-                  style: const TextStyle(fontSize: 12, color: Colors.white70),
+                  style: TextStyles.defaultTex_2,
                 ),
               ],
               const SizedBox(height: 10),
               FilledButton.icon(
+                style: ButtonStyles.redButton,
                 onPressed: onVerPerfil,
                 icon: const Icon(Icons.info),
                 label: Text(S.of(context)!.verPerfil),
@@ -98,18 +94,20 @@ class _BottomTrianglePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final fill = Paint()..color = color;
 
-    final path = ui.Path()
-      ..moveTo(0, 0)
-      ..lineTo(size.width / 2, size.height)
-      ..lineTo(size.width, 0)
-      ..close();
+    final path =
+        ui.Path()
+          ..moveTo(0, 0)
+          ..lineTo(size.width / 2, size.height)
+          ..lineTo(size.width, 0)
+          ..close();
 
     canvas.drawPath(path, fill);
 
     // Borde sutil
-    final border = Paint()
-      ..color = Colors.white12
-      ..style = PaintingStyle.stroke;
+    final border =
+        Paint()
+          ..color = Colors.white12
+          ..style = PaintingStyle.stroke;
 
     canvas.drawPath(path, border);
   }
@@ -117,7 +115,6 @@ class _BottomTrianglePainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
-
 
 class _PantallaBarberiasMapaState extends State<PantallaBarberiasMapa> {
   final LocationService _loc = LocationService();

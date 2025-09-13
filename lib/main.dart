@@ -85,6 +85,8 @@ final _router = GoRouter(
       path: '/mapa',
       builder: (context, state) => const PantallaBarberiasMapa(),
     ),
+
+    GoRoute(path: '/barbero/auth', builder: (_, _) => const BarberAuthScreen()),
     GoRoute(
       path: '/perfil_b/:barberId',
       name: 'perfilBarbero',
@@ -106,8 +108,7 @@ final _router = GoRouter(
       },
     ),
 
-    GoRoute(path: '/hub_barbero', builder: (_, __) => const HubBarbero()),
-    GoRoute(path: '/barbero/auth', builder: (_, _) => const BarberAuthScreen()),
+  
     // GoRoute(path: '/gestion', builder: (_, __) => const GestionScreen()),
     // GoRoute(path: '/gestion', builder: (_, __) => const GestionScreen()),
     GoRoute(

@@ -7,6 +7,8 @@ import '../widgets/map_picker.dart';
 import '../services/auth_Service.dart';
 import 'package:barberiapp/generated/l10n.dart';
 
+const kOAuthRedirectUri =
+    'com.barberiapp://login-callback/'; // <- igual al que pusiste en Supabase
 
 class BarberAuthScreen extends StatelessWidget {
   const BarberAuthScreen({super.key});
@@ -27,6 +29,117 @@ class BarberAuthScreen extends StatelessWidget {
           ),
         ),
         body: const TabBarView(children: [_LoginForm(), _RegisterForm()]),
+      ),
+    );
+  }
+}
+
+class _BarberoAuthScreenState extends State<BarberoAuthScreen> {
+  final supabase = Supabase.instance.client;
+  bool _googleLoading = false;
+  StreamSubscription<AuthState>? _authSub;
+
+  @override
+  void initState() {
+    super.initState();
+    // cuando vuelve del navegador por deep link, Supabase dispara este evento
+    _authSub = supabase.auth.onAuthStateChange.listen((data) {
+      if (data.event == AuthChangeEvent.signedIn && mounted) {
+        // TODO: redirige a tu hub/pantalla principal de barbero
+        // context.go('/hub_barbero');
+        Navigator.of(context).pop(); // temporal: cerrar la pantalla de login
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _authSub?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _loginWithGoogle() async {
+    if (_googleLoading) return;
+    setState(() => _googleLoading = true);
+    try {
+      await supabase.auth.signInWithOAuth(
+        OAuthProvider.google,
+        redirectTo: kOAuthRedirectUri,
+        // scopes no son obligatorios, pero estos son comunes
+        scopes: 'openid email profile',
+        queryParams: {
+          'access_type': 'offline', // refresh_token
+          'prompt': 'select_account', // selector de cuenta
+        },
+      );
+      // No navegamos aquí: el flujo vuelve por deep link y dispara onAuthStateChange
+    } catch (e) {
+      if (!mounted) return;
+      final loc = S.of(context)!;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('${loc.errorGenerico}: $e')));
+    } finally {
+      if (mounted) setState(() => _googleLoading = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final loc = S.of(context)!;
+
+    return Scaffold(
+      // …tu AppBar y resto del formulario email/contraseña…
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            // …tus campos + botón "Entrar" existentes…
+            const SizedBox(height: 24),
+
+            // separador visual
+            Row(
+              children: [
+                Expanded(child: Divider(color: cs.outlineVariant)),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: Text(loc.oContinuarCon, style: TextStyles.hintText),
+                ),
+                Expanded(child: Divider(color: cs.outlineVariant)),
+              ],
+            ),
+
+            const SizedBox(height: 12),
+
+            // Botón Google
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: _googleLoading ? null : _loginWithGoogle,
+                icon:
+                    _googleLoading
+                        ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                        : Image.asset(
+                          'assets/icons/brands/google.png',
+                          width: 20,
+                          height: 20,
+                        ),
+                label: Text('Google', style: TextStyles.buttonText),
+                style: OutlinedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  side: BorderSide(color: cs.outlineVariant),
+                  foregroundColor: cs.onSurface,
+                  backgroundColor: cs.surface,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -229,7 +342,9 @@ class _RegisterFormState extends State<_RegisterForm> {
               ),
               validator:
                   (v) =>
-                      (v == null || !v.contains('@')) ? loc.emailInvalido : null,
+                      (v == null || !v.contains('@'))
+                          ? loc.emailInvalido
+                          : null,
             ),
             const SizedBox(height: 6),
             TextFormField(
@@ -242,9 +357,7 @@ class _RegisterFormState extends State<_RegisterForm> {
               ),
               validator:
                   (v) =>
-                      (v == null || v.length < 6)
-                          ? loc.contrasenaMin6
-                          : null,
+                      (v == null || v.length < 6) ? loc.contrasenaMin6 : null,
             ),
             const SizedBox(height: 6),
             TextFormField(
@@ -255,16 +368,15 @@ class _RegisterFormState extends State<_RegisterForm> {
                 labelText: loc.repetirContrasenaLabel,
                 labelStyle: TextStyle(color: Colors.white70),
               ),
-              validator: (v) => (v != _password.text) ? loc.contrasenaNoCoincide: null,
+              validator:
+                  (v) =>
+                      (v != _password.text) ? loc.contrasenaNoCoincide : null,
             ),
             const SizedBox(height: 6),
             SwitchListTile(
               value: _domicilio,
               onChanged: (v) => setState(() => _domicilio = v),
-              title: Text(
-                loc.ofrezcoDomicilio,
-                style: TextStyles.defaultTex_2,
-              ),
+              title: Text(loc.ofrezcoDomicilio, style: TextStyles.defaultTex_2),
               subtitle: Text(
                 loc.toggleDomicilioHint,
                 style: TextStyle(color: Colors.white70),
