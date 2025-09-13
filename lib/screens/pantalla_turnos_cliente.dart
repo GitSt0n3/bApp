@@ -1,9 +1,9 @@
 import 'package:barberiapp/core/text_styles.dart';
+import 'package:barberiapp/core/button_styles.dart'; // si ya existe en tu proyecto
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../generated/l10n.dart';
-
 
 class PantallaTurnosCliente extends StatefulWidget {
   final int serviceId;
@@ -24,13 +24,23 @@ class PantallaTurnosCliente extends StatefulWidget {
 class _PantallaTurnosClienteState extends State<PantallaTurnosCliente> {
   final formKey = GlobalKey<FormState>();
   final _supa = Supabase.instance.client;
+
   bool _loading = true;
 
   // Resultado: propuestas de turnos “armados” (k slots)
   final List<_PropuestaTurno> _propuestas = [];
 
-  final _fmtDay = DateFormat('EEE d/MM', 'es');
-  final _fmtHour = DateFormat('HH:mm');
+  // Formateadores según locale actual
+  late DateFormat _fmtDay;
+  late DateFormat _fmtHour;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final locale = Localizations.localeOf(context).toString();
+    _fmtDay = DateFormat('EEE d/MM', locale);
+    _fmtHour = DateFormat('HH:mm', locale);
+  }
 
   @override
   void initState() {
@@ -48,7 +58,7 @@ class _PantallaTurnosClienteState extends State<PantallaTurnosCliente> {
       final now = DateTime.now().toUtc();
       final to = now.add(const Duration(days: 14)).toUtc();
 
-      // Traemos slots libres entre hoy y +14 días.
+      // Traer slots libres entre hoy y +14 días.
       var query = _supa
           .from('time_slots')
           .select(
@@ -59,7 +69,7 @@ class _PantallaTurnosClienteState extends State<PantallaTurnosCliente> {
           .lte('starts_at', to.toIso8601String());
 
       // Filtro barbería / domicilio
-      final shopId = widget.barbershopId; // promoción nula segura
+      final shopId = widget.barbershopId;
       if (shopId != null) {
         query = query.eq('barbershop_id', shopId);
       } else {
@@ -70,7 +80,7 @@ class _PantallaTurnosClienteState extends State<PantallaTurnosCliente> {
         ); // domicilio / genérico
       }
 
-      // Preferir service_id = seleccionado pero permitir genéricos (NULL)
+      // Preferir service_id seleccionado pero permitir genéricos (NULL)
       query = query.or('service_id.eq.${widget.serviceId},service_id.is.null');
 
       final rows = await query
@@ -78,11 +88,9 @@ class _PantallaTurnosClienteState extends State<PantallaTurnosCliente> {
           .order('starts_at', ascending: true);
 
       final slots =
-          (rows as List)
-              .map((e) => _Slot.fromMap(e as Map<String, dynamic>))
-              .toList();
+          (rows as List).map((e) => _Slot.fromMap((e as Map).cast())).toList();
 
-      // Agrupar por barber y por día; buscar secuencias contiguas de tamaño k
+      // Agrupar y buscar secuencias contiguas de tamaño k
       final k = ((widget.durationMin + 29) ~/ 30); // slots de 30m
       final propuestas = _armarPropuestas(slots, k);
 
@@ -90,9 +98,14 @@ class _PantallaTurnosClienteState extends State<PantallaTurnosCliente> {
     } catch (e) {
       if (mounted) {
         final loc = S.of(context)!;
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(loc.errorCargandoTurnos, style: TextStyles.emptyState,))); // Error cargando turnos:
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              loc.errorCargandoTurnos,
+              style: TextStyles.emptyState,
+            ),
+          ),
+        );
       }
     } finally {
       if (mounted) setState(() => _loading = false);
@@ -100,7 +113,7 @@ class _PantallaTurnosClienteState extends State<PantallaTurnosCliente> {
   }
 
   List<_PropuestaTurno> _armarPropuestas(List<_Slot> slots, int k) {
-    // Asumimos slots contiguos cuando next.starts_at == prev.ends_at
+    // Asumimos contiguo cuando next.starts_at == prev.ends_at
     // Agrupamos por barber_id + día (UTC)
     final Map<String, List<_Slot>> groups = {};
     for (final s in slots) {
@@ -149,6 +162,7 @@ class _PantallaTurnosClienteState extends State<PantallaTurnosCliente> {
 
   // ========= Reserva tipo "guest" (sin login) =========
   Future<_ContactoGuest?> _pedirContacto() async {
+    final loc = S.of(context)!;
     final nameCtrl = TextEditingController();
     final phoneCtrl = TextEditingController();
     final emailCtrl = TextEditingController();
@@ -157,12 +171,13 @@ class _PantallaTurnosClienteState extends State<PantallaTurnosCliente> {
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
-      showDragHandle: true, // si tu versión de Flutter lo soporta
+      showDragHandle: true,
       constraints: BoxConstraints(
         maxHeight: MediaQuery.of(context).size.height * 0.9,
       ),
       builder: (ctx) {
         final bottom = MediaQuery.of(ctx).viewInsets.bottom;
+        final cs = Theme.of(ctx).colorScheme;
 
         return DraggableScrollableSheet(
           expand: false,
@@ -177,42 +192,42 @@ class _PantallaTurnosClienteState extends State<PantallaTurnosCliente> {
                 key: formKey,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const Text(
-                      'Tus datos para la reserva',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                    Text(
+                      loc.formGuestTitle,
+                      style: TextStyles.subtitleText.copyWith(
+                        color: cs.onSurface,
                       ),
                     ),
                     const SizedBox(height: 12),
                     TextFormField(
-                      controller: nameCtrl, // controllers definidos en el State
-                      decoration: const InputDecoration(
-                        labelText: 'Nombre y apellido',
+                      controller: nameCtrl,
+                      decoration: InputDecoration(
+                        labelText: loc.nombreApellidoLabel,
                       ),
                       validator:
                           (v) =>
                               (v == null || v.trim().isEmpty)
-                                  ? 'Ingresá tu nombre'
+                                  ? loc.fieldNombreError
                                   : null,
                     ),
                     const SizedBox(height: 8),
                     TextFormField(
                       controller: phoneCtrl,
-                      decoration: const InputDecoration(labelText: 'Celular'),
+                      decoration: InputDecoration(labelText: loc.fieldCelular),
                       keyboardType: TextInputType.phone,
                       validator:
                           (v) =>
                               (v == null || v.trim().isEmpty)
-                                  ? 'Ingresá tu celular'
+                                  ? loc.fieldCelularError
                                   : null,
                     ),
                     const SizedBox(height: 8),
                     TextFormField(
                       controller: emailCtrl,
-                      decoration: const InputDecoration(
-                        labelText: 'Email (opcional)',
+                      decoration: InputDecoration(
+                        labelText: loc.fieldEmailOptional,
                       ),
                       keyboardType: TextInputType.emailAddress,
                     ),
@@ -222,10 +237,11 @@ class _PantallaTurnosClienteState extends State<PantallaTurnosCliente> {
                       children: [
                         TextButton(
                           onPressed: () => Navigator.pop(ctx),
-                          child: const Text('Cancelar'),
+                          child: Text(loc.cancelar),
                         ),
                         const SizedBox(width: 8),
                         FilledButton(
+                          // si tenés ButtonStyles, podés usar: style: ButtonStyles.filledPrimary,
                           onPressed: () {
                             if (formKey.currentState!.validate()) {
                               Navigator.pop(
@@ -238,7 +254,7 @@ class _PantallaTurnosClienteState extends State<PantallaTurnosCliente> {
                               );
                             }
                           },
-                          child: const Text('Confirmar'),
+                          child: Text(loc.actionConfirmar),
                         ),
                       ],
                     ),
@@ -253,11 +269,11 @@ class _PantallaTurnosClienteState extends State<PantallaTurnosCliente> {
   }
 
   Future<void> _reservar(_PropuestaTurno p) async {
-    try {
-      _ContactoGuest? contacto;
-      final user = _supa.auth.currentUser;
+    final loc = S.of(context)!;
 
-      contacto = await _pedirContacto();
+    try {
+      // Nota: si luego querés forzar login, acá podés chequear _supa.auth.currentUser
+      final contacto = await _pedirContacto();
       if (contacto == null) return; // canceló
 
       final params = {
@@ -268,9 +284,9 @@ class _PantallaTurnosClienteState extends State<PantallaTurnosCliente> {
         'p_ends_at': p.endsAt.toUtc().toIso8601String(),
         'p_slot_ids': p.slotIds,
         'p_is_home': p.barbershopId == null,
-        'p_contact_name': contacto?.nombre ?? '',
-        'p_contact_phone': contacto?.celular ?? '',
-        'p_contact_email': contacto?.email ?? '',
+        'p_contact_name': contacto.nombre,
+        'p_contact_phone': contacto.celular,
+        'p_contact_email': contacto.email,
       };
 
       final apptId = await _supa.rpc('guest_book_appointment', params: params);
@@ -278,29 +294,40 @@ class _PantallaTurnosClienteState extends State<PantallaTurnosCliente> {
       if (!mounted) return;
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('¡Reserva confirmada!')));
+      ).showSnackBar(SnackBar(content: Text(loc.snackReservaConfirmada)));
       Navigator.pop(context, apptId);
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('No se pudo reservar: $e')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(loc.snackReservaError(e.toString()))),
+        );
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final loc = S.of(context)!;
+    final cs = Theme.of(context).colorScheme;
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Elegí tu turno')),
+      appBar: AppBar(
+        title: Text(loc.screenTurnosTitulo, style: TextStyles.tittleText),
+      ),
       body:
           _loading
               ? const Center(child: CircularProgressIndicator())
               : _propuestas.isEmpty
-              ? const Center(
-                child: Text(
-                  'No hay turnos contiguos para este servicio.\nPodés solicitar agenda o contactar a la barbería.',
-                  textAlign: TextAlign.center,
+              ? Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Text(
+                    loc.emptyTurnos,
+                    textAlign: TextAlign.center,
+                    style: TextStyles.emptyState.copyWith(
+                      color: cs.onSurfaceVariant,
+                    ),
+                  ),
                 ),
               )
               : ListView.builder(
@@ -312,16 +339,24 @@ class _PantallaTurnosClienteState extends State<PantallaTurnosCliente> {
                   final h2 = _fmtHour.format(p.endsAt.toLocal());
                   final lugar =
                       p.barbershopId == null
-                          ? 'A domicilio'
-                          : 'En barbería #${p.barbershopName}';
+                          ? Text(
+                            loc.aDomicilio, style: TextStyles.defaultText,)
+                          : loc.lugarBarberiaConNombre(
+                            p.barbershopName ?? '#${p.barbershopId}',
+                          );
+
                   return Card(
                     margin: const EdgeInsets.fromLTRB(12, 8, 12, 8),
                     child: ListTile(
-                      title: Text('$d1  $h1 - $h2'),
+                      title: Text(
+                        '$d1  $h1 - $h2',
+                        style: TextStyles.subtitleText,
+                      ),
                       subtitle: Text(lugar),
-                      trailing: ElevatedButton(
+                      trailing: FilledButton(
+                        // si usás ButtonStyles: style: ButtonStyles.filledPrimary,
                         onPressed: () => _reservar(p),
-                        child: const Text('Reservar'),
+                        child: Text(loc.btnReservar),
                       ),
                     ),
                   );

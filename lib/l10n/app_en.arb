@@ -158,6 +158,7 @@
   "cancelar": "Cancel",
   "eliminar": "Delete",
   "activos": "Active",
+  "actionConfirmar": "Confirm",
   "activo" : "Active",
   "inactiveChip": "Inactive",
   "edit": "Edit",
@@ -198,6 +199,17 @@
   "reserveInWeiBook": "Book on WeiBook",
   "viewServicesCta": "View services",
   "reserveHomeCta": "Book home visit",
-  "errLoadingProfile": "Error loading profile: {msg}"
+  "errLoadingProfile": "Error loading profile: {msg}",
 
+  "screenTurnosTitulo": "Choose your time slot",
+  "emptyTurnos": "No contiguous slots for this service.\nYou can request availability or contact the barbershop.",
+  "lugarBarberiaConNombre": "At barbershop {name}",
+  "btnReservar": "Book",
+  "formGuestTitle": "Your details for the booking",
+  "fieldNombreError": "Enter your name",
+  "fieldCelular": "Phone",
+  "fieldCelularError": "Enter your phone",
+  "fieldEmailOptional": "Email (optional)",
+  "snackReservaConfirmada": "Booking confirmed!",
+  "snackReservaError": "Could not book: {error}"
 }

@@ -395,6 +395,9 @@ class SEs extends S {
   String get activos => 'Activos';
 
   @override
+  String get actionConfirmar => 'Confirmar';
+
+  @override
   String get activo => 'Activo';
 
   @override
@@ -505,5 +508,42 @@ class SEs extends S {
   @override
   String errLoadingProfile(Object msg) {
     return 'Error cargando perfil: $msg';
+  }
+
+  @override
+  String get screenTurnosTitulo => 'Elegí tu turno';
+
+  @override
+  String get emptyTurnos => 'No hay turnos contiguos para este servicio.\nPodés solicitar agenda o contactar a la barbería.';
+
+  @override
+  String lugarBarberiaConNombre(Object name) {
+    return 'En barbería $name';
+  }
+
+  @override
+  String get btnReservar => 'Reservar';
+
+  @override
+  String get formGuestTitle => 'Tus datos para la reserva';
+
+  @override
+  String get fieldNombreError => 'Ingresá tu nombre';
+
+  @override
+  String get fieldCelular => 'Celular';
+
+  @override
+  String get fieldCelularError => 'Ingresá tu celular';
+
+  @override
+  String get fieldEmailOptional => 'Email (opcional)';
+
+  @override
+  String get snackReservaConfirmada => '¡Reserva confirmada!';
+
+  @override
+  String snackReservaError(Object error) {
+    return 'No se pudo reservar: $error';
   }
 }

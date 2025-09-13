@@ -395,6 +395,9 @@ class SEn extends S {
   String get activos => 'Active';
 
   @override
+  String get actionConfirmar => 'Confirm';
+
+  @override
   String get activo => 'Active';
 
   @override
@@ -505,5 +508,42 @@ class SEn extends S {
   @override
   String errLoadingProfile(Object msg) {
     return 'Error loading profile: $msg';
+  }
+
+  @override
+  String get screenTurnosTitulo => 'Choose your time slot';
+
+  @override
+  String get emptyTurnos => 'No contiguous slots for this service.\nYou can request availability or contact the barbershop.';
+
+  @override
+  String lugarBarberiaConNombre(Object name) {
+    return 'At barbershop $name';
+  }
+
+  @override
+  String get btnReservar => 'Book';
+
+  @override
+  String get formGuestTitle => 'Your details for the booking';
+
+  @override
+  String get fieldNombreError => 'Enter your name';
+
+  @override
+  String get fieldCelular => 'Phone';
+
+  @override
+  String get fieldCelularError => 'Enter your phone';
+
+  @override
+  String get fieldEmailOptional => 'Email (optional)';
+
+  @override
+  String get snackReservaConfirmada => 'Booking confirmed!';
+
+  @override
+  String snackReservaError(Object error) {
+    return 'Could not book: $error';
   }
 }

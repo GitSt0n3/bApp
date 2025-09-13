@@ -863,6 +863,12 @@ abstract class S {
   /// **'Active'**
   String get activos;
 
+  /// No description provided for @actionConfirmar.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get actionConfirmar;
+
   /// No description provided for @activo.
   ///
   /// In en, this message translates to:
@@ -1060,6 +1066,72 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Error loading profile: {msg}'**
   String errLoadingProfile(Object msg);
+
+  /// No description provided for @screenTurnosTitulo.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose your time slot'**
+  String get screenTurnosTitulo;
+
+  /// No description provided for @emptyTurnos.
+  ///
+  /// In en, this message translates to:
+  /// **'No contiguous slots for this service.\nYou can request availability or contact the barbershop.'**
+  String get emptyTurnos;
+
+  /// No description provided for @lugarBarberiaConNombre.
+  ///
+  /// In en, this message translates to:
+  /// **'At barbershop {name}'**
+  String lugarBarberiaConNombre(Object name);
+
+  /// No description provided for @btnReservar.
+  ///
+  /// In en, this message translates to:
+  /// **'Book'**
+  String get btnReservar;
+
+  /// No description provided for @formGuestTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your details for the booking'**
+  String get formGuestTitle;
+
+  /// No description provided for @fieldNombreError.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your name'**
+  String get fieldNombreError;
+
+  /// No description provided for @fieldCelular.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get fieldCelular;
+
+  /// No description provided for @fieldCelularError.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your phone'**
+  String get fieldCelularError;
+
+  /// No description provided for @fieldEmailOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Email (optional)'**
+  String get fieldEmailOptional;
+
+  /// No description provided for @snackReservaConfirmada.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking confirmed!'**
+  String get snackReservaConfirmada;
+
+  /// No description provided for @snackReservaError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not book: {error}'**
+  String snackReservaError(Object error);
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

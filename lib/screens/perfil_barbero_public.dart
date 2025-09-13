@@ -87,7 +87,7 @@ class _PerfilBarberoPublicState extends State<PerfilBarberoPublic> {
     if (ig != null) {
       children.add(
         SocialButton(
-          assetPath: 'assets/icons/social/instagram.png',
+          assetPath: 'assets/icons/social/Instagram.png',
           url: ig,
           size: 24,
         ),
@@ -191,7 +191,6 @@ class _PerfilBarberoPublicState extends State<PerfilBarberoPublic> {
     }
 
     final name = _profile?['full_name'] as String? ?? loc.unknownBarber;
-    final avatarUrl = _profile?['avatar_url'] as String?;
     final bio = _barber?['bio'] as String? ?? '';
     final radiusKm = _barber?['radius_km'] as num?;
     final minSurcharge =
@@ -245,34 +244,8 @@ class _PerfilBarberoPublicState extends State<PerfilBarberoPublic> {
           const SizedBox(height: 16),
 
           const SizedBox(height: 16),
-          // TODO: reemplazar por tus SocialButton si ya los tenés
-          Wrap(
-            spacing: 8,
-            children: [
-              if ((_barber?['instagram'] as String?)?.isNotEmpty == true)
-                TextButton(
-                  onPressed: () {
-                    /* launch */
-                  },
-                  child: const Text('Instagram'),
-                ),
-              if ((_barber?['whatsapp'] as String?)?.isNotEmpty == true)
-                TextButton(
-                  onPressed: () {
-                    /* launch */
-                  },
-                  child: const Text('WhatsApp'),
-                ),
-              if ((_barber?['tiktok'] as String?)?.isNotEmpty == true)
-                TextButton(
-                  onPressed: () {
-                    /* launch */
-                  },
-                  child: const Text('TikTok'),
-                ),
-            ],
-          ),
-
+      
+          
           const SizedBox(height: 12),
           // (El botón "Reservar en WeiBook" fue eliminado)
           const SizedBox(height: 8),

@@ -161,6 +161,7 @@
 
 "cancelar": "Cancelar",
 "eliminar": "Eliminar",
+"actionConfirmar": "Confirmar",
 "edit": "Editar",
 "activos": "Activos",
 "activo" : "Activo",
@@ -202,6 +203,17 @@
   "reserveInWeiBook": "Reservar en WeiBook",
   "viewServicesCta": "Ver servicios",
   "reserveHomeCta": "Reservar a domicilio",
-  "errLoadingProfile": "Error cargando perfil: {msg}"
+  "errLoadingProfile": "Error cargando perfil: {msg}",
 
+  "screenTurnosTitulo": "Elegí tu turno",
+  "emptyTurnos": "No hay turnos contiguos para este servicio.\nPodés solicitar agenda o contactar a la barbería.",
+  "lugarBarberiaConNombre": "En barbería {name}",
+  "btnReservar": "Reservar",
+  "formGuestTitle": "Tus datos para la reserva",
+  "fieldNombreError": "Ingresá tu nombre",
+  "fieldCelular": "Celular",
+  "fieldCelularError": "Ingresá tu celular",
+  "fieldEmailOptional": "Email (opcional)",
+  "snackReservaConfirmada": "¡Reserva confirmada!",
+  "snackReservaError": "No se pudo reservar: {error}"
 }
