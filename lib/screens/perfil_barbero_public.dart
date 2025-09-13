@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:intl/intl.dart';
- import '../generated/l10n.dart'; // Ajustá el import según tu estructura de S
+import '../generated/l10n.dart'; // Ajustá el import según tu estructura de S
+import 'package:barberiapp/core/button_styles.dart';
+import 'package:barberiapp/core/text_styles.dart';
 
 class PerfilBarberoPublic extends StatefulWidget {
   final String barberId;
@@ -23,9 +25,9 @@ class PerfilBarberoPublic extends StatefulWidget {
 class _PerfilBarberoPublicState extends State<PerfilBarberoPublic> {
   final _supa = Supabase.instance.client;
   bool _loading = true;
-  Map<String, dynamic>? _barber;   // barbers.*
-  Map<String, dynamic>? _profile;  // profiles.*
-  List<dynamic> _services = [];     // services activos
+  Map<String, dynamic>? _barber; // barbers.*
+  Map<String, dynamic>? _profile; // profiles.*
+  List<dynamic> _services = []; // services activos
 
   final _money = NumberFormat.currency(locale: 'es', symbol: '\$ ');
 
@@ -37,21 +39,27 @@ class _PerfilBarberoPublicState extends State<PerfilBarberoPublic> {
 
   Future<void> _load() async {
     try {
-      final barber = await _supa
-          .from('barbers')
-          .select('profile_id, bio, home_service, radius_km, base_lat, base_lng, instagram, whatsapp, tiktok')
-          .eq('profile_id', widget.barberId)
-          .single();
+      final barber =
+          await _supa
+              .from('barbers')
+              .select(
+                'profile_id, bio, home_service, radius_km, base_lat, base_lng, instagram_url, whatsapp, tiktok_url, facebook_url',
+              )
+              .eq('profile_id', widget.barberId)
+              .single();
 
-      final profile = await _supa
-          .from('profiles')
-          .select('id, full_name, avatar_url, phone')
-          .eq('id', widget.barberId)
-          .single();
+      final profile =
+          await _supa
+              .from('profiles')
+              .select('id, full_name,  phone')
+              .eq('id', widget.barberId)
+              .single();
 
       final services = await _supa
           .from('services')
-          .select('id, name, price, duration_min, home_service_surcharge, active')
+          .select(
+            'id, name, price, duration_min, home_service_surcharge, active',
+          )
           .eq('barber_id', widget.barberId)
           .eq('active', true)
           .order('price', ascending: true);
@@ -87,7 +95,8 @@ class _PerfilBarberoPublicState extends State<PerfilBarberoPublic> {
     final avatarUrl = _profile?['avatar_url'] as String?;
     final bio = _barber?['bio'] as String? ?? '';
     final radiusKm = _barber?['radius_km'] as num?;
-    final minSurcharge = widget.minSurcharge ??
+    final minSurcharge =
+        widget.minSurcharge ??
         _services
             .map((s) => s['home_service_surcharge'])
             .where((v) => v != null)
@@ -95,92 +104,84 @@ class _PerfilBarberoPublicState extends State<PerfilBarberoPublic> {
             .fold<num?>(null, (min, v) => (min == null || v < min) ? v : min);
 
     return Scaffold(
-      appBar: AppBar(title: Text(name)),
+      appBar: AppBar(title: Text(name, style: TextStyles.tittleText)),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
           Row(
             children: [
-              CircleAvatar(
-                radius: 36,
-                backgroundImage: (avatarUrl != null && avatarUrl.isNotEmpty)
-                    ? NetworkImage(avatarUrl)
-                    : null,
-                child: (avatarUrl == null || avatarUrl.isEmpty)
-                    ? Text(name.isNotEmpty ? name[0] : '?')
-                    : null,
+              Image.asset(
+                'assets/icons/imbarber.png',
+                width: 72, // ajustá el tamaño a gusto
+                height: 72,
+                fit: BoxFit.contain,
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(name, style: Theme.of(context).textTheme.titleLarge),
+                    Text(name, style: TextStyles.subtitleText),
                     if (widget.distanceKm != null)
-                      Text(loc.distanceKm(widget.distanceKm!.toStringAsFixed(1))),
+                      Text(
+                        loc.distanceKm(widget.distanceKm!.toStringAsFixed(1)),
+                        style: TextStyles.defaultTex_2,
+                      ),
                     if (radiusKm != null)
-                      Text(loc.coverRadiusKm(radiusKm.toString())),
+                      Text(
+                        loc.coverRadiusKm(radiusKm.toString()),
+                        style: TextStyles.bodyText,
+                      ),
                     if (minSurcharge != null)
-                      Text(loc.homeSurchargeFrom(_money.format(minSurcharge))),
+                      Text(
+                        loc.homeSurchargeFrom(_money.format(minSurcharge)),
+                        style: TextStyles.bodyText,
+                      ),
                   ],
                 ),
               ),
             ],
           ),
           const SizedBox(height: 16),
-          if (bio.isNotEmpty) Text(bio),
+
           const SizedBox(height: 16),
           // TODO: reemplazar por tus SocialButton si ya los tenés
           Wrap(
             spacing: 8,
             children: [
               if ((_barber?['instagram'] as String?)?.isNotEmpty == true)
-                TextButton(onPressed: () {/* launch */}, child: Text('Instagram')),
+                TextButton(
+                  onPressed: () {
+                    /* launch */
+                  },
+                  child: const Text('Instagram'),
+                ),
               if ((_barber?['whatsapp'] as String?)?.isNotEmpty == true)
-                TextButton(onPressed: () {/* launch */}, child: const Text('WhatsApp')),
+                TextButton(
+                  onPressed: () {
+                    /* launch */
+                  },
+                  child: const Text('WhatsApp'),
+                ),
               if ((_barber?['tiktok'] as String?)?.isNotEmpty == true)
-                TextButton(onPressed: () {/* launch */}, child: const Text('TikTok')),
+                TextButton(
+                  onPressed: () {
+                    /* launch */
+                  },
+                  child: const Text('TikTok'),
+                ),
             ],
           ),
-          const Divider(height: 32),
-          Text(loc.servicesTitle, style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: 8),
-          if (_services.isEmpty)
-            Text(loc.noServicesYet),
-          for (final s in _services)
-            ListTile(
-              title: Text(s['name'] ?? ''),
-              subtitle: Text(loc.durationMin((s['duration_min'] ?? 0).toString())),
-              trailing: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(_money.format(s['price'] ?? 0)),
-                  if (s['home_service_surcharge'] != null)
-                    Text(loc.homeSurchargeShort(_money.format(s['home_service_surcharge']))),
-                ],
-              ),
-            ),
+
           const SizedBox(height: 12),
-          
-            FilledButton(
-              onPressed: () {
-                // launchUrl(Uri.parse(weibookUrl!));
-              },
-              child: Text(loc.reserveInWeiBook),
-            ),
+          // (El botón "Reservar en WeiBook" fue eliminado)
           const SizedBox(height: 8),
-          FilledButton.tonal(
+          FilledButton(
+            style: ButtonStyles.redButton,
             onPressed: () {
               context.push('/servicios?barber=${widget.barberId}');
             },
-            child: Text(loc.viewServicesCta),
-          ),
-          const SizedBox(height: 8),
-          FilledButton(
-            onPressed: () {
-              context.push('/reservar?barber=${widget.barberId}&home=1');
-            },
-            child: Text(loc.reserveHomeCta),
+            child: Text(loc.viewServicesCta, style: TextStyles.defaultTex_2),
           ),
         ],
       ),

@@ -144,7 +144,10 @@ class _PantallaPerfilBarberiaState extends State<PantallaPerfilBarberia> {
                   color: cs.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: Icon(Icons.store, size: 42, color: cs.primary),
+                child: Image.asset(
+                  'assets/icons/barbershop.png',
+                  fit: BoxFit.contain,
+                ),
               ),
               const SizedBox(width: 16),
               Expanded(child: Text(name, style: TextStyles.subtitleText)),
