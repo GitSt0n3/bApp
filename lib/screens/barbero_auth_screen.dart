@@ -7,10 +7,75 @@ import '../widgets/map_picker.dart';
 import '../services/auth_Service.dart';
 import 'package:barberiapp/generated/l10n.dart';
 
-const kOAuthRedirectUri = 'com.barberiapp://login-callback/'; // <- igual al que pusiste en Supabase
+import 'package:supabase_flutter/supabase_flutter.dart';
 
+const kOAuthRedirectUri =
+    'com.barberiapp://login-callback/'; // <- igual al que pusiste en Supabase
 
+/// =========================
+///  Helpers Google OAuth
+/// =========================
+Future<void> loginWithGoogle(BuildContext context) async {
+  final supabase = Supabase.instance.client;
+  try {
+    await supabase.auth.signInWithOAuth(
+      OAuthProvider.google,
+      redirectTo: kOAuthRedirectUri,
+      scopes: 'openid email profile',
+      queryParams: {'access_type': 'offline', 'prompt': 'select_account'},
+    );
+  } catch (e) {
+    final loc = S.of(context)!;
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('${loc.errorAutenticando}: $e')));
+  }
+}
 
+Widget googleDivider(BuildContext context) {
+  final cs = Theme.of(context).colorScheme;
+  final loc = S.of(context)!;
+  return Row(
+    children: [
+      Expanded(child: Divider(color: cs.outlineVariant)),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        child: Text(loc.continuarConGoogle, style: TextStyles.bodyText),
+      ),
+      Expanded(child: Divider(color: cs.outlineVariant)),
+    ],
+  );
+}
+
+Widget googleButton(BuildContext context, {bool loading = false}) {
+  final cs = Theme.of(context).colorScheme;
+  return SizedBox(
+    width: double.infinity,
+    child: OutlinedButton.icon(
+      onPressed: loading ? null : () => loginWithGoogle(context),
+      icon:
+          loading
+              ? const SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              )
+              : Image.asset(
+                'assets/icons/social/google.png',
+                width: 20,
+                height: 20,
+              ),
+      label: const Text('Google'),
+      style: OutlinedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        side: BorderSide(color: cs.outlineVariant),
+        foregroundColor: cs.onSurface,
+        backgroundColor: cs.surface,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      ),
+    ),
+  );
+}
 
 class BarberAuthScreen extends StatelessWidget {
   const BarberAuthScreen({super.key});
@@ -35,8 +100,6 @@ class BarberAuthScreen extends StatelessWidget {
     );
   }
 }
-
-
 
 class _LoginForm extends StatefulWidget {
   const _LoginForm();
@@ -116,6 +179,12 @@ class _LoginFormState extends State<_LoginForm> {
                         : Text(loc.entrar),
               ),
             ),
+
+            // ↓↓↓ Aquí va Google
+            const SizedBox(height: 24),
+            googleDivider(context),
+            const SizedBox(height: 12),
+            googleButton(context, loading: _loading),
           ],
         ),
       ),
@@ -235,7 +304,9 @@ class _RegisterFormState extends State<_RegisterForm> {
               ),
               validator:
                   (v) =>
-                      (v == null || !v.contains('@')) ? loc.emailInvalido : null,
+                      (v == null || !v.contains('@'))
+                          ? loc.emailInvalido
+                          : null,
             ),
             const SizedBox(height: 6),
             TextFormField(
@@ -248,9 +319,7 @@ class _RegisterFormState extends State<_RegisterForm> {
               ),
               validator:
                   (v) =>
-                      (v == null || v.length < 6)
-                          ? loc.contrasenaMin6
-                          : null,
+                      (v == null || v.length < 6) ? loc.contrasenaMin6 : null,
             ),
             const SizedBox(height: 6),
             TextFormField(
@@ -261,16 +330,15 @@ class _RegisterFormState extends State<_RegisterForm> {
                 labelText: loc.repetirContrasenaLabel,
                 labelStyle: TextStyle(color: Colors.white70),
               ),
-              validator: (v) => (v != _password.text) ? loc.contrasenaNoCoincide: null,
+              validator:
+                  (v) =>
+                      (v != _password.text) ? loc.contrasenaNoCoincide : null,
             ),
             const SizedBox(height: 6),
             SwitchListTile(
               value: _domicilio,
               onChanged: (v) => setState(() => _domicilio = v),
-              title: Text(
-                loc.ofrezcoDomicilio,
-                style: TextStyles.defaultTex_2,
-              ),
+              title: Text(loc.ofrezcoDomicilio, style: TextStyles.defaultTex_2),
               subtitle: Text(
                 loc.toggleDomicilioHint,
                 style: TextStyle(color: Colors.white70),
