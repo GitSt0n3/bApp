@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../generated/l10n.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class PerfilBarberoDomicilioYRedes extends StatefulWidget {
   final String barberProfileId; // profile_id del barbero (uuid)
@@ -9,6 +10,40 @@ class PerfilBarberoDomicilioYRedes extends StatefulWidget {
     super.key,
     required this.barberProfileId,
   });
+
+  Future<void> _linkGoogle(BuildContext context) async {
+    try {
+      final ok = await Supabase.instance.client.auth.linkIdentity(
+        OAuthProvider.google,
+        redirectTo: 'com.barberiapp://login-callback',
+        queryParams: {'prompt': 'select_account'},
+      );
+
+      if (!ok) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('No se pudo iniciar el flujo de vinculación.'),
+          ),
+        );
+        return;
+      }
+
+      // El usuario actualizado llega por onAuthStateChange → AuthChangeEvent.userUpdated
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('🔗 Se abrió el flujo para vincular Google.'),
+        ),
+      );
+    } on AuthException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error al vincular: ${e.message}')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error inesperado: $e')));
+    }
+  }
 
   @override
   State<PerfilBarberoDomicilioYRedes> createState() =>
@@ -271,7 +306,7 @@ class _PerfilBarberoDomicilioYRedesState
                   },
                   icon: const Icon(Icons.map),
                   label: Text(
-                    _lat == null ? loc.elegirEnMapa: loc.cambiarEnMapa,
+                    _lat == null ? loc.elegirEnMapa : loc.cambiarEnMapa,
                   ),
                 ),
               ],
@@ -287,7 +322,8 @@ class _PerfilBarberoDomicilioYRedesState
           ],
 
           // ===== Redes sociales =====
-           Text(loc.redesSocialesTitulo,
+          Text(
+            loc.redesSocialesTitulo,
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
@@ -330,7 +366,7 @@ class _PerfilBarberoDomicilioYRedesState
           const Divider(height: 32),
 
           // ===== Reservas =====
-           Text(
+          Text(
             loc.appReservasTitulo,
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
@@ -374,6 +410,17 @@ class _PerfilBarberoDomicilioYRedesState
                     )
                     : const Icon(Icons.save),
             label: Text(loc.guardarBtn),
+          ),
+          const Divider(),
+          const Text(
+            'Integraciones',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          FilledButton.icon(
+            onPressed: () => _linkGoogle(context),
+            icon: const Icon(Icons.link),
+            label: const Text('Vincular con Google'),
           ),
         ],
       ),
