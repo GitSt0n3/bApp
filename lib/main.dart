@@ -89,7 +89,7 @@ Future<void> main() async {
        return '/barbero/auth';
 
       // Con sesión: si está en la pantalla de login, redirige al hub de barbero.
-      if (session != null && isAuth) 
+      if (session != null) 
       return '/hub_barbero';
 
       return null;

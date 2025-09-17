@@ -11,6 +11,14 @@ class PerfilBarberoDomicilioYRedes extends StatefulWidget {
     required this.barberProfileId,
   });
 
+  @override
+  State<PerfilBarberoDomicilioYRedes> createState() =>
+      _PerfilBarberoDomicilioYRedesState();
+}
+
+class _PerfilBarberoDomicilioYRedesState
+    extends State<PerfilBarberoDomicilioYRedes> {
+  final _supa = Supabase.instance.client;
   Future<void> _linkGoogle(BuildContext context) async {
     try {
       final ok = await Supabase.instance.client.auth.linkIdentity(
@@ -44,15 +52,6 @@ class PerfilBarberoDomicilioYRedes extends StatefulWidget {
       ).showSnackBar(SnackBar(content: Text('Error inesperado: $e')));
     }
   }
-
-  @override
-  State<PerfilBarberoDomicilioYRedes> createState() =>
-      _PerfilBarberoDomicilioYRedesState();
-}
-
-class _PerfilBarberoDomicilioYRedesState
-    extends State<PerfilBarberoDomicilioYRedes> {
-  final _supa = Supabase.instance.client;
 
   // Estado
   bool _loading = true;

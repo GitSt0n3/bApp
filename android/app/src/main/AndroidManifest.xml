@@ -9,12 +9,11 @@
       android:name="${applicationName}"
       android:icon="@mipmap/ic_launcher">
 
-    <!-- Tu actividad principal -->
+        <!-- Tu actividad principal -->
     <activity
         android:name=".MainActivity"
         android:exported="true"
         android:launchMode="singleTask"
-        
         android:theme="@style/LaunchTheme"
         android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
         android:hardwareAccelerated="true"
@@ -24,26 +23,20 @@
           android:name="io.flutter.embedding.android.NormalTheme"
           android:resource="@style/NormalTheme" />
 
+      <!-- MAIN/LAUNCHER -->
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
         <category android:name="android.intent.category.LAUNCHER"/>
       </intent-filter>
-    </activity>  <!-- ← CERRAR MainActivity AQUÍ -->
 
-    <!-- Actividad de deep link de Supabase (hermana de MainActivity) -->
-    <activity
-        android:name="com.supabase.flutter.supabase_flutter.SupabaseDeeplinksActivity"
-        android:exported="true">
+      <!-- 🔗 Deep link para el callback de Supabase -->
       <intent-filter android:autoVerify="true">
         <action android:name="android.intent.action.VIEW" />
         <category android:name="android.intent.category.DEFAULT" />
         <category android:name="android.intent.category.BROWSABLE" />
-        <data
-          android:scheme="com.barberiapp"
-          android:host="login-callback" />
+        <data android:scheme="com.barberiapp" android:host="login-callback" />
       </intent-filter>
     </activity>
-
     <meta-data
         android:name="flutterEmbedding"
         android:value="2" />
