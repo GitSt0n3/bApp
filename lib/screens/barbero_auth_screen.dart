@@ -79,6 +79,7 @@ Widget googleButton(BuildContext context, {bool loading = false}) {
 
 class BarberAuthScreen extends StatelessWidget {
   const BarberAuthScreen({super.key});
+  
 
   @override
   Widget build(BuildContext context) {

@@ -45,8 +45,8 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Supabase.initialize(
-    url: supabaseUrl,
-    anonKey: supabaseAnonKey,
+    url: EnvPrivate.supabaseUrl,
+    anonKey: EnvPrivate.supabaseAnonKey,
     authOptions: const FlutterAuthClientOptions(autoRefreshToken: true),
   );
   final sp = Supabase.instance.client;
