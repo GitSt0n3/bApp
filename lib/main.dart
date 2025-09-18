@@ -50,12 +50,44 @@ Future<void> main() async {
     authOptions: const FlutterAuthClientOptions(autoRefreshToken: true),
   );
   final sp = Supabase.instance.client;
-
-  // 🔎 LOG TEMPORAL DE AUTH
   sp.auth.onAuthStateChange.listen((data) {
-    debugPrint(
-      'auth> event=${data.event} | hasSession=${data.session != null} | user=${data.session?.user.id}',
-    );
+    final e = data.event;
+    final hasSession = sp.auth.currentSession != null;
+
+    // 👉 Helper para obtener la "location" actual en tu versión de go_router
+    String currentLoc() =>
+        _router.routerDelegate.currentConfiguration.uri.toString();
+
+    final locNow = currentLoc();
+    debugPrint('auth> event=$e | hasSession=$hasSession | location=$locNow');
+
+    final isLoginEvent =
+        e == AuthChangeEvent.signedIn ||
+        e == AuthChangeEvent.initialSession ||
+        (e == AuthChangeEvent.tokenRefreshed && hasSession);
+
+    bool isDeepLinkCallback(String loc) {
+      return loc.contains('login-callback') ||
+          loc.startsWith('com.barberiapp://');
+    }
+
+    if (isLoginEvent && hasSession) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final loc = currentLoc(); // ← usa el helper, NO _router.location
+
+        final shouldAutoJump =
+            loc.isEmpty ||
+            loc == '/' ||
+            loc == '/barbero/auth' ||
+            loc.startsWith('/splash') ||
+            isDeepLinkCallback(loc);
+
+        // 👉 también usa el helper para comparar
+        if (shouldAutoJump && currentLoc() != '/hub_barbero') {
+          _router.go('/hub_barbero');
+        }
+      });
+    }
   });
 
   // Rutas que SÍ requieren sesión (mundo barbero)
@@ -69,10 +101,9 @@ Future<void> main() async {
     '/perfil_b', // prefijo (/perfil_b/:id)
   };
 
-
   _router = GoRouter(
     // 👇 la app del CLIENTE empieza aquí
-    initialLocation: '/',
+    initialLocation: sp.auth.currentSession != null ? '/hub_barbero' : '/',
     refreshListenable: GoRouterRefreshStream(sp.auth.onAuthStateChange),
     redirect: (context, state) {
       final session = sp.auth.currentSession;
@@ -85,12 +116,10 @@ Future<void> main() async {
 
       // Sin sesión: deja navegar libre por el mundo cliente;
       // sólo forza login si intenta entrar a algo protegido.
-      if (session == null && needsAuth)
-       return '/barbero/auth';
+      if (session == null && needsAuth) return '/barbero/auth';
 
       // Con sesión: si está en la pantalla de login, redirige al hub de barbero.
-      if (session != null) 
-      return '/hub_barbero';
+      if (session != null && path == '/barbero/auth') return '/hub_barbero';
 
       return null;
     },
