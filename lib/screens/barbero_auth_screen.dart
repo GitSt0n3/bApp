@@ -6,6 +6,7 @@ import 'package:latlong2/latlong.dart';
 import '../widgets/map_picker.dart';
 import '../services/auth_Service.dart';
 import 'package:barberiapp/generated/l10n.dart';
+import 'package:barberiapp/services/native_google_auth.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -15,21 +16,16 @@ const kOAuthRedirectUri =
 /// =========================
 ///  Helpers Google OAuth
 /// =========================
-Future<void> loginWithGoogle(BuildContext context) async {
-  final supabase = Supabase.instance.client;
-  try {
-    await supabase.auth.signInWithOAuth(
-      OAuthProvider.google,
-      redirectTo: kOAuthRedirectUri,
-      scopes: 'openid email profile',
-      queryParams: {'access_type': 'offline', 'prompt': 'select_account'},
-    );
-  } catch (e) {
-    final loc = S.of(context)!;
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text('${loc.errorAutenticando}: $e')));
-  }
+void _openGoogleModal(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: const Color(0xFF111214),
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    builder: (_) => const _GoogleLoginSheet(),
+  );
 }
 
 Widget googleDivider(BuildContext context) {
@@ -52,7 +48,7 @@ Widget googleButton(BuildContext context, {bool loading = false}) {
   return SizedBox(
     width: double.infinity,
     child: OutlinedButton.icon(
-      onPressed: loading ? null : () => loginWithGoogle(context),
+      onPressed: loading ? null : () => _openGoogleModal(context),
       icon:
           loading
               ? const SizedBox(
@@ -79,7 +75,6 @@ Widget googleButton(BuildContext context, {bool loading = false}) {
 
 class BarberAuthScreen extends StatelessWidget {
   const BarberAuthScreen({super.key});
-  
 
   @override
   Widget build(BuildContext context) {
@@ -361,5 +356,94 @@ class _RegisterFormState extends State<_RegisterForm> {
         ),
       ),
     );
+  }
+}
+
+class _GoogleLoginSheet extends StatefulWidget {
+  const _GoogleLoginSheet();
+
+  @override
+  State<_GoogleLoginSheet> createState() => _GoogleLoginSheetState();
+}
+
+class _GoogleLoginSheetState extends State<_GoogleLoginSheet> {
+  bool _loading = false;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    // Lanza de inmediato el selector de cuentas
+    Future.microtask(_handleGoogle);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return Padding(
+      padding: EdgeInsets.only(
+        left: 20,
+        right: 20,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+        top: 20,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 44,
+            height: 4,
+            decoration: BoxDecoration(
+              color: Colors.white24,
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(height: 16),
+          // Tu leyenda de “Iniciar sesión” se mantiene
+          const Text('Iniciar sesión', textAlign: TextAlign.center),
+          const SizedBox(height: 16),
+
+          if (_loading)
+            const SizedBox(
+              height: 22,
+              width: 22,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            ),
+          if (_error != null) ...[
+            Text(_error!, style: TextStyle(color: cs.error)),
+            const SizedBox(height: 12),
+            FilledButton(
+              onPressed: _handleGoogle,
+              child: const Text('Reintentar'),
+            ),
+          ],
+          const SizedBox(height: 8),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _handleGoogle() async {
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+    try {
+      final res = await signInWithGoogleNative(); // usa TU servicio nativo
+      if (!mounted) return;
+      if (res?.session != null) {
+        Navigator.of(
+          context,
+        ).pop(); // cierra el modal; tu listener global redirige
+      } else {
+        setState(() => _error = 'No se pudo iniciar sesión.');
+      }
+    } on AuthException catch (e) {
+      setState(() => _error = e.message);
+    } catch (e) {
+      setState(() => _error = e.toString());
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
   }
 }
