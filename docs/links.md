@@ -55,3 +55,6 @@ https://raw.githubusercontent.com/GitSt0n3/bApp/refs/heads/main/lib/screens/gene
 https://raw.githubusercontent.com/GitSt0n3/bApp/refs/heads/main/lib/core/text_styles.dart
 section_card.dart → 
 https://raw.githubusercontent.com/GitSt0n3/bApp/refs/heads/main/lib/core/section_card.dart
+
+map_picker.dart  → 
+https://raw.githubusercontent.com/GitSt0n3/bApp/refs/heads/main/lib/widgets/map_picker.dart

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../generated/l10n.dart';
+import 'package:barberiapp/core/section_card.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class PerfilBarberoDomicilioYRedes extends StatefulWidget {
@@ -250,179 +251,116 @@ class _PerfilBarberoDomicilioYRedesState
     if (_loading) {
       return const Center(child: CircularProgressIndicator());
     }
+    // 🔁 REEMPLAZA desde: return SingleChildScrollView(...);
+    // 🔁 HASTA el ); que cierra ese SingleChildScrollView
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // ===== Trabajo a domicilio =====
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(loc.ofrezcoDomicilio),
-              Switch(
-                value: _homeService,
-                onChanged: (v) => setState(() => _homeService = v),
-              ),
-            ],
-          ),
-          if (_homeService) ...[
-            const SizedBox(height: 8),
-            Text('${loc.radioKm} ${_radiusKm.toStringAsFixed(0)}'),
-            Slider(
-              value: _radiusKm,
-              min: 1,
-              max: 50,
-              divisions: 49,
-              label: _radiusKm.toStringAsFixed(0),
-              onChanged: (v) => setState(() => _radiusKm = v),
-            ),
-            const SizedBox(height: 8),
-            TextField(
-              controller: _addrCtrl,
-              decoration: InputDecoration(
-                labelText: loc.direccionBaseLabel,
-                //  labelText: 'Dirección base (opcional)',
-                hintText: loc.direccionLugarHolder,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 12,
+    return CustomScrollView(
+      slivers: [
+        // --- Servicio a domicilio ---
+        SliverToBoxAdapter(
+          child: SectionCard(
+            title: S.of(context)!.ofrezcoDomicilio,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ElevatedButton.icon(
-                  onPressed: _usarUbicacionActual,
-                  icon: const Icon(Icons.my_location),
-                  label: Text(loc.usarmiubicacionctual),
+                // tu Switch actual (no cambies la lógica)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      S.of(context)!.ofrezcoDomicilio,
+                    ),
+                    Switch(
+                      value: _homeService,
+                      onChanged: (v) => setState(() => _homeService = v),
+                    ),
+                  ],
                 ),
-                OutlinedButton.icon(
-                  onPressed: () {
-                    // TODO: abrir picker de mapa (OSM) y setear _lat/_lng/_addrCtrl
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(loc.selectorMapaPendiente)),
-                    );
-                  },
-                  icon: const Icon(Icons.map),
+                if (_homeService) ...[
+                  const SizedBox(height: 8),
+                  // etiqueta del slider con el valor actual
+                  Text(
+                    '${S.of(context)!.radioKm} ${_radiusKm.toStringAsFixed(0)}',
+                  ),
+                  Slider(
+                    value: _radiusKm,
+                    min: 1,
+                    max: 50,
+                    divisions: 49,
+                    label: '${_radiusKm.toStringAsFixed(0)} km',
+                    onChanged: (v) => setState(() => _radiusKm = v),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+
+        // --- Ubicación base ---
+        SliverToBoxAdapter(
+          child: SectionCard(
+            title: S.of(context)!.seleccionaUbicacion,
+            trailing: TextButton.icon(
+              onPressed: _onPickOnMap, // tu handler existente
+              icon: const Icon(Icons.map_outlined),
+              label: Text(S.of(context)!.verEnMapa),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // muestra tu texto/dirección actual
+                Text(_baseAddressText ?? _latLngToString(_baseLatLng)),
+                const SizedBox(height: 8),
+                FilledButton.tonalIcon(
+                  onPressed: _onUseCurrentLocation, // tu handler existente
+                  icon: const Icon(Icons.my_location),
                   label: Text(
-                    _lat == null ? loc.elegirEnMapa : loc.cambiarEnMapa,
+                    S.of(context)!.usarmiubicacionctual,
                   ),
                 ),
               ],
             ),
-            if (_lat != null && _lng != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Text(
-                  'Base: lat ${_lat!.toStringAsFixed(5)}, lng ${_lng!.toStringAsFixed(5)}',
-                ),
-              ),
-            const Divider(height: 32),
-          ],
+          ),
+        ),
 
-          // ===== Redes sociales =====
-          Text(
-            loc.redesSocialesTitulo,
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 8),
-          TextField(
-            controller: _instagramCtrl,
-            decoration: const InputDecoration(
-              labelText: 'Instagram',
-              hintText: 'https://instagram.com/mi_usuario',
+        // --- Redes sociales ---
+        SliverToBoxAdapter(
+          child: SectionCard(
+            title: AppLocalizations.of(context)!.profile_section_social,
+            child: Column(
+              children: [
+                _instagramField(), // reusa tus widgets/métodos actuales
+                _whatsappField(),
+                _facebookField(),
+                _tiktokField(),
+              ],
             ),
-            keyboardType: TextInputType.url,
           ),
-          const SizedBox(height: 8),
-          TextField(
-            controller: _whatsCtrl,
-            decoration: const InputDecoration(
-              labelText: 'WhatsApp',
-              hintText: '+5989xxxxxxx',
-            ),
-            keyboardType: TextInputType.phone,
-          ),
-          const SizedBox(height: 8),
-          TextField(
-            controller: _facebookCtrl,
-            decoration: const InputDecoration(
-              labelText: 'Facebook',
-              hintText: 'https://facebook.com/mi_pagina',
-            ),
-            keyboardType: TextInputType.url,
-          ),
-          const SizedBox(height: 8),
-          TextField(
-            controller: _tiktokCtrl,
-            decoration: const InputDecoration(
-              labelText: 'TikTok',
-              hintText: 'https://www.tiktok.com/@mi_usuario',
-            ),
-            keyboardType: TextInputType.url,
-          ),
+        ),
 
-          const Divider(height: 32),
+        // --- Agenda externa ---
+        SliverToBoxAdapter(
+          child: SectionCard(
+            title: AppLocalizations.of(context)!.profile_section_booking,
+            child: Column(children: [_proveedorDropdown(), _bookingUrlField()]),
+          ),
+        ),
 
-          // ===== Reservas =====
-          Text(
-            loc.appReservasTitulo,
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 8),
-          DropdownButtonFormField<String>(
-            value: _bookingApp,
-            items: const [
-              DropdownMenuItem(value: 'none', child: Text('Ninguna')),
-              DropdownMenuItem(value: 'weibook', child: Text('WeiBook')),
-              DropdownMenuItem(value: 'other', child: Text('Otra')),
-            ],
-            onChanged: (v) {
-              if (v == null) return;
-              setState(() => _bookingApp = v);
-            },
-            decoration: const InputDecoration(labelText: 'Proveedor'),
-          ),
-          const SizedBox(height: 8),
-          TextField(
-            controller: _bookingUrlCtrl,
-            enabled: _bookingApp != 'none',
-            decoration: InputDecoration(
-              labelText: loc.urlReservasLabel,
-              hintText:
-                  _bookingApp == 'weibook'
-                      ? 'https://weibook.uy/tu_barber'
-                      : 'https://mi-reservas.com/usuario',
+        // --- Integraciones ---
+        SliverToBoxAdapter(
+          child: SectionCard(
+            title: AppLocalizations.of(context)!.profile_section_integrations,
+            child: FilledButton.icon(
+              onPressed: _onLinkGoogle,
+              icon: const Icon(Icons.link),
+              label: Text(AppLocalizations.of(context)!.profile_linkWithGoogle),
             ),
-            keyboardType: TextInputType.url,
           ),
+        ),
 
-          const SizedBox(height: 24),
-          ElevatedButton.icon(
-            onPressed: _saving ? null : _guardar,
-            icon:
-                _saving
-                    ? const SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                    : const Icon(Icons.save),
-            label: Text(loc.guardarBtn),
-          ),
-          const Divider(),
-          const Text(
-            'Integraciones',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 8),
-          FilledButton.icon(
-            onPressed: () => _linkGoogle(context),
-            icon: const Icon(Icons.link),
-            label: const Text('Vincular con Google'),
-          ),
-        ],
-      ),
+        // espacio para que no tape el botón inferior (si tu Scaffold lo usa)
+        const SliverPadding(padding: EdgeInsets.only(bottom: 88)),
+      ],
     );
   }
 }
