@@ -32,8 +32,12 @@ Future<AuthResponse?> signInWithGoogleNative() async {
   );
 }
 
-// Helper: cerrar sesión en Google y Supabase
 Future<void> googleSignOut() async {
-  await googleSignIn.signOut();
+  try {
+    await googleSignIn.signOut();
+    await googleSignIn.disconnect(); // 👈 esto borra la cuenta recordada
+  } catch (_) {
+    // ignoramos si ya estaba desconectado
+  }
   await Supabase.instance.client.auth.signOut();
 }

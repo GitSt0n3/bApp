@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
-
+import 'package:barberiapp/core/app_colors.dart';
+import 'package:barberiapp/core/button_styles.dart';
+import 'package:barberiapp/core/text_styles.dart';
 import '../widgets/map_picker.dart';
 import '../services/barbershops_service.dart';
 import 'package:barberiapp/generated/l10n.dart';

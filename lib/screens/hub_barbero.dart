@@ -5,6 +5,7 @@ import 'package:barberiapp/core/button_styles.dart';
 import 'package:barberiapp/core/app_colors.dart';
 import 'package:barberiapp/core/text_styles.dart';
 import 'package:barberiapp/generated/l10n.dart';
+import 'package:barberiapp/services/native_google_auth.dart';
 
 class HubBarbero extends StatefulWidget {
   const HubBarbero({super.key});
@@ -49,6 +50,14 @@ class _HubBarberoState extends State<HubBarbero> {
 
   Future<void> _logout() async {
     try {
+      // Cierra sesión en Google
+      try {
+        await googleSignIn.signOut();
+        await googleSignIn.disconnect(); // 👈 limpia la cuenta recordada
+      } catch (_) {
+        // ignoramos errores si ya estaba desconectado
+      }
+
       await Supabase.instance.client.auth.signOut();
     } finally {
       if (!mounted) return;
