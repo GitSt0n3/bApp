@@ -53,3 +53,5 @@ https://raw.githubusercontent.com/GitSt0n3/bApp/refs/heads/main/lib/screens/gene
 - social_buttons.dart → https://raw.githubusercontent.com/GitSt0n3/bApp/refs/heads/main/lib/core/social_button.dart
 - text_syles.dart → 
 https://raw.githubusercontent.com/GitSt0n3/bApp/refs/heads/main/lib/core/text_styles.dart
+section_card.dart → 
+https://raw.githubusercontent.com/GitSt0n3/bApp/refs/heads/main/lib/core/section_card.dart
