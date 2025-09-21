@@ -216,5 +216,6 @@
   "fieldEmailOptional": "Email (opcional)",
   "snackReservaConfirmada": "¡Reserva confirmada!",
   "snackReservaError": "No se pudo reservar: {error}",
-  "oContinuarCon": "o continuar con"
+  "oContinuarCon": "o continuar con",
+  "profile_section_integrations": "Integraciones"
 }

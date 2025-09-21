@@ -301,7 +301,7 @@ class _PerfilBarberoDomicilioYRedesState
           child: SectionCard(
             title: S.of(context)!.seleccionaUbicacion,
             trailing: TextButton.icon(
-              onPressed: _onPickOnMap, // tu handler existente
+              onPressed: null,//_onPickOnMap, // tu handler existente
               icon: const Icon(Icons.map_outlined),
               label: Text(S.of(context)!.verEnMapa),
             ),
@@ -309,10 +309,10 @@ class _PerfilBarberoDomicilioYRedesState
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // muestra tu texto/dirección actual
-                Text(_baseAddressText ?? _latLngToString(_baseLatLng)),
+               // Text(_baseAddressText ?? _latLngToString(_baseLatLng)),
                 const SizedBox(height: 8),
                 FilledButton.tonalIcon(
-                  onPressed: _onUseCurrentLocation, // tu handler existente
+                  onPressed: null,//_onUseCurrentLocation, // tu handler existente
                   icon: const Icon(Icons.my_location),
                   label: Text(
                     S.of(context)!.usarmiubicacionctual,
@@ -326,34 +326,29 @@ class _PerfilBarberoDomicilioYRedesState
         // --- Redes sociales ---
         SliverToBoxAdapter(
           child: SectionCard(
-            title: AppLocalizations.of(context)!.profile_section_social,
+            title: S.of(context)!.redesSocialesTitulo,
             child: Column(
               children: [
-                _instagramField(), // reusa tus widgets/métodos actuales
-                _whatsappField(),
-                _facebookField(),
-                _tiktokField(),
+                // _instagramField(), // reusa tus widgets/métodos actuales
+                // _whatsappField(),
+                // _facebookField(),
+                // _tiktokField(),
               ],
             ),
           ),
         ),
 
         // --- Agenda externa ---
-        SliverToBoxAdapter(
-          child: SectionCard(
-            title: AppLocalizations.of(context)!.profile_section_booking,
-            child: Column(children: [_proveedorDropdown(), _bookingUrlField()]),
-          ),
-        ),
+        
 
         // --- Integraciones ---
         SliverToBoxAdapter(
           child: SectionCard(
-            title: AppLocalizations.of(context)!.profile_section_integrations,
+            title: S.of(context)!.profile_section_integrations,
             child: FilledButton.icon(
-              onPressed: _onLinkGoogle,
+              onPressed: null,//_onLinkGoogle,
               icon: const Icon(Icons.link),
-              label: Text(AppLocalizations.of(context)!.profile_linkWithGoogle),
+              label: Text(S.of(context)!.continuarConGoogle),
             ),
           ),
         ),

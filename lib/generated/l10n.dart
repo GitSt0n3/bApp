@@ -1138,6 +1138,12 @@ abstract class S {
   /// In en, this message translates to:
   /// **'o continuar con'**
   String get oContinuarCon;
+
+  /// No description provided for @profile_section_integrations.
+  ///
+  /// In en, this message translates to:
+  /// **'Integrations'**
+  String get profile_section_integrations;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

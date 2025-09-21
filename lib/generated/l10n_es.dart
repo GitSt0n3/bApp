@@ -549,4 +549,7 @@ class SEs extends S {
 
   @override
   String get oContinuarCon => 'o continuar con';
+
+  @override
+  String get profile_section_integrations => 'Integraciones';
 }
