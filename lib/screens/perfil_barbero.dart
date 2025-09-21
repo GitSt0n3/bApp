@@ -4,6 +4,12 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../generated/l10n.dart';
 import 'package:barberiapp/core/section_card.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:http/http.dart' as http;
+import 'package:barberiapp/core/social_button.dart'; // ruta según tu proyecto
+// si pegaste el helper que te pasé:
+import 'package:barberiapp/core/social_utils.dart';
+
 
 class PerfilBarberoDomicilioYRedes extends StatefulWidget {
   final String barberProfileId; // profile_id del barbero (uuid)
@@ -251,8 +257,6 @@ class _PerfilBarberoDomicilioYRedesState
     if (_loading) {
       return const Center(child: CircularProgressIndicator());
     }
-    // 🔁 REEMPLAZA desde: return SingleChildScrollView(...);
-    // 🔁 HASTA el ); que cierra ese SingleChildScrollView
 
     return CustomScrollView(
       slivers: [
@@ -267,9 +271,7 @@ class _PerfilBarberoDomicilioYRedesState
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      S.of(context)!.ofrezcoDomicilio,
-                    ),
+                    Text(S.of(context)!.ofrezcoDomicilio),
                     Switch(
                       value: _homeService,
                       onChanged: (v) => setState(() => _homeService = v),
@@ -301,7 +303,7 @@ class _PerfilBarberoDomicilioYRedesState
           child: SectionCard(
             title: S.of(context)!.seleccionaUbicacion,
             trailing: TextButton.icon(
-              onPressed: null,//_onPickOnMap, // tu handler existente
+              onPressed: null, //_onPickOnMap, // tu handler existente
               icon: const Icon(Icons.map_outlined),
               label: Text(S.of(context)!.verEnMapa),
             ),
@@ -309,14 +311,13 @@ class _PerfilBarberoDomicilioYRedesState
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // muestra tu texto/dirección actual
-               // Text(_baseAddressText ?? _latLngToString(_baseLatLng)),
+                // Text(_baseAddressText ?? _latLngToString(_baseLatLng)),
                 const SizedBox(height: 8),
                 FilledButton.tonalIcon(
-                  onPressed: null,//_onUseCurrentLocation, // tu handler existente
+                  onPressed:
+                      null, //_onUseCurrentLocation, // tu handler existente
                   icon: const Icon(Icons.my_location),
-                  label: Text(
-                    S.of(context)!.usarmiubicacionctual,
-                  ),
+                  label: Text(S.of(context)!.usarmiubicacionctual),
                 ),
               ],
             ),
@@ -329,24 +330,51 @@ class _PerfilBarberoDomicilioYRedesState
             title: S.of(context)!.redesSocialesTitulo,
             child: Column(
               children: [
-                // _instagramField(), // reusa tus widgets/métodos actuales
-                // _whatsappField(),
-                // _facebookField(),
-                // _tiktokField(),
+                const SizedBox(height: 8),
+
+                // Instagram
+                SocialField(
+                  platform: SocialPlatform.instagram,
+                  initial: _ig, // o barber.instagram_url
+                  onChanged: (v) => setState(() => _ig = v),
+                ),
+                const SizedBox(height: 12),
+
+                // WhatsApp
+                SocialField(
+                  platform: SocialPlatform.whatsapp,
+                  initial: _wa, // o barber.whatsapp
+                  onChanged: (v) => setState(() => _wa = v),
+                ),
+                const SizedBox(height: 12),
+
+                // Facebook
+                SocialField(
+                  platform: SocialPlatform.facebook,
+                  initial: _fb, // o barber.facebook_url
+                  onChanged: (v) => setState(() => _fb = v),
+                ),
+                const SizedBox(height: 12),
+
+                // TikTok
+                SocialField(
+                  platform: SocialPlatform.tiktok,
+                  initial: _tt, // o barber.tiktok_url
+                  onChanged: (v) => setState(() => _tt = v),
+                ),
               ],
             ),
           ),
         ),
 
         // --- Agenda externa ---
-        
 
         // --- Integraciones ---
         SliverToBoxAdapter(
           child: SectionCard(
             title: S.of(context)!.profile_section_integrations,
             child: FilledButton.icon(
-              onPressed: null,//_onLinkGoogle,
+              onPressed: null, //_onLinkGoogle,
               icon: const Icon(Icons.link),
               label: Text(S.of(context)!.continuarConGoogle),
             ),

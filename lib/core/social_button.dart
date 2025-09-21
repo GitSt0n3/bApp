@@ -6,12 +6,16 @@ class SocialButton extends StatelessWidget {
   final String assetPath;
   final String url;
   final double size;
+  final VoidCallback? onTap;
+  final bool? verified; // null = desconocido, true = ok, false = inválido
 
   const SocialButton({
     super.key,
     required this.assetPath,
     required this.url,
     this.size = 32,
+    this.onTap,
+    this.verified,
   });
 
   Future<void> _launch() async {
@@ -25,33 +29,31 @@ class SocialButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Widget icon = _isSvg
-        ? SvgPicture.asset(
-            assetPath,
-            width: size,
-            height: size,
-            placeholderBuilder: (_) => SizedBox(
-              width: 32,
-              height: 32,
-              child: const Center(
-                child: CircularProgressIndicator(strokeWidth: 2),
-              ),
-            ),
-            clipBehavior: Clip.hardEdge,
-          )
-        : Image.asset(
-            assetPath,
-            width: size,
-            height: size,
-            fit: BoxFit.contain,
-            filterQuality: FilterQuality.high, // 🔑 mejora nitidez PNG
-            errorBuilder: (_, __, ___) => const Icon(Icons.broken_image),
-          );
+    final Widget icon =
+        _isSvg
+            ? SvgPicture.asset(
+              assetPath,
+              width: size,
+              height: size,
+              placeholderBuilder:
+                  (_) => SizedBox(
+                    width: 32,
+                    height: 32,
+                    child: const Center(
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                  ),
+              clipBehavior: Clip.hardEdge,
+            )
+            : Image.asset(
+              assetPath,
+              width: size,
+              height: size,
+              fit: BoxFit.contain,
+              filterQuality: FilterQuality.high, // 🔑 mejora nitidez PNG
+              errorBuilder: (_, __, ___) => const Icon(Icons.broken_image),
+            );
 
-    return IconButton(
-      onPressed: _launch,
-      tooltip: url,
-      icon: icon,
-    );
+    return IconButton(onPressed: _launch, tooltip: url, icon: icon);
   }
 }

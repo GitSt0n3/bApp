@@ -58,3 +58,8 @@ https://raw.githubusercontent.com/GitSt0n3/bApp/refs/heads/main/lib/core/section
 
 map_picker.dart  → 
 https://raw.githubusercontent.com/GitSt0n3/bApp/refs/heads/main/lib/widgets/map_picker.dart
+
+
+## IDEAS/ innovación TOMAR EN CUENTA
+ideas.txt →
+https://raw.githubusercontent.com/GitSt0n3/bApp/refs/heads/main/Ideas.txt 
