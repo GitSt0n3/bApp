@@ -335,35 +335,35 @@ class _PerfilBarberoDomicilioYRedesState
                 const SizedBox(height: 8),
 
                 // // Instagram
-                // SocialField(
-                //   platform: SocialPlatform.instagram,
-                //   initial: _ig, // o barber.instagram_url
-                //   onChanged: (v) => setState(() => _ig = v),
-                // ),
-                // const SizedBox(height: 12),
+                SocialField(
+                  platform: SocialPlatform.instagram,
+                  initial: Ig, // o barber.instagram_url
+                  onChanged: (v) => setState(() => _ig = v),
+                ),
+                const SizedBox(height: 12),
 
-                // // WhatsApp
-                // SocialField(
-                //   platform: SocialPlatform.whatsapp,
-                //   initial: _wa, // o barber.whatsapp
-                //   onChanged: (v) => setState(() => _wa = v),
-                // ),
-                // const SizedBox(height: 12),
+                // WhatsApp
+                SocialField(
+                  platform: SocialPlatform.whatsapp,
+                  initial: _wa, // o barber.whatsapp
+                  onChanged: (v) => setState(() => _wa = v),
+                ),
+                const SizedBox(height: 12),
 
-                // // Facebook
-                // SocialField(
-                //   platform: SocialPlatform.facebook,
-                //   initial: _fb, // o barber.facebook_url
-                //   onChanged: (v) => setState(() => _fb = v),
-                // ),
-                // const SizedBox(height: 12),
+                // Facebook
+                SocialField(
+                  platform: SocialPlatform.facebook,
+                  initial: _fb, // o barber.facebook_url
+                  onChanged: (v) => setState(() => _fb = v),
+                ),
+                const SizedBox(height: 12),
 
-                // // TikTok
-                // SocialField(
-                //   platform: SocialPlatform.tiktok,
-                //   initial: _tt, // o barber.tiktok_url
-                //   onChanged: (v) => setState(() => _tt = v),
-                // ),
+                // TikTok
+                SocialField(
+                  platform: SocialPlatform.tiktok,
+                  initial: _tt, // o barber.tiktok_url
+                  onChanged: (v) => setState(() => _tt = v),
+                ),
               ],
             ),
           ),
