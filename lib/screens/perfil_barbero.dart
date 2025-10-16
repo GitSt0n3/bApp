@@ -6,12 +6,12 @@ import 'package:barberiapp/core/section_card.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
+import 'package:barberiapp/core/app_colors.dart';
 import 'package:barberiapp/core/social_button.dart'; // ruta según tu proyecto
 // si pegaste el helper que te pasé:
 //import 'package:barberiapp/core/social_utils.dart';
 import '../widgets/social_field.dart';
-
-
+import '../core/social_utils.dart';
 
 class PerfilBarberoDomicilioYRedes extends StatefulWidget {
   final String barberProfileId; // profile_id del barbero (uuid)
@@ -28,6 +28,8 @@ class PerfilBarberoDomicilioYRedes extends StatefulWidget {
 class _PerfilBarberoDomicilioYRedesState
     extends State<PerfilBarberoDomicilioYRedes> {
   final _supa = Supabase.instance.client;
+  // --- Redes sociales ---
+
   Future<void> _linkGoogle(BuildContext context) async {
     try {
       final ok = await Supabase.instance.client.auth.linkIdentity(
@@ -84,6 +86,7 @@ class _PerfilBarberoDomicilioYRedesState
   @override
   void initState() {
     super.initState();
+
     //  _load();
   }
 
@@ -335,34 +338,82 @@ class _PerfilBarberoDomicilioYRedesState
                 const SizedBox(height: 8),
 
                 // // Instagram
-                SocialField(
-                  platform: SocialPlatform.instagram,
-                  initial: Ig, // o barber.instagram_url
-                  onChanged: (v) => setState(() => _ig = v),
+                // --- Instagram ---
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 8),
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: AppColors.appBarbkgs,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: AppColors.primary.withOpacity(0.3),
+                    ),
+                  ),
+                  child: SocialField(
+                    platform: SocialPlatform.instagram,
+                    initial: _instagramCtrl.text, // ✅ usa solo el controlador
+                    onChanged:
+                        (v) => setState(() => _instagramCtrl.text = v ?? ''),
+                  ),
                 ),
                 const SizedBox(height: 12),
 
-                // WhatsApp
-                SocialField(
-                  platform: SocialPlatform.whatsapp,
-                  initial: _wa, // o barber.whatsapp
-                  onChanged: (v) => setState(() => _wa = v),
+                // --- WhatsApp ---
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 8),
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: AppColors.appBarbkgs,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: AppColors.primary.withOpacity(0.3),
+                    ),
+                  ),
+                  child: SocialField(
+                    platform: SocialPlatform.whatsapp,
+                    initial: _whatsCtrl.text,
+                    onChanged: (v) => setState(() => _whatsCtrl.text = v ?? ''),
+                  ),
                 ),
                 const SizedBox(height: 12),
 
-                // Facebook
-                SocialField(
-                  platform: SocialPlatform.facebook,
-                  initial: _fb, // o barber.facebook_url
-                  onChanged: (v) => setState(() => _fb = v),
+                // --- Facebook ---
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 8),
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: AppColors.appBarbkgs,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: AppColors.primary.withOpacity(0.3),
+                    ),
+                  ),
+                  child: SocialField(
+                    platform: SocialPlatform.facebook,
+                    initial: _facebookCtrl.text,
+                    onChanged:
+                        (v) => setState(() => _facebookCtrl.text = v ?? ''),
+                  ),
                 ),
                 const SizedBox(height: 12),
 
-                // TikTok
-                SocialField(
-                  platform: SocialPlatform.tiktok,
-                  initial: _tt, // o barber.tiktok_url
-                  onChanged: (v) => setState(() => _tt = v),
+                // --- TikTok ---
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 8),
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: AppColors.appBarbkgs,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: AppColors.primary.withOpacity(0.3),
+                    ),
+                  ),
+                  child: SocialField(
+                    platform: SocialPlatform.tiktok,
+                    initial: _tiktokCtrl.text,
+                    onChanged:
+                        (v) => setState(() => _tiktokCtrl.text = v ?? ''),
+                  ),
                 ),
               ],
             ),

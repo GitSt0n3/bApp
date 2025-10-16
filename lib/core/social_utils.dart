@@ -2,10 +2,15 @@ enum SocialPlatform { instagram, whatsapp, facebook, tiktok, web }
 
 class SocialLink {
   final SocialPlatform platform;
-  final String input;      // lo que escribe el usuario
-  final String url;        // URL normalizada para abrir
-  final String? deepLink;  // esquema app si existe (fallback a url)
-  const SocialLink({required this.platform, required this.input, required this.url, this.deepLink});
+  final String input; // lo que escribe el usuario
+  final String url; // URL normalizada para abrir
+  final String? deepLink; // esquema app si existe (fallback a url)
+  const SocialLink({
+    required this.platform,
+    required this.input,
+    required this.url,
+    this.deepLink,
+  });
 }
 
 class SocialUtils {
@@ -16,13 +21,17 @@ class SocialUtils {
         final handle = t
             .replaceAll(RegExp(r'https?://(www\.)?instagram\.com/'), '')
             .replaceAll('@', '')
-            .split('?').first.replaceAll('/', '');
+            .split('?')
+            .first
+            .replaceAll('/', '');
         return 'https://instagram.com/$handle';
       case SocialPlatform.facebook:
         if (t.startsWith('http')) return t;
         return 'https://facebook.com/$t';
       case SocialPlatform.tiktok:
-        final handle = t.replaceAll(RegExp(r'https?://(www\.)?tiktok\.com/@'), '').replaceAll('@', '');
+        final handle = t
+            .replaceAll(RegExp(r'https?://(www\.)?tiktok\.com/@'), '')
+            .replaceAll('@', '');
         return 'https://www.tiktok.com/@$handle';
       case SocialPlatform.whatsapp:
         final digits = t.replaceAll(RegExp(r'\D'), '');
@@ -53,15 +62,36 @@ class SocialUtils {
   static bool isValid(SocialPlatform p, String raw) {
     switch (p) {
       case SocialPlatform.instagram:
-        return RegExp(r'^[A-Za-z0-9._]{1,30}$').hasMatch(raw.replaceAll('@', '').split('/').last);
+        return RegExp(
+          r'^[A-Za-z0-9._]{1,30}$',
+        ).hasMatch(raw.replaceAll('@', '').split('/').last);
       case SocialPlatform.facebook:
         return raw.length >= 3;
       case SocialPlatform.tiktok:
-        return RegExp(r'^[A-Za-z0-9._]{1,30}$').hasMatch(raw.replaceAll('@', '').split('@').last);
+        return RegExp(
+          r'^[A-Za-z0-9._]{1,30}$',
+        ).hasMatch(raw.replaceAll('@', '').split('@').last);
       case SocialPlatform.whatsapp:
-        return RegExp(r'^\+?\d{8,15}$').hasMatch(raw.replaceAll(RegExp(r'\D'), ''));
+        return RegExp(
+          r'^\+?\d{8,15}$',
+        ).hasMatch(raw.replaceAll(RegExp(r'\D'), ''));
       case SocialPlatform.web:
         return RegExp(r'^(https?://)?[^\s]+\.[^\s]+').hasMatch(raw);
+    }
+  }
+
+  static String getSocialAsset(SocialPlatform platform) {
+    switch (platform) {
+      case SocialPlatform.instagram:
+        return 'assets/icons/social/Instagram.png';
+      case SocialPlatform.whatsapp:
+        return 'assets/icons/social/whatsapp.png';
+      case SocialPlatform.facebook:
+        return 'assets/icons/social/facebook.png';
+      case SocialPlatform.tiktok:
+        return 'assets/icons/social/tiktok.png';
+      default:
+        return 'assets/icons/social/google.png'; // o usa el ícono que prefieras
     }
   }
 }

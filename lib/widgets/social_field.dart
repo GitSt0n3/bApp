@@ -4,8 +4,9 @@ import 'dart:io' show HttpClient; // solo móvil
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../core/social_utils.dart';
+import 'package:barberiapp/core/button_styles.dart';
 
-enum SocialPlatform { instagram, whatsapp, facebook, tiktok }
 
 class SocialField extends StatefulWidget {
   const SocialField({
@@ -44,28 +45,48 @@ class _SocialFieldState extends State<SocialField> {
   // ---------- UI helpers ----------
   String _label() {
     switch (widget.platform) {
-      case SocialPlatform.instagram: return 'Instagram';
-      case SocialPlatform.whatsapp:  return 'WhatsApp';
-      case SocialPlatform.facebook:  return 'Facebook';
-      case SocialPlatform.tiktok:    return 'TikTok';
+      case SocialPlatform.instagram:
+        return 'Instagram';
+      case SocialPlatform.whatsapp:
+        return 'WhatsApp';
+      case SocialPlatform.facebook:
+        return 'Facebook';
+      case SocialPlatform.tiktok:
+        return 'TikTok';
+      default: 
+        return '';
     }
   }
 
   String _hint() {
     switch (widget.platform) {
-      case SocialPlatform.instagram: return '@usuario o enlace';
-      case SocialPlatform.whatsapp:  return '+54911... (formato internacional)';
-      case SocialPlatform.facebook:  return 'usuario o enlace';
-      case SocialPlatform.tiktok:    return '@usuario o enlace';
+      case SocialPlatform.instagram:
+        return '@usuario o enlace';
+      case SocialPlatform.whatsapp:
+        return '+54911... (formato internacional)';
+      case SocialPlatform.facebook:
+        return 'usuario o enlace';
+      case SocialPlatform.tiktok:
+        return '@usuario o enlace';
+      default:
+        return 'Web'; // o el texto genérico que prefieras
     }
   }
 
   Icon _icon() {
     switch (widget.platform) {
-      case SocialPlatform.instagram: return const Icon(Icons.camera_alt_outlined);
-      case SocialPlatform.whatsapp:  return const Icon(Icons.chat_bubble_outline);
-      case SocialPlatform.facebook:  return const Icon(Icons.facebook_outlined);
-      case SocialPlatform.tiktok:    return const Icon(Icons.music_note);
+      case SocialPlatform.instagram:
+        return const Icon(Icons.camera_alt_outlined);
+      case SocialPlatform.whatsapp:
+        return const Icon(Icons.chat_bubble_outline);
+      case SocialPlatform.facebook:
+        return const Icon(Icons.facebook_outlined);
+      case SocialPlatform.tiktok:
+        return const Icon(Icons.music_note);
+      default:
+        return const Icon(
+          Icons.music_note,
+        ); // o el texto genérico que prefieras
     }
   }
 
@@ -79,7 +100,8 @@ class _SocialFieldState extends State<SocialField> {
         final h = raw
             .replaceAll(RegExp(r'https?://(www\.)?instagram\.com/'), '')
             .replaceAll('@', '')
-            .split('?').first
+            .split('?')
+            .first
             .replaceAll('/', '');
         if (!_isHandle(h)) return null;
         return Uri.parse('https://www.instagram.com/$h/');
@@ -90,7 +112,8 @@ class _SocialFieldState extends State<SocialField> {
         final h = raw
             .replaceAll(RegExp(r'https?://(www\.)?tiktok\.com/@'), '')
             .replaceAll('@', '')
-            .split('?').first
+            .split('?')
+            .first
             .replaceAll('/', '');
         if (!_isHandle(h)) return null;
         return Uri.parse('https://www.tiktok.com/@$h');
@@ -98,6 +121,8 @@ class _SocialFieldState extends State<SocialField> {
         final d = raw.replaceAll(RegExp(r'\D'), '');
         if (d.length < 8 || d.length > 15) return null;
         return Uri.parse('https://wa.me/$d');
+      default:
+        return Uri.parse(''); // o el texto genérico que prefieras
     }
   }
 
@@ -119,26 +144,37 @@ class _SocialFieldState extends State<SocialField> {
           return 'Número internacional válido (+cód. país)';
         }
         return null;
+      default:
+        return ''; // o el texto genérico que prefieras
     }
   }
 
-  bool _isHandle(String h) =>
-      RegExp(r'^[A-Za-z0-9._]{2,30}$').hasMatch(h);
+  bool _isHandle(String h) => RegExp(r'^[A-Za-z0-9._]{2,30}$').hasMatch(h);
 
   // ---------- Acciones ----------
   Future<void> _checkExists() async {
     final url = _buildUrl();
     if (url == null) {
-      setState(() { _exists = false; _error = 'Link inválido'; });
+      setState(() {
+        _exists = false;
+        _error = 'Link inválido';
+      });
       return;
     }
     if (kIsWeb) {
       // Evitamos CORS en Web; luego podemos mover la verificación a una Cloud Function.
-      setState(() { _exists = null; _error = 'Validación no disponible en Web'; });
+      setState(() {
+        _exists = null;
+        _error = 'Validación no disponible en Web';
+      });
       return;
     }
 
-    setState(() { _checking = true; _error = null; _exists = null; });
+    setState(() {
+      _checking = true;
+      _error = null;
+      _exists = null;
+    });
 
     final client = HttpClient()..connectionTimeout = const Duration(seconds: 6);
     try {
@@ -149,10 +185,16 @@ class _SocialFieldState extends State<SocialField> {
       setState(() => _exists = ok);
     } on TimeoutException {
       if (!mounted) return;
-      setState(() { _exists = false; _error = 'Tiempo agotado'; });
+      setState(() {
+        _exists = false;
+        _error = 'Tiempo agotado';
+      });
     } catch (_) {
       if (!mounted) return;
-      setState(() { _exists = false; _error = 'Error de red'; });
+      setState(() {
+        _exists = false;
+        _error = 'Error de red';
+      });
     } finally {
       client.close(force: true);
       if (mounted) setState(() => _checking = false);
@@ -161,7 +203,10 @@ class _SocialFieldState extends State<SocialField> {
 
   Future<void> _open() async {
     final url = _buildUrl();
-    if (url == null) { setState(() => _error = 'Link inválido'); return; }
+    if (url == null) {
+      setState(() => _error = 'Link inválido');
+      return;
+    }
     await launchUrl(url, mode: LaunchMode.externalApplication);
   }
 
@@ -176,42 +221,61 @@ class _SocialFieldState extends State<SocialField> {
           controller: _c,
           onChanged: (v) {
             widget.onChanged(v.trim().isEmpty ? null : v.trim());
-            setState(() { _exists = null; _error = null; });
+            setState(() {
+              _exists = null;
+              _error = null;
+            });
           },
           decoration: InputDecoration(
             labelText: _label(),
             hintText: _hint(),
-            prefixIcon: _icon(),
+            prefixIcon: Padding(
+              padding: const EdgeInsets.all(10),
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 250),
+                child: Image.asset(
+                  SocialUtils.getSocialAsset(widget.platform),
+                  key: ValueKey(widget.platform),
+                  width: 22,
+                  height: 22,
+                ),
+              ),
+            ),
+
             errorText: _error ?? localError,
           ),
         ),
         const SizedBox(height: 8),
         Row(
-          children: [
-            OutlinedButton.icon(
-              icon: const Icon(Icons.link),
-              label: const Text('Abrir'),
-              onPressed: _open,
-            ),
-            const SizedBox(width: 8),
-            OutlinedButton.icon(
-              icon: _checking
-                  ? const SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Icon(Icons.check_circle_outline),
-              label: const Text('Validar'),
-              onPressed: (localError == null && !_checking) ? _checkExists : null,
-            ),
-            const Spacer(),
-            if (_exists == true)
-              _Pill(text: 'Verificado', ok: true)
-            else if (_exists == false)
-              _Pill(text: 'No encontrado', ok: false),
-          ],
-        ),
+  children: [
+    FilledButton.icon(
+      style: ButtonStyles.redButton, // ✅ estilo pro
+      icon: const Icon(Icons.link),
+      label: const Text('Abrir'),
+      onPressed: _open,
+    ),
+    const SizedBox(width: 8),
+    FilledButton.icon(
+      style: ButtonStyles.greyButton, // ✅ contraste
+      icon: _checking
+          ? const SizedBox(
+              width: 16,
+              height: 16,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            )
+          : const Icon(Icons.check_circle_outline),
+      label: const Text('Validar'),
+      onPressed:
+          (localError == null && !_checking) ? _checkExists : null,
+    ),
+    const Spacer(),
+    if (_exists == true)
+      _Pill(text: 'Verificado', ok: true)
+    else if (_exists == false)
+      _Pill(text: 'No encontrado', ok: false),
+  ],
+),
+
       ],
     );
   }
