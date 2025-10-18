@@ -3,7 +3,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../generated/l10n.dart';
 import 'package:barberiapp/core/section_card.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 import 'package:barberiapp/core/app_colors.dart';
@@ -86,8 +85,6 @@ class _PerfilBarberoDomicilioYRedesState
   @override
   void initState() {
     super.initState();
-
-    //  _load();
   }
 
   @override
