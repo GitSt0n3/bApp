@@ -1,4 +1,4 @@
-// (archivo completo, modificada una línea: onPressed del botón de Google)
+// (archivo completo, modificado: botones de mapa/ubicación habilitados, añadido _onPickOnMap y botón Guardar)
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -8,10 +8,15 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 import 'package:barberiapp/core/app_colors.dart';
 import 'package:barberiapp/core/social_button.dart'; // ruta según tu proyecto
+import 'package:barberiapp/core/button_styles.dart'; // para el botón Guardar
 // si pegaste el helper que te pasé:
 //import 'package:barberiapp/core/social_utils.dart';
 import '../widgets/social_field.dart';
 import '../core/social_utils.dart';
+
+// Nuevas importaciones para el selector de mapa
+import 'package:latlong2/latlong.dart';
+import '../widgets/map_picker.dart';
 
 class PerfilBarberoDomicilioYRedes extends StatefulWidget {
   final String barberProfileId; // profile_id del barbero (uuid)
@@ -182,6 +187,23 @@ class _PerfilBarberoDomicilioYRedesState
     }
   }
 
+  // Nuevo: abrir MapPicker y recoger resultado
+  Future<void> _onPickOnMap() async {
+    final initial = LatLng(_lat ?? -34.9011, _lng ?? -56.1645);
+    final res = await Navigator.push<MapPickerResult?>(
+      context,
+      MaterialPageRoute(builder: (_) => MapPicker(initial: initial)),
+    );
+    if (res != null) {
+      setState(() {
+        _lat = res.lat;
+        _lng = res.lon;
+        _addrCtrl.text = res.address ??
+            '${res.lat.toStringAsFixed(6)}, ${res.lon.toStringAsFixed(6)}';
+      });
+    }
+  }
+
   bool _isValidUrl(String s) {
     if (s.trim().isEmpty) return true; // campo opcional
     final uri = Uri.tryParse(s.trim());
@@ -306,7 +328,7 @@ class _PerfilBarberoDomicilioYRedesState
           child: SectionCard(
             title: S.of(context)!.seleccionaUbicacion,
             trailing: TextButton.icon(
-              onPressed: null, //_onPickOnMap, // tu handler existente
+              onPressed: _onPickOnMap, //_onPickOnMap, // handler añadido
               icon: const Icon(Icons.map_outlined),
               label: Text(S.of(context)!.verEnMapa),
             ),
@@ -317,11 +339,27 @@ class _PerfilBarberoDomicilioYRedesState
                 // Text(_baseAddressText ?? _latLngToString(_baseLatLng)),
                 const SizedBox(height: 8),
                 FilledButton.tonalIcon(
-                  onPressed:
-                      null, //_onUseCurrentLocation, // tu handler existente
+                  onPressed: _usarUbicacionActual, //_onUseCurrentLocation, // handler existente
                   icon: const Icon(Icons.my_location),
                   label: Text(S.of(context)!.usarmiubicacionctual),
                 ),
+                const SizedBox(height: 8),
+                // Muestra la dirección / coordenadas recogidas
+                if ((_addrCtrl.text).isNotEmpty)
+                  Text(
+                    _addrCtrl.text,
+                    style: const TextStyle(fontSize: 13, color: Colors.grey),
+                  )
+                else if (_lat != null && _lng != null)
+                  Text(
+                    '${_lat!.toStringAsFixed(6)}, ${_lng!.toStringAsFixed(6)}',
+                    style: const TextStyle(fontSize: 13, color: Colors.grey),
+                  )
+                else
+                  Text(
+                    S.of(context)!.seleccionaBarberiaODomicilio,
+                    style: const TextStyle(fontSize: 13, color: Colors.grey),
+                  ),
               ],
             ),
           ),
@@ -428,6 +466,27 @@ class _PerfilBarberoDomicilioYRedesState
               onPressed: () => _linkGoogle(context), //_onLinkGoogle,
               icon: const Icon(Icons.link),
               label: Text(S.of(context)!.continuarConGoogle),
+            ),
+          ),
+        ),
+
+        // --- Botón Guardar ---
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: SizedBox(
+              width: double.infinity,
+              child: FilledButton(
+                style: ButtonStyles.redButton,
+                onPressed: _saving ? null : _guardar,
+                child: _saving
+                    ? const SizedBox(
+                        height: 18,
+                        width: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                      )
+                    : Text(loc.guardarBtn),
+              ),
             ),
           ),
         ),
