@@ -1,4 +1,5 @@
-// (archivo completo, modificado: botones de mapa/ubicación habilitados, añadido _onPickOnMap y botón Guardar)
+// (archivo completo, modificado: botones de mapa/ubicación habilitados, añadido _onPickOnMap,
+// añadido _guardarUbicacion y estilo del botón de "Guardar ubicación" con ButtonStyles.redButton)
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -8,7 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 import 'package:barberiapp/core/app_colors.dart';
 import 'package:barberiapp/core/social_button.dart'; // ruta según tu proyecto
-import 'package:barberiapp/core/button_styles.dart'; // para el botón Guardar
+import 'package:barberiapp/core/button_styles.dart'; // para estilos de botones
 // si pegaste el helper que te pasé:
 //import 'package:barberiapp/core/social_utils.dart';
 import '../widgets/social_field.dart';
@@ -204,6 +205,43 @@ class _PerfilBarberoDomicilioYRedesState
     }
   }
 
+  // Nuevo: guardar sólo la ubicación (base_address/base_lat/base_lng)
+  Future<void> _guardarUbicacion() async {
+    final loc = S.of(context)!;
+    if ((_lat == null || _lng == null) && _homeService) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(loc.debeDefinirUbicacionBase)),
+      );
+      return;
+    }
+
+    setState(() => _saving = true);
+    try {
+      await _supa
+          .from('barbers')
+          .update({
+            'base_address':
+                _addrCtrl.text.trim().isEmpty ? null : _addrCtrl.text.trim(),
+            'base_lat': _lat,
+            'base_lng': _lng,
+          })
+          .eq('profile_id', widget.barberProfileId);
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(loc.perfilActualizado)),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      final loc2 = S.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('${loc2.errorGuardando} $e')),
+      );
+    } finally {
+      if (mounted) setState(() => _saving = false);
+    }
+  }
+
   bool _isValidUrl(String s) {
     if (s.trim().isEmpty) return true; // campo opcional
     final uri = Uri.tryParse(s.trim());
@@ -328,7 +366,7 @@ class _PerfilBarberoDomicilioYRedesState
           child: SectionCard(
             title: S.of(context)!.seleccionaUbicacion,
             trailing: TextButton.icon(
-              onPressed: _onPickOnMap, //_onPickOnMap, // handler añadido
+              onPressed: _onPickOnMap,
               icon: const Icon(Icons.map_outlined),
               label: Text(S.of(context)!.verEnMapa),
             ),
@@ -338,12 +376,15 @@ class _PerfilBarberoDomicilioYRedesState
                 // muestra tu texto/dirección actual
                 // Text(_baseAddressText ?? _latLngToString(_baseLatLng)),
                 const SizedBox(height: 8),
-                FilledButton.tonalIcon(
-                  onPressed: _usarUbicacionActual, //_onUseCurrentLocation, // handler existente
+                // Botón para usar ubicación actual — estilado como el botón Guardar
+                FilledButton.icon(
+                  style: ButtonStyles.redButton,
+                  onPressed: _usarUbicacionActual,
                   icon: const Icon(Icons.my_location),
                   label: Text(S.of(context)!.usarmiubicacionctual),
                 ),
                 const SizedBox(height: 8),
+
                 // Muestra la dirección / coordenadas recogidas
                 if ((_addrCtrl.text).isNotEmpty)
                   Text(
@@ -360,6 +401,26 @@ class _PerfilBarberoDomicilioYRedesState
                     S.of(context)!.seleccionaBarberiaODomicilio,
                     style: const TextStyle(fontSize: 13, color: Colors.grey),
                   ),
+
+                const SizedBox(height: 8),
+                // Botón específico para guardar sólo la ubicación (mismo estilo que Guardar)
+                Row(
+                  children: [
+                    Expanded(
+                      child: FilledButton(
+                        style: ButtonStyles.redButton,
+                        onPressed: _saving ? null : _guardarUbicacion,
+                        child: _saving
+                            ? const SizedBox(
+                                height: 18,
+                                width: 18,
+                                child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                              )
+                            : Text(loc.guardarBtn),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
@@ -470,7 +531,7 @@ class _PerfilBarberoDomicilioYRedesState
           ),
         ),
 
-        // --- Botón Guardar ---
+        // --- Botón Guardar general ---
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
