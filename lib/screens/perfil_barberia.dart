@@ -12,7 +12,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import '../generated/l10n.dart';
 
-//test
+// Pantalla de perfil de barbería (versión con S. para localización)
 class PantallaPerfilBarberia extends StatefulWidget {
   final int barbershopId;
   const PantallaPerfilBarberia({super.key, required this.barbershopId});
@@ -87,21 +87,72 @@ class _PantallaPerfilBarberiaState extends State<PantallaPerfilBarberia> {
     }
   }
 
+  String _ensureScheme(String url) {
+    if (url.trim().isEmpty) return url;
+    final lower = url.trim().toLowerCase();
+    if (lower.startsWith('http://') || lower.startsWith('https://')) {
+      return url.trim();
+    }
+    // Añadimos https por defecto
+    return 'https://$url';
+  }
+
   Future<void> _openUrl(String url) async {
-    final uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    final loc = S.of(context)!;
+    final uriString = _ensureScheme(url);
+    final uri = Uri.tryParse(uriString);
+    if (uri == null) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(loc.urlReservasInvalida)),
+        );
+      }
+      return;
+    }
+    try {
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      } else {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(loc.urlReservasInvalida)),
+          );
+        }
+      }
+    } catch (e) {
+      debugPrint('Launch error: $e');
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('${loc.urlReservasInvalida} $e')),
+        );
+      }
     }
   }
 
-  Future<void> _openWhatsApp(String e164) async {
+  String _normalizePhone(String raw) {
+    // Remueve todo lo que no sea dígito
+    final digits = raw.replaceAll(RegExp(r'\D'), '');
+    return digits;
+  }
+
+  Future<void> _openWhatsApp(String rawE164) async {
     final loc = S.of(context)!;
-    final url = _waUrl(e164, msg: loc.waMensajeOrigenApp('BarberiApp'));
+    final normalized = _normalizePhone(rawE164);
+    if (normalized.isEmpty) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(loc.telefonoInvalido)),
+        );
+      }
+      return;
+    }
+    final url = _waUrl(normalized, msg: loc.waMensajeOrigenApp('BarberiApp'));
     await _openUrl(url);
   }
 
   String _waUrl(String e164, {String? msg}) {
     final text = Uri.encodeComponent(msg ?? 'Hola, vengo de BarberiApp.');
+    // wa.me espera número en formato internacional sin +
     return 'https://wa.me/$e164?text=$text';
   }
 
@@ -116,7 +167,6 @@ class _PantallaPerfilBarberiaState extends State<PantallaPerfilBarberia> {
     if (_shop == null) {
       return Scaffold(
         body: Center(child: Text(loc.barberiaNoEncontrada)),
-        //  body: Center(child: Text('Barberia no encontrada.')),
       );
     }
 
@@ -171,27 +221,27 @@ class _PantallaPerfilBarberiaState extends State<PantallaPerfilBarberia> {
             runSpacing: 10,
             children: [
               if (ig != null && ig.isNotEmpty)
-                SocialButton(
+                _IconSocial(
                   assetPath: 'assets/icons/social/Instagram.png',
-                  url: ig,
+                  onTap: () => _openUrl(ig),
                 ),
               if (fb != null && fb.isNotEmpty)
-                SocialButton(
+                _IconSocial(
                   assetPath: 'assets/icons/social/facebook.png',
-                  url: fb,
-                  size: 24, // 24–28px queda prolijo
+                  onTap: () => _openUrl(fb),
+                  size: 30,
                 ),
               if (tk != null && tk.isNotEmpty)
-                SocialButton(
+                _IconSocial(
                   assetPath: 'assets/icons/social/tiktok.png',
-                  url: tk,
-                  size: 24,
+                  onTap: () => _openUrl(tk),
+                  size: 30,
                 ),
               if (wa != null && wa.isNotEmpty)
-                SocialButton(
+                _IconSocial(
                   assetPath: 'assets/icons/social/whatsapp.png',
-                  url: wa,
-                  size: 24,
+                  onTap: () => _openWhatsApp(wa),
+                  size: 30,
                 ),
             ],
           ),
@@ -209,6 +259,16 @@ class _PantallaPerfilBarberiaState extends State<PantallaPerfilBarberia> {
               );
             },
           ),
+
+          const SizedBox(height: 12),
+          // Botón externo de reservas si existe
+          if (ext != null && ext.isNotEmpty)
+            FilledButton.icon(
+              style: ButtonStyles.redButton,
+              icon: const Icon(Icons.open_in_browser),
+              label: Text(loc.reservarExterno),
+              onPressed: () => _openUrl(ext),
+            ),
 
           const SizedBox(height: 16),
           // Sección Barberos (placeholder MVP)
@@ -273,5 +333,30 @@ class _SocialButton extends StatelessWidget {
           icon: child,
           label: Text(label),
         );
+  }
+}
+
+/// Pequeño botón que muestra el icono social (imagen) y maneja el tap.
+class _IconSocial extends StatelessWidget {
+  final String assetPath;
+  final VoidCallback onTap;
+  final double size;
+
+  const _IconSocial({
+    required this.assetPath,
+    required this.onTap,
+    this.size = 28,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: SizedBox(
+        width: size,
+        height: size,
+        child: Image.asset(assetPath, fit: BoxFit.contain),
+      ),
+    );
   }
 }

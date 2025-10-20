@@ -1,3 +1,4 @@
+// (archivo completo, modificada una línea: onPressed del botón de Google)
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -424,7 +425,7 @@ class _PerfilBarberoDomicilioYRedesState
           child: SectionCard(
             title: S.of(context)!.profile_section_integrations,
             child: FilledButton.icon(
-              onPressed: null, //_onLinkGoogle,
+              onPressed: () => _linkGoogle(context), //_onLinkGoogle,
               icon: const Icon(Icons.link),
               label: Text(S.of(context)!.continuarConGoogle),
             ),
