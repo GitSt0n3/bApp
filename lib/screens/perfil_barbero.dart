@@ -38,13 +38,16 @@ class _PerfilBarberoDomicilioYRedesState
   String? _googleEmail;
   // --- Redes sociales ---
   // --- Helper: extraer email de una User (maneja Map o objetos tipados) ---
+  // ----------------------- NUEVO HELPER (añadir dentro de _PerfilBarberoDomicilioYRedesState) -----------------------
   String? _extractGoogleEmailFromUser(dynamic user) {
     if (user == null) return null;
     try {
-      final identities = (user.identities ?? user['identities']);
+      // 1) Intentamos leer identities de forma segura (user.identities o user['identities'])
+      final identities =
+          (user.identities ?? (user is Map ? user['identities'] : null));
       if (identities is List) {
         for (final id in identities) {
-          // caso Map (web/serializado)
+          // Caso: Map (serializado)
           if (id is Map) {
             final provider = (id['provider'] as String?) ?? '';
             if (provider == 'google') {
@@ -53,7 +56,7 @@ class _PerfilBarberoDomicilioYRedesState
               if (email != null && email.isNotEmpty) return email;
             }
           } else {
-            // caso objeto tipado (UserIdentity) — acceso dinámico para evitar errores de tipo
+            // Caso: objeto tipado (UserIdentity). Accedemos dinámicamente para evitar errores de tipo.
             try {
               final provider = (id as dynamic).provider as String?;
               if (provider == 'google') {
@@ -63,16 +66,23 @@ class _PerfilBarberoDomicilioYRedesState
                 if (email != null && email.isNotEmpty) return email;
               }
             } catch (_) {
-              // si no se puede leer, continuamos al siguiente
+              // si falla el acceso dinámico, seguimos con el siguiente id
             }
           }
         }
       }
-    } catch (_) {}
-    // fallback al email principal del user
+    } catch (_) {
+      // ignore parsing errors
+    }
+
+    // Fallback: intentamos obtener email directo del user
     try {
-      return (user.email ?? user['email']) as String?;
+      final emailFromUser =
+          (user.email ?? (user is Map ? user['email'] : null)) as String?;
+      if (emailFromUser != null && emailFromUser.isNotEmpty)
+        return emailFromUser;
     } catch (_) {}
+
     return null;
   }
 
@@ -127,38 +137,19 @@ class _PerfilBarberoDomicilioYRedesState
       // sucede en otra ventana/APP y requiere que el SDK reciba el callback).
       // Aquí hacemos un intento simple de refrescar el usuario; si el deep-link
       // o el callback no han ocurrido aún, el cambio se reflejará cuando vuelva.
+      // dentro de _linkGoogle(): después de mostrar el snackbar:
       Future.delayed(const Duration(seconds: 2), () async {
         try {
           final userResp = await _supa.auth.getUser();
           final user = userResp.user;
-          if (user != null) {
-            // igual lógica que en _load para extraer email de la identidad google
-            String? emailFromIdentity;
-            try {
-              final identities = user.identities;
-              if (identities != null) {
-                for (final id in identities) {
-                  final provider =
-                      (id is Map) ? id['provider'] : (id.provider ?? '');
-                  if (provider == 'google') {
-                    final identityData =
-                        (id is Map)
-                            ? id['identity_data']
-                            : (id.identityData as Map<String, dynamic>?);
-                    emailFromIdentity =
-                        (identityData != null)
-                            ? (identityData['email'] as String?)
-                            : null;
-                    break;
-                  }
-                }
-              }
-            } catch (_) {}
-            final fallbackEmail = user.email;
-            if (mounted)
-              setState(() => _googleEmail = emailFromIdentity ?? fallbackEmail);
-          }
-        } catch (_) {}
+          final extracted = _extractGoogleEmailFromUser(
+            user ?? (userResp as dynamic)?.data,
+          );
+          if (!mounted) return;
+          setState(() => _googleEmail = extracted);
+        } catch (_) {
+          // ignoramos errores de refresco
+        }
       });
     } on AuthException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -219,15 +210,17 @@ class _PerfilBarberoDomicilioYRedesState
 
   Future<void> _load() async {
     // --- En _load(): obtener user y setear _googleEmail ---
+    // --- en _load(), después de tus lecturas normales de 'row' ---
     try {
       final userResp = await _supa.auth.getUser();
       final user = userResp.user;
+      // si el SDK devuelve una estructura distinta, _extractGoogleEmailFromUser lo maneja
       final extracted = _extractGoogleEmailFromUser(
         user ?? (userResp as dynamic)?.data,
       );
       if (mounted) setState(() => _googleEmail = extracted);
     } catch (_) {
-      // no crítico
+      // no crítico; ignoramos errores al consultar auth.getUser()
     }
     try {
       final row =
