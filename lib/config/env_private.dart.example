@@ -1,0 +1,22 @@
+// lib/config/env_private.dart.example
+//
+// INSTRUCCIONES:
+// 1. Copia este archivo como 'env_private.dart' en el mismo directorio
+// 2. Reemplaza los valores de ejemplo con tus credenciales reales
+// 3. NUNCA subas el archivo 'env_private.dart' a git (ya está en .gitignore)
+
+class EnvPrivate {
+  // Supabase Configuration
+  // Obtén estas credenciales desde: https://app.supabase.com/project/_/settings/api
+  static const String supabaseUrl = 'https://tu-proyecto.supabase.co';
+  static const String supabaseAnonKey = 'tu-anon-key-aqui';
+
+  // Google OAuth Configuration
+  // Obtén estas credenciales desde: https://console.cloud.google.com/apis/credentials
+  
+  // Client ID Web (OAuth 2.0)
+  static const String webClientId = 'tu-client-id-web.apps.googleusercontent.com';
+  
+  // Client ID iOS (OAuth 2.0) - Solo necesario si soportas iOS
+  static const String iosClientId = 'tu-client-id-ios.apps.googleusercontent.com';
+}
