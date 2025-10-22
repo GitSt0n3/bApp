@@ -156,6 +156,94 @@ class _PantallaPerfilBarberiaState extends State<PantallaPerfilBarberia> {
     return 'https://wa.me/$e164?text=$text';
   }
 
+  String _initials(String name) {
+    final parts = name.trim().split(' ');
+    if (parts.isEmpty) return '';
+    if (parts.length == 1) return parts.first.substring(0, 1).toUpperCase();
+    return (parts[0].substring(0, 1) + parts[1].substring(0, 1))
+        .toUpperCase();
+  }
+
+  Widget _buildBarberSection() {
+    final loc = S.of(context)!;
+    final members = (_shop!['barbershop_members'] as List<dynamic>?) ?? [];
+    if (members.isEmpty) {
+      // Texto sencillo si no hay barberos
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: Text('No hay barberos registrados en esta barbería.'),
+      );
+    }
+
+    return Column(
+      children: members.map((m) {
+        final role = (m['role'] as String?) ?? '';
+        final barber = m['barber'] as Map<String, dynamic>?;
+        final profile = barber != null ? (barber['profile'] as Map<String, dynamic>?) : null;
+        final fullName = profile != null ? (profile['full_name'] as String? ?? '') : '';
+        final phone = profile != null ? (profile['phone'] as String? ?? '') : '';
+        final bio = barber != null ? (barber['bio'] as String? ?? '') : '';
+        final isOwner = role.toLowerCase().contains('owner') ||
+            role.toLowerCase().contains('due') ||
+            role.toLowerCase().contains('propiet') ||
+            role.toLowerCase().contains('dueño');
+
+        return Card(
+          margin: const EdgeInsets.symmetric(vertical: 6),
+          child: ListTile(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            leading: CircleAvatar(
+              backgroundColor: AppColors.accent.withOpacity(0.12),
+              child: Text(_initials(fullName.isNotEmpty ? fullName : 'B')),
+            ),
+            title: Row(
+              children: [
+                Expanded(child: Text(fullName.isNotEmpty ? fullName : 'Sin nombre', style: TextStyles.subtitleText)),
+                if (isOwner)
+                  Container(
+                    margin: const EdgeInsets.only(left: 8),
+                    child: Chip(
+                      label: Text('Dueño', style: TextStyle(fontSize: 12, color: Colors.white)),
+                      backgroundColor: AppColors.accent,
+                      visualDensity: VisualDensity.compact,
+                    ),
+                  ),
+              ],
+            ),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (bio.isNotEmpty) Text(bio, style: TextStyles.listSubtitle),
+                const SizedBox(height: 4),
+                Text(role.isNotEmpty ? role : 'Barbero', style: TextStyle(fontSize: 12, color: Colors.grey[600])),
+              ],
+            ),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (phone.isNotEmpty)
+                  IconButton(
+                    icon: Image.asset('assets/icons/social/whatsapp.png', width: 28, height: 28),
+                    onPressed: () => _openWhatsApp(phone),
+                    tooltip: 'WhatsApp',
+                  ),
+                IconButton(
+                  icon: const Icon(Icons.arrow_forward),
+                  onPressed: () {
+                    // Navegar al perfil del barbero. Ajusta la ruta/nombre si tu app usa otro path.
+                    // Pasamos el id de perfil si está disponible.
+                    final profileId = profile != null ? profile['id'] : null;
+                    context.push('/perfil-barbero', extra: {'profileId': profileId});
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      }).toList(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -271,10 +359,10 @@ class _PantallaPerfilBarberiaState extends State<PantallaPerfilBarberia> {
             ),
 
           const SizedBox(height: 16),
-          // Sección Barberos (placeholder MVP)
+          // Sección Barberos
           Text(loc.barberosSeccionTitulo, style: TextStyles.listTitle),
           const SizedBox(height: 8),
-          const Text('Próximamente: listado de staff con link a su perfil.'),
+          _buildBarberSection(),
         ],
       ),
     );
