@@ -42,6 +42,7 @@ android/app/*.jks
 
 # Archivos de configuración sensibles
 **/.env*
+!.env.example
 lib/**/env*.dart
 lib/**/secrets*.dart
 *.p12
