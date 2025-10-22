@@ -35,7 +35,46 @@ class PerfilBarberoDomicilioYRedes extends StatefulWidget {
 class _PerfilBarberoDomicilioYRedesState
     extends State<PerfilBarberoDomicilioYRedes> {
   final _supa = Supabase.instance.client;
+  String? _googleEmail;
   // --- Redes sociales ---
+  // --- Helper: extraer email de una User (maneja Map o objetos tipados) ---
+  String? _extractGoogleEmailFromUser(dynamic user) {
+    if (user == null) return null;
+    try {
+      final identities = (user.identities ?? user['identities']);
+      if (identities is List) {
+        for (final id in identities) {
+          // caso Map (web/serializado)
+          if (id is Map) {
+            final provider = (id['provider'] as String?) ?? '';
+            if (provider == 'google') {
+              final identityData = id['identity_data'] as Map<String, dynamic>?;
+              final email = identityData?['email'] as String?;
+              if (email != null && email.isNotEmpty) return email;
+            }
+          } else {
+            // caso objeto tipado (UserIdentity) — acceso dinámico para evitar errores de tipo
+            try {
+              final provider = (id as dynamic).provider as String?;
+              if (provider == 'google') {
+                final identityData =
+                    (id as dynamic).identityData as Map<String, dynamic>?;
+                final email = identityData?['email'] as String?;
+                if (email != null && email.isNotEmpty) return email;
+              }
+            } catch (_) {
+              // si no se puede leer, continuamos al siguiente
+            }
+          }
+        }
+      }
+    } catch (_) {}
+    // fallback al email principal del user
+    try {
+      return (user.email ?? user['email']) as String?;
+    } catch (_) {}
+    return null;
+  }
 
   Future<void> _linkGoogle(BuildContext context) async {
     try {
@@ -54,12 +93,73 @@ class _PerfilBarberoDomicilioYRedesState
         return;
       }
 
-      // El usuario actualizado llega por onAuthStateChange → AuthChangeEvent.userUpdated
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('🔗 Se abrió el flujo para vincular Google.'),
         ),
       );
+
+      // --- En _linkGoogle(): luego de abrir el flujo ---
+      if (!ok) {
+        /* existente */
+      }
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('🔗 Se abrió el flujo para vincular Google.'),
+        ),
+      );
+
+      // Intento de refrescar usuario después de corto delay (el callback puede tardar)
+      Future.delayed(const Duration(seconds: 2), () async {
+        try {
+          final userResp = await _supa.auth.getUser();
+          final user = userResp.user;
+          final extracted = _extractGoogleEmailFromUser(
+            user ?? (userResp as dynamic)?.data,
+          );
+          if (!mounted) return;
+          setState(() => _googleEmail = extracted);
+        } catch (_) {}
+      });
+
+      // Intentar refrescar el usuario localmente (en muchos casos la vinculación
+      // sucede en otra ventana/APP y requiere que el SDK reciba el callback).
+      // Aquí hacemos un intento simple de refrescar el usuario; si el deep-link
+      // o el callback no han ocurrido aún, el cambio se reflejará cuando vuelva.
+      Future.delayed(const Duration(seconds: 2), () async {
+        try {
+          final userResp = await _supa.auth.getUser();
+          final user = userResp.user;
+          if (user != null) {
+            // igual lógica que en _load para extraer email de la identidad google
+            String? emailFromIdentity;
+            try {
+              final identities = user.identities;
+              if (identities != null) {
+                for (final id in identities) {
+                  final provider =
+                      (id is Map) ? id['provider'] : (id.provider ?? '');
+                  if (provider == 'google') {
+                    final identityData =
+                        (id is Map)
+                            ? id['identity_data']
+                            : (id.identityData as Map<String, dynamic>?);
+                    emailFromIdentity =
+                        (identityData != null)
+                            ? (identityData['email'] as String?)
+                            : null;
+                    break;
+                  }
+                }
+              }
+            } catch (_) {}
+            final fallbackEmail = user.email;
+            if (mounted)
+              setState(() => _googleEmail = emailFromIdentity ?? fallbackEmail);
+          }
+        } catch (_) {}
+      });
     } on AuthException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error al vincular: ${e.message}')),
@@ -118,6 +218,17 @@ class _PerfilBarberoDomicilioYRedesState
   }
 
   Future<void> _load() async {
+    // --- En _load(): obtener user y setear _googleEmail ---
+    try {
+      final userResp = await _supa.auth.getUser();
+      final user = userResp.user;
+      final extracted = _extractGoogleEmailFromUser(
+        user ?? (userResp as dynamic)?.data,
+      );
+      if (mounted) setState(() => _googleEmail = extracted);
+    } catch (_) {
+      // no crítico
+    }
     try {
       final row =
           await _supa
@@ -158,73 +269,98 @@ class _PerfilBarberoDomicilioYRedesState
   // --- Reemplazar (o insertar) la implementación de _usarUbicacionActual() por esta ----------------
   Future<void> _usarUbicacionActual() async {
     try {
-      // obtiene la posición actual (ya usabas Geolocator)
-      final pos = await Geolocator.getCurrentPosition();
+      final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Activa los servicios de ubicación en tu dispositivo',
+            ),
+          ),
+        );
+        await Geolocator.openLocationSettings();
+        return;
+      }
+
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Permiso de ubicación denegado')),
+          );
+          return;
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text(
+              'Permiso de ubicación denegado permanentemente. Habilítalo en Ajustes.',
+            ),
+            action: SnackBarAction(
+              label: 'Ajustes',
+              onPressed: () => Geolocator.openAppSettings(),
+            ),
+          ),
+        );
+        return;
+      }
+
+      final pos = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+        timeLimit: const Duration(seconds: 10),
+      );
+
       final lat = pos.latitude;
       final lng = pos.longitude;
 
-      // guardamos lat/lng en estado (siguiendo la lógica existente)
       setState(() {
         _lat = lat;
         _lng = lng;
       });
 
-      // Dirección aproximada: reverse geocoding
       try {
         final placemarks = await placemarkFromCoordinates(lat, lng);
         if (placemarks.isNotEmpty) {
           final p = placemarks.first;
-
-          // Construimos una dirección corta y legible a partir del Placemark
-          // preferimos street/subLocality/locality en ese orden
           final parts = <String>[];
-          if (p.street != null && p.street!.trim().isNotEmpty) {
-            // Ej: "18 de Julio"
+          if (p.street != null && p.street!.trim().isNotEmpty)
             parts.add(p.street!.trim());
-          }
-          if (p.subLocality != null && p.subLocality!.trim().isNotEmpty) {
-            // Ej: "Centro"
+          if (p.subLocality != null && p.subLocality!.trim().isNotEmpty)
             parts.add(p.subLocality!.trim());
-          }
-          if (p.locality != null && p.locality!.trim().isNotEmpty) {
-            // Ej: "Montevideo"
+          if (p.locality != null && p.locality!.trim().isNotEmpty)
             parts.add(p.locality!.trim());
-          }
-
-          // Si no hay calle disponible, tratamos de armar con subAdministrativeArea/administrativeArea
           if (parts.isEmpty) {
             if (p.subAdministrativeArea != null &&
-                p.subAdministrativeArea!.trim().isNotEmpty) {
+                p.subAdministrativeArea!.trim().isNotEmpty)
               parts.add(p.subAdministrativeArea!.trim());
-            } else if (p.administrativeArea != null &&
-                p.administrativeArea!.trim().isNotEmpty) {
+            else if (p.administrativeArea != null &&
+                p.administrativeArea!.trim().isNotEmpty)
               parts.add(p.administrativeArea!.trim());
-            }
           }
-
           final shortAddress =
               parts.isNotEmpty
                   ? parts.join(', ')
-                  : 'Ubicación aproximada no disponible'; // fallback
-
-          // Dirección aproximada: mostramos la dirección legible en el campo correspondiente
+                  : 'Ubicación aproximada no disponible';
           setState(() {
-            _addrCtrl.text = shortAddress; // Dirección aproximada
+            _addrCtrl.text = shortAddress;
           });
         } else {
-          // no hay placemarks
           setState(() {
             _addrCtrl.text = 'Ubicación aproximada no disponible';
           });
         }
-      } catch (e) {
-        // error al hacer reverse-geocoding: mostramos texto genérico
+      } catch (_) {
         setState(() {
           _addrCtrl.text = 'Ubicación aproximada no disponible';
         });
       }
     } catch (e) {
-      // error al obtener ubicación (permiso denegado, etc.)
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error al obtener ubicación: $e')));
       setState(() {
         _addrCtrl.text = 'Ubicación aproximada no disponible';
       });
@@ -570,17 +706,22 @@ class _PerfilBarberoDomicilioYRedesState
 
         // --- Integraciones ---
         SliverToBoxAdapter(
-          child: SectionCard(
-            title: S.of(context)!.profile_section_integrations,
-            child: FilledButton.icon(
-              style: ButtonStyles.redButton, // <-- estilo unificado
-              onPressed:
-                  () => _linkGoogle(context), // o la función que ya tienes
-              icon: const Icon(
-                Icons.link,
-              ), // puedes cambiar por otro icono/asset
-              label: Text(S.of(context)!.continuarConGoogle),
-            ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              FilledButton.icon(
+                style: ButtonStyles.redButton,
+                onPressed: () => _linkGoogle(context),
+                icon: const Icon(Icons.link),
+                label: Text(S.of(context)!.continuarConGoogle),
+              ),
+              const SizedBox(height: 8),
+              if (_googleEmail != null && _googleEmail!.isNotEmpty)
+                Text(
+                  'Vinculado: $_googleEmail',
+                  style: const TextStyle(fontSize: 13, color: Colors.grey),
+                ),
+            ],
           ),
         ),
 
