@@ -18,6 +18,7 @@ import '../core/social_utils.dart';
 // Nuevas importaciones para el selector de mapa
 import 'package:latlong2/latlong.dart';
 import '../widgets/map_picker.dart';
+import 'package:geocoding/geocoding.dart'; // Dirección aproximada
 
 class PerfilBarberoDomicilioYRedes extends StatefulWidget {
   final String barberProfileId; // profile_id del barbero (uuid)
@@ -154,40 +155,83 @@ class _PerfilBarberoDomicilioYRedesState
     }
   }
 
+  // --- Reemplazar (o insertar) la implementación de _usarUbicacionActual() por esta ----------------
   Future<void> _usarUbicacionActual() async {
     try {
-      var perm = await Geolocator.checkPermission();
-      if (perm == LocationPermission.denied ||
-          perm == LocationPermission.deniedForever) {
-        perm = await Geolocator.requestPermission();
-      }
-      if (!await Geolocator.isLocationServiceEnabled()) {
-        // en vez de throw string
-        if (mounted) {
-          final loc = S.of(context)!;
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(loc.ubicacionServiciosDeshabilitados)),
-          );
-        }
-        return; // salgo limpiamente
-      }
+      // obtiene la posición actual (ya usabas Geolocator)
       final pos = await Geolocator.getCurrentPosition();
+      final lat = pos.latitude;
+      final lng = pos.longitude;
+
+      // guardamos lat/lng en estado (siguiendo la lógica existente)
       setState(() {
-        _lat = pos.latitude;
-        _lng = pos.longitude;
+        _lat = lat;
+        _lng = lng;
       });
-      // Opcional: resolver dirección amigable con tu servicio/OSM geocoding
-      _addrCtrl.text =
-          'Lat ${pos.latitude.toStringAsFixed(5)}, Lng ${pos.longitude.toStringAsFixed(5)}';
+
+      // Dirección aproximada: reverse geocoding
+      try {
+        final placemarks = await placemarkFromCoordinates(lat, lng);
+        if (placemarks.isNotEmpty) {
+          final p = placemarks.first;
+
+          // Construimos una dirección corta y legible a partir del Placemark
+          // preferimos street/subLocality/locality en ese orden
+          final parts = <String>[];
+          if (p.street != null && p.street!.trim().isNotEmpty) {
+            // Ej: "18 de Julio"
+            parts.add(p.street!.trim());
+          }
+          if (p.subLocality != null && p.subLocality!.trim().isNotEmpty) {
+            // Ej: "Centro"
+            parts.add(p.subLocality!.trim());
+          }
+          if (p.locality != null && p.locality!.trim().isNotEmpty) {
+            // Ej: "Montevideo"
+            parts.add(p.locality!.trim());
+          }
+
+          // Si no hay calle disponible, tratamos de armar con subAdministrativeArea/administrativeArea
+          if (parts.isEmpty) {
+            if (p.subAdministrativeArea != null &&
+                p.subAdministrativeArea!.trim().isNotEmpty) {
+              parts.add(p.subAdministrativeArea!.trim());
+            } else if (p.administrativeArea != null &&
+                p.administrativeArea!.trim().isNotEmpty) {
+              parts.add(p.administrativeArea!.trim());
+            }
+          }
+
+          final shortAddress =
+              parts.isNotEmpty
+                  ? parts.join(', ')
+                  : 'Ubicación aproximada no disponible'; // fallback
+
+          // Dirección aproximada: mostramos la dirección legible en el campo correspondiente
+          setState(() {
+            _addrCtrl.text = shortAddress; // Dirección aproximada
+          });
+        } else {
+          // no hay placemarks
+          setState(() {
+            _addrCtrl.text = 'Ubicación aproximada no disponible';
+          });
+        }
+      } catch (e) {
+        // error al hacer reverse-geocoding: mostramos texto genérico
+        setState(() {
+          _addrCtrl.text = 'Ubicación aproximada no disponible';
+        });
+      }
     } catch (e) {
-      if (!mounted) return;
-      final loc = S.of(context)!;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${loc.ubicacionNoSePudoObtener} $e')),
-      );
+      // error al obtener ubicación (permiso denegado, etc.)
+      setState(() {
+        _addrCtrl.text = 'Ubicación aproximada no disponible';
+      });
     }
   }
 
+  // ------------------------------------------------
   // Nuevo: abrir MapPicker y recoger resultado
   Future<void> _onPickOnMap() async {
     final initial = LatLng(_lat ?? -34.9011, _lng ?? -56.1645);
@@ -199,7 +243,8 @@ class _PerfilBarberoDomicilioYRedesState
       setState(() {
         _lat = res.lat;
         _lng = res.lon;
-        _addrCtrl.text = res.address ??
+        _addrCtrl.text =
+            res.address ??
             '${res.lat.toStringAsFixed(6)}, ${res.lon.toStringAsFixed(6)}';
       });
     }
@@ -209,9 +254,9 @@ class _PerfilBarberoDomicilioYRedesState
   Future<void> _guardarUbicacion() async {
     final loc = S.of(context)!;
     if ((_lat == null || _lng == null) && _homeService) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(loc.debeDefinirUbicacionBase)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(loc.debeDefinirUbicacionBase)));
       return;
     }
 
@@ -228,15 +273,15 @@ class _PerfilBarberoDomicilioYRedesState
           .eq('profile_id', widget.barberProfileId);
 
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(loc.perfilActualizado)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(loc.perfilActualizado)));
     } catch (e) {
       if (!mounted) return;
       final loc2 = S.of(context)!;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${loc2.errorGuardando} $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('${loc2.errorGuardando} $e')));
     } finally {
       if (mounted) setState(() => _saving = false);
     }
@@ -410,13 +455,17 @@ class _PerfilBarberoDomicilioYRedesState
                       child: FilledButton(
                         style: ButtonStyles.redButton,
                         onPressed: _saving ? null : _guardarUbicacion,
-                        child: _saving
-                            ? const SizedBox(
-                                height: 18,
-                                width: 18,
-                                child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                              )
-                            : Text(loc.guardarBtn),
+                        child:
+                            _saving
+                                ? const SizedBox(
+                                  height: 18,
+                                  width: 18,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
+                                )
+                                : Text(loc.guardarBtn),
                       ),
                     ),
                   ],
@@ -524,8 +573,12 @@ class _PerfilBarberoDomicilioYRedesState
           child: SectionCard(
             title: S.of(context)!.profile_section_integrations,
             child: FilledButton.icon(
-              onPressed: () => _linkGoogle(context), //_onLinkGoogle,
-              icon: const Icon(Icons.link),
+              style: ButtonStyles.redButton, // <-- estilo unificado
+              onPressed:
+                  () => _linkGoogle(context), // o la función que ya tienes
+              icon: const Icon(
+                Icons.link,
+              ), // puedes cambiar por otro icono/asset
               label: Text(S.of(context)!.continuarConGoogle),
             ),
           ),
@@ -540,13 +593,17 @@ class _PerfilBarberoDomicilioYRedesState
               child: FilledButton(
                 style: ButtonStyles.redButton,
                 onPressed: _saving ? null : _guardar,
-                child: _saving
-                    ? const SizedBox(
-                        height: 18,
-                        width: 18,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                      )
-                    : Text(loc.guardarBtn),
+                child:
+                    _saving
+                        ? const SizedBox(
+                          height: 18,
+                          width: 18,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                        : Text(loc.guardarBtn),
               ),
             ),
           ),

@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:barberiapp/core/app_colors.dart';
+import 'package:barberiapp/core/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
@@ -201,12 +203,25 @@ Future<void> main() async {
         path: '/servicios_b',
         builder: (_, __) => const ServiciosScreenBarber(),
       ),
+      // Nuevo bloque para la ruta '/perfil_b/:barberId'
       GoRoute(
         path: '/perfil_b/:barberId',
         name: 'perfilBarbero',
         builder:
             (context, state) => Scaffold(
-              appBar: AppBar(title: const Text('Mi perfil')),
+              appBar: AppBar(
+                backgroundColor: AppColors.appBarbkgs,
+                title: Row(
+                  children: [
+                    Transform.rotate(
+                      angle: 3.14,
+                      child: Image.asset('assets/icons/barber.png', height: 40),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(S.of(context)!.miPerfil, style: TextStyles.tittleText),
+                  ],
+                ),
+              ),
               body: PerfilBarberoDomicilioYRedes(
                 barberProfileId: state.pathParameters['barberId']!,
               ),
