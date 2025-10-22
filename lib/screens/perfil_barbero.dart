@@ -698,26 +698,50 @@ class _PerfilBarberoDomicilioYRedesState
         // --- Agenda externa ---
 
         // --- Integraciones ---
+        // --- Integraciones (reemplaza la sección existente por esto) ---
         SliverToBoxAdapter(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              FilledButton.icon(
-                style: ButtonStyles.redButton,
-                onPressed: () => _linkGoogle(context),
-                icon: const Icon(Icons.link),
-                label: Text(S.of(context)!.continuarConGoogle),
-              ),
-              const SizedBox(height: 8),
-              if (_googleEmail != null && _googleEmail!.isNotEmpty)
-                Text(
-                  'Vinculado: $_googleEmail',
-                  style: const TextStyle(fontSize: 13, color: Colors.grey),
+          child: SectionCard(
+            title: S.of(context)!.profile_section_integrations,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Contenedor con estilo consistente con las otras entradas (Instagram/FB/TikTok)
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 8),
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: AppColors.appBarbkgs,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: AppColors.primary.withOpacity(0.3),
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      FilledButton.icon(
+                        style: ButtonStyles.redButton,
+                        onPressed: () => _linkGoogle(context),
+                        icon: const Icon(Icons.link),
+                        label: Text(S.of(context)!.continuarConGoogle),
+                      ),
+                      const SizedBox(height: 8),
+                      if (_googleEmail != null && _googleEmail!.isNotEmpty)
+                        Text(
+                          'Vinculado: $_googleEmail',
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: Colors.grey,
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
-            ],
+              ],
+            ),
           ),
         ),
-
         // --- Botón Guardar general ---
         SliverToBoxAdapter(
           child: Padding(
