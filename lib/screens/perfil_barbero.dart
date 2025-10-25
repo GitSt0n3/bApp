@@ -181,6 +181,10 @@ class _PerfilBarberoDomicilioYRedesState
   String _bookingApp = 'none'; // 'none' | 'weibook' | 'other'
   final _bookingUrlCtrl = TextEditingController();
 
+  // Nuevo: campos para nombre/apellidos del barbero
+  String? _firstName;
+  String? _lastName;
+
   @override
   void initState() {
     super.initState();
@@ -247,6 +251,21 @@ class _PerfilBarberoDomicilioYRedesState
 
         _bookingApp = (row['booking_app'] ?? 'none') as String;
         _bookingUrlCtrl.text = (row['booking_url'] ?? '') as String;
+      }
+
+      // Intentamos obtener nombre/apellidos desde la tabla profiles
+      try {
+        final profile = await _supa
+            .from('profiles')
+            .select('first_name,last_name')
+            .eq('id', widget.barberProfileId)
+            .maybeSingle();
+        if (profile != null) {
+          _firstName = (profile['first_name'] ?? '') as String?;
+          _lastName = (profile['last_name'] ?? '') as String?;
+        }
+      } catch (_) {
+        // no crítico: si falla, dejamos los campos nulos
       }
     } catch (e) {
       if (!mounted) return;
@@ -495,8 +514,69 @@ class _PerfilBarberoDomicilioYRedesState
       return const Center(child: CircularProgressIndicator());
     }
 
+    final displayName = ('${_firstName ?? ''} ${_lastName ?? ''}').trim();
+    String initials = '';
+    if ((_firstName ?? '').isNotEmpty) initials += _firstName![0].toUpperCase();
+    if ((_lastName ?? '').isNotEmpty) initials += _lastName![0].toUpperCase();
+
     return CustomScrollView(
       slivers: [
+        // Nueva tarjeta superior con nombre/apellidos
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              elevation: 2,
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 28,
+                      backgroundColor: AppColors.primary,
+                      child: Text(
+                        initials.isNotEmpty ? initials : '?',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            displayName.isNotEmpty ? displayName : 'Nombre no disponible',
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          if (_googleEmail != null && _googleEmail!.isNotEmpty)
+                            Text(
+                              _googleEmail!,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                color: Colors.grey,
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+
         // --- Servicio a domicilio ---
         SliverToBoxAdapter(
           child: SectionCard(
