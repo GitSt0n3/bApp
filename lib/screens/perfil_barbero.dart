@@ -1,6 +1,7 @@
-// (archivo completo, modificado: usa full_name en lugar de first_name/last_name,
-// añadidos debugPrint para depuración de perfil/barber y link Google,
-// y consulta a 'barbers' con join a 'profiles(full_name)' para traer nombre)
+// (archivo completo, actualizado: usa full_name y google_email en el join,
+// normaliza google_email, y PRIORIZA isnull de profiles.google_email al decidir el estado
+// del botón cuando se visualiza el propio perfil)
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -9,10 +10,8 @@ import 'package:barberiapp/core/section_card.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 import 'package:barberiapp/core/app_colors.dart';
-import 'package:barberiapp/core/social_button.dart'; // ruta según tu proyecto
-import 'package:barberiapp/core/button_styles.dart'; // para estilos de botones
-// si pegaste el helper que te pasé:
-//import 'package:barberiapp/core/social_utils.dart';
+import 'package:barberiapp/core/social_button.dart';
+import 'package:barberiapp/core/button_styles.dart';
 import '../widgets/social_field.dart';
 import '../core/social_utils.dart';
 
@@ -36,7 +35,49 @@ class PerfilBarberoDomicilioYRedes extends StatefulWidget {
 class _PerfilBarberoDomicilioYRedesState
     extends State<PerfilBarberoDomicilioYRedes> {
   final _supa = Supabase.instance.client;
-  String? _googleEmail;
+
+  // sesión actual
+  String? _currentUserId;
+  String? _googleEmail; // email google de la sesión actual (si existe)
+
+  // barber being viewed
+  String? _fullName;
+  String? _barberGoogleEmail; // email google guardado en profiles para ese barber (si existe)
+
+  // Estado
+  bool _loading = true;
+  bool _saving = false;
+
+  bool _homeService = false;
+  double _radiusKm = 8;
+
+  final _addrCtrl = TextEditingController();
+  double? _lat;
+  double? _lng;
+
+  final _instagramCtrl = TextEditingController();
+  final _whatsCtrl = TextEditingController();
+  final _facebookCtrl = TextEditingController();
+  final _tiktokCtrl = TextEditingController();
+
+  String _bookingApp = 'none'; // 'none' | 'weibook' | 'other'
+  final _bookingUrlCtrl = TextEditingController();
+
+  // Helper: normaliza valores nulos/strings "null"/vacíos a null
+  String? _normalizeNullableString(dynamic v) {
+    if (v == null) return null;
+    final s = v is String ? v.trim() : v.toString().trim();
+    if (s.isEmpty) return null;
+    if (s.toLowerCase() == 'null') return null;
+    return s;
+  }
+
+  // Helper: valida forma de email simple
+  bool _looksLikeEmail(String? s) {
+    if (s == null) return false;
+    final emailRe = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
+    return emailRe.hasMatch(s.trim());
+  }
 
   // Helper para extraer email Google desde user/identities
   String? _extractGoogleEmailFromUser(dynamic user) {
@@ -109,12 +150,33 @@ class _PerfilBarberoDomicilioYRedesState
         try {
           final userResp = await _supa.auth.getUser();
           debugPrint('[_linkGoogle] getUser() after link (delayed): ${userResp.user}');
-          final extracted = _extractGoogleEmailFromUser(
+          final extractedRaw = _extractGoogleEmailFromUser(
             userResp.user ?? (userResp as dynamic)?.data,
           );
+          final extracted = _normalizeNullableString(extractedRaw);
           debugPrint('[_linkGoogle] extracted google email after link: $extracted');
+
+          // actualizar estado de sesión
           if (!mounted) return;
-          setState(() => _googleEmail = extracted);
+          setState(() {
+            _googleEmail = extracted;
+            _currentUserId = (userResp.user as dynamic?)?.id ?? _supa.auth.currentUser?.id;
+          });
+
+          // IMPORTANT: si existe columna profiles.google_email, intentamos actualizar el perfil
+          try {
+            final userId = (userResp.user as dynamic?)?.id as String?;
+            if (extracted != null && userId != null) {
+              debugPrint('[_linkGoogle] updating profiles.google_email for user $userId -> $extracted');
+              await _supa.from('profiles').update({'google_email': extracted}).eq('id', userId);
+              // Forzar recarga del perfil mostrado si es nuestro propio perfil
+              if (mounted && widget.barberProfileId.toString().trim() == userId.toString().trim()) {
+                await _load();
+              }
+            }
+          } catch (e, st) {
+            debugPrint('[_linkGoogle] error updating profiles.google_email: $e\n$st');
+          }
         } catch (e, st) {
           debugPrint('[_linkGoogle] error fetching user after link: $e\n$st');
         }
@@ -125,9 +187,10 @@ class _PerfilBarberoDomicilioYRedesState
         try {
           final userResp = await _supa.auth.getUser();
           debugPrint('[_linkGoogle] getUser() after link (delayed 2): ${userResp.user}');
-          final extracted = _extractGoogleEmailFromUser(
+          final extractedRaw = _extractGoogleEmailFromUser(
             userResp.user ?? (userResp as dynamic)?.data,
           );
+          final extracted = _normalizeNullableString(extractedRaw);
           debugPrint('[_linkGoogle] extracted google email after link (2): $extracted');
           if (!mounted) return;
           setState(() => _googleEmail = extracted);
@@ -146,27 +209,107 @@ class _PerfilBarberoDomicilioYRedesState
     }
   }
 
-  // Estado
-  bool _loading = true;
-  bool _saving = false;
+  // Construye el botón de Integraciones (Google) con estado dinámico y estilo
+  Widget _buildGoogleIntegrationButton(BuildContext context) {
+    // Google brand blue: #4285F4
+    const googleBlue = Color(0xFF4285F4);
 
-  bool _homeService = false;
-  double _radiusKm = 8;
+    // Normalize/validate email values before decision
+    final normalizedBarberEmail = _normalizeNullableString(_barberGoogleEmail);
+    final normalizedSessionEmail = _normalizeNullableString(_googleEmail);
 
-  final _addrCtrl = TextEditingController();
-  double? _lat;
-  double? _lng;
+    final barberIsLinked = _looksLikeEmail(normalizedBarberEmail);
+    final sessionIsLinked = _looksLikeEmail(normalizedSessionEmail);
 
-  final _instagramCtrl = TextEditingController();
-  final _whatsCtrl = TextEditingController();
-  final _facebookCtrl = TextEditingController();
-  final _tiktokCtrl = TextEditingController();
+    final viewingOwnProfile = (_currentUserId != null &&
+        widget.barberProfileId.toString().trim() == _currentUserId.toString().trim());
 
-  String _bookingApp = 'none'; // 'none' | 'weibook' | 'other'
-  final _bookingUrlCtrl = TextEditingController();
+    // debug info to logs so you can paste here if something still wrong
+    debugPrint('[_debug google-state] viewingOwnProfile=$viewingOwnProfile '
+        'widget.barberProfileId=${widget.barberProfileId.toString().trim()} _currentUserId=${_currentUserId?.toString().trim()} '
+        'barberEmail=$normalizedBarberEmail barberIsLinked=$barberIsLinked '
+        'sessionEmail=$normalizedSessionEmail sessionIsLinked=$sessionIsLinked');
 
-  // Usamos full_name según tu esquema
-  String? _fullName;
+    if (!viewingOwnProfile) {
+      // Mostrar estado del barber (barberGoogleEmail) de forma deshabilitada
+      if (barberIsLinked) {
+        return OutlinedButton.icon(
+          onPressed: null,
+          icon: const Icon(Icons.check_circle, color: Colors.greenAccent),
+          label: const Text('Vinculado con Google'),
+          style: OutlinedButton.styleFrom(
+            backgroundColor: Colors.grey.shade100,
+            foregroundColor: Colors.black87,
+            disabledForegroundColor: Colors.black54,
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            side: BorderSide(color: Colors.grey.shade300),
+          ),
+        );
+      } else {
+        return OutlinedButton.icon(
+          onPressed: null,
+          icon: const Icon(Icons.link, color: Colors.grey),
+          label: const Text('No vinculado con Google'),
+          style: OutlinedButton.styleFrom(
+            backgroundColor: Colors.grey.shade100,
+            foregroundColor: Colors.black54,
+            disabledForegroundColor: Colors.black54,
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            side: BorderSide(color: Colors.grey.shade300),
+          ),
+        );
+      }
+    } else {
+      // Aquí priorizamos el campo profiles.google_email (isnull) como fuente de verdad:
+      // - Si profiles.google_email existe y es email válido -> "Vinculado"
+      // - Si profiles.google_email es NULL/empty -> mostramos el botón para "Conectar con Google"
+      //   (aunque la sesión local tenga identidad google, el campo en profiles debe existir para marcarlo como vinculado)
+      if (barberIsLinked) {
+        // profiles.google_email existe y es válido
+        return OutlinedButton.icon(
+          onPressed: null,
+          icon: const Icon(Icons.check_circle, color: Colors.greenAccent),
+          label: const Text('Vinculado con Google'),
+          style: OutlinedButton.styleFrom(
+            backgroundColor: Colors.grey.shade200,
+            foregroundColor: Colors.black87,
+            disabledForegroundColor: Colors.black54,
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            side: BorderSide(color: Colors.grey.shade300),
+          ),
+        );
+      } else {
+        // profiles.google_email es NULL/empty -> mostrar Conectar (isnull)
+        return ElevatedButton.icon(
+          onPressed: () => _linkGoogle(context),
+          icon: Container(
+            width: 28,
+            height: 28,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white,
+            ),
+            child: const Center(
+              child: Text(
+                'G',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: googleBlue,
+                  fontSize: 16,
+                ),
+              ),
+            ),
+          ),
+          label: const Text('Conectar con Google'),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: googleBlue,
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(vertical: 12),
+          ),
+        );
+      }
+    }
+  }
 
   @override
   void initState() {
@@ -195,89 +338,154 @@ class _PerfilBarberoDomicilioYRedesState
     _load(); // ✅ Seguro aquí
   }
 
+  // Reemplaza sólo la función _load() por esta implementación más tolerante a errores.
   Future<void> _load() async {
     debugPrint('[ _load ] barberProfileId = ${widget.barberProfileId}');
 
-    // --- Obtener user local y setear _googleEmail (solo la sesión actual) ---
+    // --- Obtener user local y setear _googleEmail / _currentUserId (solo la sesión actual) ---
     try {
       final userResp = await _supa.auth.getUser();
       debugPrint('[ _load ] getUser() raw: ${userResp.user}');
-      final extracted = _extractGoogleEmailFromUser(
+      final extractedRaw = _extractGoogleEmailFromUser(
         userResp.user ?? (userResp as dynamic)?.data,
       );
+      final extracted = _normalizeNullableString(extractedRaw);
       debugPrint('[ _load ] extracted google email (session): $extracted');
-      if (mounted) setState(() => _googleEmail = extracted);
+      _currentUserId = (userResp.user as dynamic?)?.id ?? _supa.auth.currentUser?.id;
+      if (mounted) setState(() {
+        _googleEmail = extracted;
+      });
     } catch (e, st) {
       debugPrint('[ _load ] error getUser(): $e\n$st');
     }
 
     try {
-      // Traer barbers + profile(full_name) en una sola consulta (join)
-      final row = await _supa
-          .from('barbers')
-          .select(
-            'home_service,radius_km,base_address,base_lat,base_lng,'
-            'instagram_url,whatsapp,facebook_url,tiktok_url,booking_app,booking_url,'
-            'profiles(full_name)',
-          )
-          .eq('profile_id', widget.barberProfileId)
-          .maybeSingle();
+      // Intentamos la consulta "ideal" con join (profiles(full_name,google_email))
+      try {
+        final row = await _supa
+            .from('barbers')
+            .select(
+              'home_service,radius_km,base_address,base_lat,base_lng,'
+              'instagram_url,whatsapp,facebook_url,tiktok_url,booking_app,booking_url,'
+              'profiles(full_name,google_email)',
+            )
+            .eq('profile_id', widget.barberProfileId)
+            .maybeSingle();
 
-      debugPrint('[ _load ] barbers row raw: $row');
+        debugPrint('[ _load ] barbers row raw (join attempt): $row');
 
-      if (row != null) {
-        _homeService = (row['home_service'] ?? false) as bool;
-        _radiusKm = ((row['radius_km'] ?? 8) as num).toDouble();
-        _addrCtrl.text = (row['base_address'] ?? '') as String;
-        _lat = (row['base_lat'] as num?)?.toDouble();
-        _lng = (row['base_lng'] as num?)?.toDouble();
+        if (row != null) {
+          _homeService = (row['home_service'] ?? false) as bool;
+          _radiusKm = ((row['radius_km'] ?? 8) as num).toDouble();
+          _addrCtrl.text = (row['base_address'] ?? '') as String;
+          _lat = (row['base_lat'] as num?)?.toDouble();
+          _lng = (row['base_lng'] as num?)?.toDouble();
 
-        _instagramCtrl.text = (row['instagram_url'] ?? '') as String;
-        _whatsCtrl.text = (row['whatsapp'] ?? '') as String;
-        _facebookCtrl.text = (row['facebook_url'] ?? '') as String;
-        _tiktokCtrl.text = (row['tiktok_url'] ?? '') as String;
+          _instagramCtrl.text = (row['instagram_url'] ?? '') as String;
+          _whatsCtrl.text = (row['whatsapp'] ?? '') as String;
+          _facebookCtrl.text = (row['facebook_url'] ?? '') as String;
+          _tiktokCtrl.text = (row['tiktok_url'] ?? '') as String;
 
-        _bookingApp = (row['booking_app'] ?? 'none') as String;
-        _bookingUrlCtrl.text = (row['booking_url'] ?? '') as String;
+          _bookingApp = (row['booking_app'] ?? 'none') as String;
+          _bookingUrlCtrl.text = (row['booking_url'] ?? '') as String;
 
-        // Extraer profile join (puede venir como lista o como mapa)
-        final profilesRaw = row['profiles'];
-        debugPrint('[ _load ] profiles raw from join: $profilesRaw');
-        if (profilesRaw != null) {
-          if (profilesRaw is List && profilesRaw.isNotEmpty) {
-            final prof = profilesRaw.first as Map<String, dynamic>;
-            _fullName = (prof['full_name'] ?? '') as String?;
-          } else if (profilesRaw is Map) {
-            _fullName = (profilesRaw['full_name'] ?? '') as String?;
+          final profilesRaw = row['profiles'];
+          debugPrint('[ _load ] profiles raw from join: $profilesRaw');
+
+          if (profilesRaw != null) {
+            if (profilesRaw is List && profilesRaw.isNotEmpty) {
+              final prof = profilesRaw.first as Map<String, dynamic>;
+              _fullName = (prof['full_name'] ?? '') as String?;
+              _barberGoogleEmail = _normalizeNullableString(prof['google_email']);
+            } else if (profilesRaw is Map) {
+              _fullName = (profilesRaw['full_name'] ?? '') as String?;
+              _barberGoogleEmail = _normalizeNullableString(profilesRaw['google_email']);
+            }
           }
         } else {
-          debugPrint('[ _load ] profiles join is null; attempting direct query to profiles table');
-          // Fallback: obtener full_name directamente de profiles
-          try {
-            final profile = await _supa
-                .from('profiles')
-                .select('full_name')
-                .eq('id', widget.barberProfileId)
-                .maybeSingle();
-            debugPrint('[ _load ] profile fetch raw fallback: $profile');
-            if (profile != null) {
-              _fullName = (profile['full_name'] ?? '') as String?;
-            }
-          } catch (e, st) {
-            debugPrint('[ _load ] error fetching profile fallback: $e\n$st');
-          }
+          debugPrint('[ _load ] no barbers row found for profile_id=${widget.barberProfileId} (join attempt)');
         }
-      } else {
-        debugPrint('[ _load ] no barbers row found for profile_id=${widget.barberProfileId}');
+
+        // Si row fue null o profiles no vino, seguiremos a fallback sólo si hace falta.
+        final needFallback = (_fullName == null && _barberGoogleEmail == null);
+        if (!needFallback) {
+          // Ya conseguimos datos útiles: salimos de la función.
+          if (mounted) setState(() => _loading = false);
+          return;
+        }
+        debugPrint('[ _load ] needFallback after join attempt: $needFallback');
+      } catch (e, st) {
+        // Error en la consulta con join (posible columna inexistente o RLS)
+        debugPrint('[ _load ] join query failed: $e\n$st');
+        // continuamos al fallback
+      }
+
+      // --- Fallback seguro: leer barbers sin join y luego profiles por separado ---
+      try {
+        final row = await _supa
+            .from('barbers')
+            .select(
+              'home_service,radius_km,base_address,base_lat,base_lng,'
+              'instagram_url,whatsapp,facebook_url,tiktok_url,booking_app,booking_url',
+            )
+            .eq('profile_id', widget.barberProfileId)
+            .maybeSingle();
+
+        debugPrint('[ _load ] barbers row raw (fallback): $row');
+
+        if (row != null) {
+          _homeService = (row['home_service'] ?? false) as bool;
+          _radiusKm = ((row['radius_km'] ?? 8) as num).toDouble();
+          _addrCtrl.text = (row['base_address'] ?? '') as String;
+          _lat = (row['base_lat'] as num?)?.toDouble();
+          _lng = (row['base_lng'] as num?)?.toDouble();
+
+          _instagramCtrl.text = (row['instagram_url'] ?? '') as String;
+          _whatsCtrl.text = (row['whatsapp'] ?? '') as String;
+          _facebookCtrl.text = (row['facebook_url'] ?? '') as String;
+          _tiktokCtrl.text = (row['tiktok_url'] ?? '') as String;
+
+          _bookingApp = (row['booking_app'] ?? 'none') as String;
+          _bookingUrlCtrl.text = (row['booking_url'] ?? '') as String;
+        } else {
+          debugPrint('[ _load ] no barbers row found for profile_id=${widget.barberProfileId} (fallback)');
+        }
+
+        // Intentamos leer profile por separado
+        try {
+          final profile = await _supa
+              .from('profiles')
+              .select('full_name,google_email')
+              .eq('id', widget.barberProfileId)
+              .maybeSingle();
+          debugPrint('[ _load ] profile fetch raw fallback: $profile');
+          if (profile != null) {
+            _fullName = (profile['full_name'] ?? '') as String?;
+            _barberGoogleEmail = _normalizeNullableString(profile['google_email']);
+          }
+        } catch (e, st) {
+          debugPrint('[ _load ] error fetching profile fallback: $e\n$st');
+        }
+      } catch (e, st) {
+        debugPrint('[ _load ] error in fallback barbers query: $e\n$st');
+        // Mostrar mensaje al usuario (manteniendo UX)
+        if (mounted) {
+          final loc = S.of(context)!;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('${loc.errorCargandoPerfil} $e')),
+          );
+        }
       }
     } catch (e, st) {
-      if (!mounted) return;
-      final loc = S.of(context)!;
-      debugPrint('[ _load ] error querying barbers: $e\n$st');
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('${loc.errorCargandoPerfil} $e')));
+      debugPrint('[ _load ] unexpected error: $e\n$st');
+      if (mounted) {
+        final loc = S.of(context)!;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('${loc.errorCargandoPerfil} $e')),
+        );
+      }
     } finally {
+      // siempre quitamos el loading para que la UI muestre algo (o el mensaje de error)
       if (mounted) setState(() => _loading = false);
     }
   }
@@ -571,7 +779,19 @@ class _PerfilBarberoDomicilioYRedesState
                             ),
                           ),
                           const SizedBox(height: 4),
-                          if (_googleEmail != null && _googleEmail!.isNotEmpty)
+                          // Mostrar el email vinculado del BARBER (si existe y es email válido),
+                          // si no, mostrar el de sesión (si es tu perfil y es válido)
+                          if (_normalizeNullableString(_barberGoogleEmail) != null && _looksLikeEmail(_barberGoogleEmail))
+                            Text(
+                              _barberGoogleEmail!,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                color: Colors.grey,
+                              ),
+                            )
+                          else if ((_currentUserId != null && widget.barberProfileId.toString().trim() == _currentUserId.toString().trim()) &&
+                              _normalizeNullableString(_googleEmail) != null &&
+                              _looksLikeEmail(_googleEmail))
                             Text(
                               _googleEmail!,
                               style: const TextStyle(
@@ -711,7 +931,7 @@ class _PerfilBarberoDomicilioYRedesState
                   ),
                   child: SocialField(
                     platform: SocialPlatform.instagram,
-                    initial: _instagramCtrl.text, // ✅ usa solo el controlador
+                    initial: _instagramCtrl.text,
                     onChanged:
                         (v) => setState(() => _instagramCtrl.text = v ?? ''),
                   ),
@@ -784,6 +1004,7 @@ class _PerfilBarberoDomicilioYRedesState
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Contenedor con estilo consistente con las otras entradas (Instagram/FB/TikTok)
                 Container(
                   margin: const EdgeInsets.symmetric(vertical: 8),
                   padding: const EdgeInsets.all(12),
@@ -798,19 +1019,28 @@ class _PerfilBarberoDomicilioYRedesState
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      FilledButton.icon(
-                        style: ButtonStyles.redButton,
-                        onPressed: () => _linkGoogle(context),
-                        icon: const Icon(Icons.link),
-                        label: Text(S.of(context)!.continuarConGoogle),
-                      ),
+                      // Botón dinámico para Google (ver _buildGoogleIntegrationButton)
+                      _buildGoogleIntegrationButton(context),
                       const SizedBox(height: 8),
-                      if (_googleEmail != null && _googleEmail!.isNotEmpty)
+                      // Mostrar email vinculado del barber (si existe y es email válido)
+                      if (_normalizeNullableString(_barberGoogleEmail) != null && _looksLikeEmail(_barberGoogleEmail))
                         Text(
-                          'Vinculado: $_googleEmail',
+                          'Vinculado: $_barberGoogleEmail',
                           style: const TextStyle(
                             fontSize: 13,
                             color: Colors.grey,
+                          ),
+                        ),
+                      // Debug small panel in debug builds
+                      if (kDebugMode)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Text(
+                            'DEBUG: barberId=${widget.barberProfileId.toString().trim()} '
+                            'currentUserId=${_currentUserId?.toString().trim() ?? "null"} '
+                            'barberGoogle=${_barberGoogleEmail ?? "null"} '
+                            'sessionGoogle=${_googleEmail ?? "null"}',
+                            style: const TextStyle(fontSize: 11, color: Colors.white70),
                           ),
                         ),
                     ],
