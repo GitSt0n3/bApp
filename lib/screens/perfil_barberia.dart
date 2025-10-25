@@ -11,6 +11,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import '../generated/l10n.dart';
+import 'perfil_barbero_public.dart'; // <-- import agregado para abrir perfil público
 
 // Pantalla de perfil de barbería (versión con S. para localización)
 class PantallaPerfilBarberia extends StatefulWidget {
@@ -230,10 +231,21 @@ class _PantallaPerfilBarberiaState extends State<PantallaPerfilBarberia> {
                 IconButton(
                   icon: const Icon(Icons.arrow_forward),
                   onPressed: () {
-                    // Navegar al perfil del barbero. Ajusta la ruta/nombre si tu app usa otro path.
-                    // Pasamos el id de perfil si está disponible.
+                    // Abre el perfil público del barbero en perfil_barbero_public.dart
                     final profileId = profile != null ? profile['id'] : null;
-                    context.push('/perfil-barbero', extra: {'profileId': profileId});
+                    if (profileId != null) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => PerfilBarberoPublic(barberId: profileId.toString()),
+                        ),
+                      );
+                    } else {
+                      final loc = S.of(context)!;
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('ID de perfil no disponible')),
+                      );
+                    }
                   },
                 ),
               ],
