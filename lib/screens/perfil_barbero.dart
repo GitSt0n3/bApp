@@ -1,5 +1,6 @@
-// (archivo completo, modificado: botones de mapa/ubicación habilitados, añadido _onPickOnMap,
-// añadido _guardarUbicacion y estilo del botón de "Guardar ubicación" con ButtonStyles.redButton)
+// (archivo completo, modificado: usa full_name en lugar de first_name/last_name,
+// añadidos debugPrint para depuración de perfil/barber y link Google,
+// y consulta a 'barbers' con join a 'profiles(full_name)' para traer nombre)
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -36,18 +37,15 @@ class _PerfilBarberoDomicilioYRedesState
     extends State<PerfilBarberoDomicilioYRedes> {
   final _supa = Supabase.instance.client;
   String? _googleEmail;
-  // --- Redes sociales ---
-  // --- Helper: extraer email de una User (maneja Map o objetos tipados) ---
-  // ----------------------- NUEVO HELPER (añadir dentro de _PerfilBarberoDomicilioYRedesState) -----------------------
+
+  // Helper para extraer email Google desde user/identities
   String? _extractGoogleEmailFromUser(dynamic user) {
     if (user == null) return null;
     try {
-      // 1) Intentamos leer identities de forma segura (user.identities o user['identities'])
       final identities =
           (user.identities ?? (user is Map ? user['identities'] : null));
       if (identities is List) {
         for (final id in identities) {
-          // Caso: Map (serializado)
           if (id is Map) {
             final provider = (id['provider'] as String?) ?? '';
             if (provider == 'google') {
@@ -56,7 +54,6 @@ class _PerfilBarberoDomicilioYRedesState
               if (email != null && email.isNotEmpty) return email;
             }
           } else {
-            // Caso: objeto tipado (UserIdentity). Accedemos dinámicamente para evitar errores de tipo.
             try {
               final provider = (id as dynamic).provider as String?;
               if (provider == 'google') {
@@ -65,17 +62,12 @@ class _PerfilBarberoDomicilioYRedesState
                 final email = identityData?['email'] as String?;
                 if (email != null && email.isNotEmpty) return email;
               }
-            } catch (_) {
-              // si falla el acceso dinámico, seguimos con el siguiente id
-            }
+            } catch (_) {}
           }
         }
       }
-    } catch (_) {
-      // ignore parsing errors
-    }
+    } catch (_) {}
 
-    // Fallback: intentamos obtener email directo del user
     try {
       final emailFromUser =
           (user.email ?? (user is Map ? user['email'] : null)) as String?;
@@ -88,11 +80,14 @@ class _PerfilBarberoDomicilioYRedesState
 
   Future<void> _linkGoogle(BuildContext context) async {
     try {
+      debugPrint('[_linkGoogle] before link: currentUser id = ${_supa.auth.currentUser?.id}');
       final ok = await Supabase.instance.client.auth.linkIdentity(
         OAuthProvider.google,
         redirectTo: 'com.barberiapp://login-callback',
         queryParams: {'prompt': 'select_account'},
       );
+
+      debugPrint('[_linkGoogle] linkIdentity returned: $ok');
 
       if (!ok) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -109,46 +104,35 @@ class _PerfilBarberoDomicilioYRedesState
         ),
       );
 
-      // --- En _linkGoogle(): luego de abrir el flujo ---
-      if (!ok) {
-        /* existente */
-      }
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('🔗 Se abrió el flujo para vincular Google.'),
-        ),
-      );
-
       // Intento de refrescar usuario después de corto delay (el callback puede tardar)
       Future.delayed(const Duration(seconds: 2), () async {
         try {
           final userResp = await _supa.auth.getUser();
-          final user = userResp.user;
+          debugPrint('[_linkGoogle] getUser() after link (delayed): ${userResp.user}');
           final extracted = _extractGoogleEmailFromUser(
-            user ?? (userResp as dynamic)?.data,
+            userResp.user ?? (userResp as dynamic)?.data,
           );
+          debugPrint('[_linkGoogle] extracted google email after link: $extracted');
           if (!mounted) return;
           setState(() => _googleEmail = extracted);
-        } catch (_) {}
+        } catch (e, st) {
+          debugPrint('[_linkGoogle] error fetching user after link: $e\n$st');
+        }
       });
 
-      // Intentar refrescar el usuario localmente (en muchos casos la vinculación
-      // sucede en otra ventana/APP y requiere que el SDK reciba el callback).
-      // Aquí hacemos un intento simple de refrescar el usuario; si el deep-link
-      // o el callback no han ocurrido aún, el cambio se reflejará cuando vuelva.
-      // dentro de _linkGoogle(): después de mostrar el snackbar:
-      Future.delayed(const Duration(seconds: 2), () async {
+      // Otro intento de refresco
+      Future.delayed(const Duration(seconds: 4), () async {
         try {
           final userResp = await _supa.auth.getUser();
-          final user = userResp.user;
+          debugPrint('[_linkGoogle] getUser() after link (delayed 2): ${userResp.user}');
           final extracted = _extractGoogleEmailFromUser(
-            user ?? (userResp as dynamic)?.data,
+            userResp.user ?? (userResp as dynamic)?.data,
           );
+          debugPrint('[_linkGoogle] extracted google email after link (2): $extracted');
           if (!mounted) return;
           setState(() => _googleEmail = extracted);
-        } catch (_) {
-          // ignoramos errores de refresco
+        } catch (e) {
+          debugPrint('[_linkGoogle] error 2 fetching user after link: $e');
         }
       });
     } on AuthException catch (e) {
@@ -181,9 +165,8 @@ class _PerfilBarberoDomicilioYRedesState
   String _bookingApp = 'none'; // 'none' | 'weibook' | 'other'
   final _bookingUrlCtrl = TextEditingController();
 
-  // Nuevo: campos para nombre/apellidos del barbero
-  String? _firstName;
-  String? _lastName;
+  // Usamos full_name según tu esquema
+  String? _fullName;
 
   @override
   void initState() {
@@ -213,29 +196,34 @@ class _PerfilBarberoDomicilioYRedesState
   }
 
   Future<void> _load() async {
-    // --- En _load(): obtener user y setear _googleEmail ---
-    // --- en _load(), después de tus lecturas normales de 'row' ---
+    debugPrint('[ _load ] barberProfileId = ${widget.barberProfileId}');
+
+    // --- Obtener user local y setear _googleEmail (solo la sesión actual) ---
     try {
       final userResp = await _supa.auth.getUser();
-      final user = userResp.user;
-      // si el SDK devuelve una estructura distinta, _extractGoogleEmailFromUser lo maneja
+      debugPrint('[ _load ] getUser() raw: ${userResp.user}');
       final extracted = _extractGoogleEmailFromUser(
-        user ?? (userResp as dynamic)?.data,
+        userResp.user ?? (userResp as dynamic)?.data,
       );
+      debugPrint('[ _load ] extracted google email (session): $extracted');
       if (mounted) setState(() => _googleEmail = extracted);
-    } catch (_) {
-      // no crítico; ignoramos errores al consultar auth.getUser()
+    } catch (e, st) {
+      debugPrint('[ _load ] error getUser(): $e\n$st');
     }
+
     try {
-      final row =
-          await _supa
-              .from('barbers')
-              .select(
-                'home_service,radius_km,base_address,base_lat,base_lng,'
-                'instagram_url,whatsapp,facebook_url,tiktok_url,booking_app,booking_url',
-              )
-              .eq('profile_id', widget.barberProfileId)
-              .maybeSingle();
+      // Traer barbers + profile(full_name) en una sola consulta (join)
+      final row = await _supa
+          .from('barbers')
+          .select(
+            'home_service,radius_km,base_address,base_lat,base_lng,'
+            'instagram_url,whatsapp,facebook_url,tiktok_url,booking_app,booking_url,'
+            'profiles(full_name)',
+          )
+          .eq('profile_id', widget.barberProfileId)
+          .maybeSingle();
+
+      debugPrint('[ _load ] barbers row raw: $row');
 
       if (row != null) {
         _homeService = (row['home_service'] ?? false) as bool;
@@ -251,25 +239,41 @@ class _PerfilBarberoDomicilioYRedesState
 
         _bookingApp = (row['booking_app'] ?? 'none') as String;
         _bookingUrlCtrl.text = (row['booking_url'] ?? '') as String;
-      }
 
-      // Intentamos obtener nombre/apellidos desde la tabla profiles
-      try {
-        final profile = await _supa
-            .from('profiles')
-            .select('first_name,last_name')
-            .eq('id', widget.barberProfileId)
-            .maybeSingle();
-        if (profile != null) {
-          _firstName = (profile['first_name'] ?? '') as String?;
-          _lastName = (profile['last_name'] ?? '') as String?;
+        // Extraer profile join (puede venir como lista o como mapa)
+        final profilesRaw = row['profiles'];
+        debugPrint('[ _load ] profiles raw from join: $profilesRaw');
+        if (profilesRaw != null) {
+          if (profilesRaw is List && profilesRaw.isNotEmpty) {
+            final prof = profilesRaw.first as Map<String, dynamic>;
+            _fullName = (prof['full_name'] ?? '') as String?;
+          } else if (profilesRaw is Map) {
+            _fullName = (profilesRaw['full_name'] ?? '') as String?;
+          }
+        } else {
+          debugPrint('[ _load ] profiles join is null; attempting direct query to profiles table');
+          // Fallback: obtener full_name directamente de profiles
+          try {
+            final profile = await _supa
+                .from('profiles')
+                .select('full_name')
+                .eq('id', widget.barberProfileId)
+                .maybeSingle();
+            debugPrint('[ _load ] profile fetch raw fallback: $profile');
+            if (profile != null) {
+              _fullName = (profile['full_name'] ?? '') as String?;
+            }
+          } catch (e, st) {
+            debugPrint('[ _load ] error fetching profile fallback: $e\n$st');
+          }
         }
-      } catch (_) {
-        // no crítico: si falla, dejamos los campos nulos
+      } else {
+        debugPrint('[ _load ] no barbers row found for profile_id=${widget.barberProfileId}');
       }
-    } catch (e) {
+    } catch (e, st) {
       if (!mounted) return;
       final loc = S.of(context)!;
+      debugPrint('[ _load ] error querying barbers: $e\n$st');
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('${loc.errorCargandoPerfil} $e')));
@@ -514,10 +518,18 @@ class _PerfilBarberoDomicilioYRedesState
       return const Center(child: CircularProgressIndicator());
     }
 
-    final displayName = ('${_firstName ?? ''} ${_lastName ?? ''}').trim();
+    final displayName = (_fullName != null && _fullName!.trim().isNotEmpty)
+        ? _fullName!.trim()
+        : 'Nombre no disponible';
+
     String initials = '';
-    if ((_firstName ?? '').isNotEmpty) initials += _firstName![0].toUpperCase();
-    if ((_lastName ?? '').isNotEmpty) initials += _lastName![0].toUpperCase();
+    if (_fullName != null && _fullName!.trim().isNotEmpty) {
+      final parts = _fullName!.trim().split(RegExp(r'\s+'));
+      if (parts.isNotEmpty && parts.first.isNotEmpty) initials += parts.first[0].toUpperCase();
+      if (parts.length > 1 && parts.last.isNotEmpty) initials += parts.last[0].toUpperCase();
+    } else {
+      initials = '?';
+    }
 
     return CustomScrollView(
       slivers: [
@@ -552,7 +564,7 @@ class _PerfilBarberoDomicilioYRedesState
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            displayName.isNotEmpty ? displayName : 'Nombre no disponible',
+                            displayName,
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
@@ -627,10 +639,7 @@ class _PerfilBarberoDomicilioYRedesState
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // muestra tu texto/dirección actual
-                // Text(_baseAddressText ?? _latLngToString(_baseLatLng)),
                 const SizedBox(height: 8),
-                // Botón para usar ubicación actual — estilado como el botón Guardar
                 FilledButton.icon(
                   style: ButtonStyles.redButton,
                   onPressed: _usarUbicacionActual,
@@ -639,7 +648,6 @@ class _PerfilBarberoDomicilioYRedesState
                 ),
                 const SizedBox(height: 8),
 
-                // Muestra la dirección / coordenadas recogidas
                 if ((_addrCtrl.text).isNotEmpty)
                   Text(
                     _addrCtrl.text,
@@ -657,7 +665,6 @@ class _PerfilBarberoDomicilioYRedesState
                   ),
 
                 const SizedBox(height: 8),
-                // Botón específico para guardar sólo la ubicación (mismo estilo que Guardar)
                 Row(
                   children: [
                     Expanded(
@@ -692,8 +699,6 @@ class _PerfilBarberoDomicilioYRedesState
               children: [
                 const SizedBox(height: 8),
 
-                // // Instagram
-                // --- Instagram ---
                 Container(
                   margin: const EdgeInsets.symmetric(vertical: 8),
                   padding: const EdgeInsets.all(12),
@@ -713,7 +718,6 @@ class _PerfilBarberoDomicilioYRedesState
                 ),
                 const SizedBox(height: 12),
 
-                // --- WhatsApp ---
                 Container(
                   margin: const EdgeInsets.symmetric(vertical: 8),
                   padding: const EdgeInsets.all(12),
@@ -732,7 +736,6 @@ class _PerfilBarberoDomicilioYRedesState
                 ),
                 const SizedBox(height: 12),
 
-                // --- Facebook ---
                 Container(
                   margin: const EdgeInsets.symmetric(vertical: 8),
                   padding: const EdgeInsets.all(12),
@@ -752,7 +755,6 @@ class _PerfilBarberoDomicilioYRedesState
                 ),
                 const SizedBox(height: 12),
 
-                // --- TikTok ---
                 Container(
                   margin: const EdgeInsets.symmetric(vertical: 8),
                   padding: const EdgeInsets.all(12),
@@ -775,17 +777,13 @@ class _PerfilBarberoDomicilioYRedesState
           ),
         ),
 
-        // --- Agenda externa ---
-
         // --- Integraciones ---
-        // --- Integraciones (reemplaza la sección existente por esto) ---
         SliverToBoxAdapter(
           child: SectionCard(
             title: S.of(context)!.profile_section_integrations,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Contenedor con estilo consistente con las otras entradas (Instagram/FB/TikTok)
                 Container(
                   margin: const EdgeInsets.symmetric(vertical: 8),
                   padding: const EdgeInsets.all(12),
